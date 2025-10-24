@@ -4,5 +4,6 @@
 *.blend3
 *.blend4
 *.docs
-/E8/textures
-
+*.assets
+*.hidden
+*/textures

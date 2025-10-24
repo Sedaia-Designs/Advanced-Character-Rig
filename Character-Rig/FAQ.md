@@ -6,7 +6,7 @@ No, SACR is very much a passion project with no set deadlines. The work on the r
 
 ## Can I request specific featuers?
 
-Yes, although there is no guarentee your feature is included. To request a feature, please create an issue on the Github repository
+Yes, although there is no guarentee your feature is included. To request a feature, please create an issue on the Github repository or in the [Discord Server](https://discord.gg/Qk4pfbG7Pf)
 
 ## What are the Experimental Builds?
 
