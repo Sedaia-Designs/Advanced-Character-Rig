@@ -1,5 +1,6 @@
 # Sakura Advanced Character Rig
-Stable: R7.3.0
+Stable: R7.3.0 
+
 Unstable: E8.0.0 Alpha 2
 
 ## What is SACR
