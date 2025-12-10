@@ -1,23 +1,6 @@
-# Sakura Advanced Character Rig
-Stable: R7.4.0 
+# Sakura Advanced Character Rig - Archive
 
-Unstable: E8.0.0 Alpha 3
-
-## What is SACR
-
-Quite simply, SACR is a rig developed by Sakura for use in Blender in the creation of Minecraft Character based renders with a huge emphasis on a large feature package without the performance drawback typically associated with having all of those features.
-
-Revision 7 contains many improvements and changes over it's predecessor, Revision 6. These changes include but are not limited to improved shape Keys, optimized mesh and drivers, return of full rig bone shapes, and a compltetely redone face rig mesh. All of these bringig SACR R7 back to it's roots, a super optimized, feature packed, and highly customizable rig that won't destroy your computer or render times as much as competing rigs.
-
-## Why does the Repository look so different than before?
-
-In an effort to promote better organization, each archived version of SACR has been moved to a separate branch within this repository, and the SACR Experimental repository has been merged into this repo, as such, to find old experimental builds please navigate to the respective major version and the old files will be located there.
-
-## What are the Experimental Builds?
-
-Starting in Revision 4, a new Repository was setup called SACR Experimental. This repository focuses on experimenting with possible features, everything featured in Experimental Builds are subject to change. During the development of Revision 7, the entire structure of SACR's Git Repositories were changed, with each major version getting their own branch within the primary, stable release repository and all Experimental builds being merged into the main repo into their respective major versions.
-
-Development Rigs historically will be labeled `EX.X.X-<alpha or beta>.X` rather than the usual `RX.X.X`, and Changelogs will be labeled `EX.X.X-<alpha or beta>.X` rather than `RX.X.X`.
+This Branch of the Repository is meant purely for archival purposes, as any previous stable and experimental release of SACR is published here for safekeeping
 
 -----
 
