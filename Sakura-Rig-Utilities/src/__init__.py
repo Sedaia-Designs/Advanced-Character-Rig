@@ -11,13 +11,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from importlib import reload
-
 bl_info = {
-    "name": "Sakuras Rig Interfaces",
+    "name": "Sedaia Minecraft Utilities.",
     "category": "Interface",
     "author": "Sakura Sedaia <sakusedaia@outlook.com>",
-    "version": (3, 1, 0),
+    "version": (4, 0, 0),
     "blender": (5, 0, 0),
     "location": "",
     "description": "",
@@ -27,19 +25,27 @@ bl_info = {
     "wiki_url": "",
 }
 
-if "modules" in locals():
-    reload(modules)
-else:
-    from . import modules
+modules = [
 
+]
+
+classes = [
+
+]
 
 def register():
-    modules.register()
+    for c in classes:
+        U.register_class(c)
 
+    for m in modules:
+        m.register()
 
 def unregister():
-    modules.unregister()
+    for m in reversed(modules):
+        m.unregister()
 
+    for c in reversed(classes):
+        U.unregister_class(c)
 
 if __name__ == "__main__":
     register()
