@@ -29,10 +29,12 @@ import bpy
 import bpy.utils as U
 from . import utils
 from . import prefs
+from . import interface
 
 modules = [
     utils,
     prefs,
+    interface,
 ]
 
 classes = [
