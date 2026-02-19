@@ -26,10 +26,10 @@ bl_info = {
 }
 
 import bpy
-from . import icons
+from . import utils
 
 modules = [
-    icons,
+    utils,
 ]
 
 classes = [
