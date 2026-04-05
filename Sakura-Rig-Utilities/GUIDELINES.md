@@ -99,6 +99,8 @@ Use direct module calls (e.g., `U.register_class()` instead of `bpy.utils.regist
 - **No Redundancy**: Use utility modules for shared logic; avoid duplicate classes.
 - **Cleanup**: Remove unused variables, redundant parentheses, and debug prints (use `self.report()`).
 - **Commits**: Group 1-2 features per commit using logical prefixes (e.g., `feat[module]`, `fix[module]`, `refactor[module]`, `chore`, `docs`).
+  - **Commit Authorship**: Always author commits as `SakuraSedaia <sakusedaia@outlook.com>`.
+  - **Co-Authorship**: Always include the `Co-authored-by: Junie <junie@jetbrains.com>` trailer in all commits.
 - **Changelog Style**: All `CHANGELOG.md` entries must follow a standardized hierarchical structure:
   - **Level 1 Header (#)**: Version number (e.g., `# Version 4.0.0`).
   - **Level 2 Header (##) - Summary**: A brief overview of the release's purpose and major shifts.
