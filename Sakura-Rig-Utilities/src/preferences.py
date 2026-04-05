@@ -6,6 +6,8 @@ import bpy.ops as O
 import bpy.utils as U
 import os
 
+from .operators import get_manifest_key
+
 class Prefixer(str):
     @property
     def panel(self):
@@ -125,6 +127,17 @@ class AddonPreferences(T.AddonPreferences):
     def draw(self, context):
         layout = self.layout
         layout.label(text="Addon Preferences", icon="PREFERENCES")
+        row = layout.row()
+        row.operator(Prefixer("copy_debug_info").operator, icon="FILE_TICK", text="Copy Debug Info")
+        row = layout.row()
+        op = row.operator(Prefixer("open_url").operator, icon="URL", text="Report Issue")
+        op.url = get_manifest_key("issue_tracker")
+
+        op = row.operator(Prefixer("open_url").operator, icon="URL", text="Open Repository")
+        op.url = get_manifest_key("github")
+
+        op = row.operator(Prefixer("open_url").operator, icon="WORLD", text="Website")
+        op.url = get_manifest_key("website")
 
         row = layout.row()
         col = row.column()
