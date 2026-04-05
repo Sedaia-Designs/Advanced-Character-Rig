@@ -38,22 +38,29 @@ class SkinsPanel(T.Panel):
         col = layout.column()
         col.row().label(text="Select Profile:")
         row = col.row(align=True)
-        column = row.column(align=True)
-        column.template_list(Prefixer("skin_list").list, "", skin_props, "skins", skin_props, "selected_skin")
-
-        column = row.column(align=True)
-        column.operator(Prefixer("refresh_skin_list").operator, icon="FILE_REFRESH", text="")
-
+        col_list = row.column(align=True)
         
+        rows = 3
+        if len(skin_props.skins) > 3:
+            rows = 5
+            
+        col_list.template_list(Prefixer("skin_list").list, "", skin_props, "skins", skin_props, "selected_skin", rows=rows)
+
+        col_ctrl = row.column(align=True)
+        col_ctrl.operator(Prefixer("refresh_skin_list").operator, icon="FILE_REFRESH", text="")
+        
+        col_ctrl.separator()
+
         if skin_props.skins:
             selected_skin = skin_props.skins[skin_props.selected_skin]
-            op = column.operator(Prefixer("delete_player").operator, icon="TRASH", text="")
+            op = col_ctrl.operator(Prefixer("delete_player").operator, icon="TRASH", text="")
             op.name = selected_skin.name
 
-            op = column.operator(Prefixer("update_player").operator, icon="IMPORT", text="")
+            op = col_ctrl.operator(Prefixer("update_player").operator, icon="IMPORT", text="")
             op.name = selected_skin.name
 
-            # Skin Texture Selection
+        if skin_props.skins:
+            selected_skin = skin_props.skins[skin_props.selected_skin]
             box = layout.box()
             box.label(text=f"Selected Profile: {selected_skin.name}", icon="USER")
             
