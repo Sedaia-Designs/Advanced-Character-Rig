@@ -9,18 +9,8 @@ The current plan is to integrate a smart loader that will automatically detect t
 
 ## General Extension Changes
 
-- Purged all old code, beginning a new project from scratch.
-- Implemented a custom icons module and registration.
-- Created a new `utils` sub-module for shared logic.
-  - Moved `icons` to `utils.icons`.
-  - Added `utils.file` for file operations.
-    - Moved storage path fallback logic into the `open_path` utility.
-  - Added `utils.image` for image processing.
-- Implemented a basic `prefs` submodule for addon preferences.
-- Updated local file storage to use `bpy.utils.extension_path_user` for Blender Extension guideline compliance.
-- Refactored `src/` to comply with the new BPY module calling conventions.
-- Implemented a basic skin panel in `src/interface/skin_panel.py`.
-- Created an `interface` sub-module to manage UI components.
+- Deprecated SACR R7 UI feature sets 1 and 2, as they are obselete and no longer necessary.
+- Begun rewrite on 
 
 ---
 

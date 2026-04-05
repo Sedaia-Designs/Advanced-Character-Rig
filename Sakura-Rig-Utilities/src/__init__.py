@@ -26,34 +26,69 @@ bl_info = {
 }
 
 import bpy
-import bpy.utils as U
-from . import utils
-from . import prefs
-from . import interface
+from bpy.app.handlers import persistent
 
+from . import preferences
+from . import ops
+from . import rig_manager
+from . import skin_manager
+
+# Prefs must always be registered first
 modules = [
-    utils,
-    prefs,
-    interface,
+    preferences,
+    ops,
+    rig_manager,
+    skin_manager,
 ]
 
-classes = [
+@persistent
+def refresh_rig_list_on_load(dummy):
+    """Automatically refresh the rig list when a file is loaded."""
+    def refresh():
+        try:
+            bpy.ops.sedaia_rigs_ot.refresh_rig_list()
+        except Exception:
+            pass
+        return None
 
-]
+    try:
+        # We use a timer to ensure the context is fully initialized
+        bpy.app.timers.register(refresh, first_interval=0.1)
+    except Exception:
+        pass
 
 def register():
     for m in modules:
         m.register()
+    
+    # Register the load handler
+    if refresh_rig_list_on_load not in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.append(refresh_rig_list_on_load)
+    
+    # Also trigger once on registration (using a timer to avoid context issues)
+    def initial_refresh():
+        try:
+            bpy.ops.sedaia_rigs_ot.refresh_rig_list()
+        except Exception:
+            pass
+        return None
 
-    for c in classes:
-        U.register_class(c)
+    bpy.app.timers.register(initial_refresh, first_interval=0.5)
+
+    # Register the manifest refresh timer
+    bpy.app.timers.register(preferences.check_manifest_refresh, first_interval=1.0)
 
 def unregister():
+    # Unregister the load handler
+    if refresh_rig_list_on_load in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.remove(refresh_rig_list_on_load)
+
+    # Remove timers
+    if bpy.app.timers.is_registered(preferences.check_manifest_refresh):
+        bpy.app.timers.unregister(preferences.check_manifest_refresh)
+
     for m in reversed(modules):
         m.unregister()
-
-    for c in reversed(classes):
-        U.unregister_class(c)
 
 if __name__ == "__main__":
     register()
