@@ -163,3 +163,4 @@ cython_debug/
 .logs/
 .blender-docs/
 *.blend*
+.hidden/
