@@ -16,20 +16,37 @@ class AppendRig(T.Operator):
 
     @classmethod
     def poll(cls, context):
-        rig_props = context.scene.rigs
-        return (rig_props.rigs and 
-                rig_props.selected_rig < len(rig_props.rigs))
+        scene = context.scene
+        # Main Rig List check
+        rig_props = scene.rigs
+        if rig_props.rigs and rig_props.selected_rig < len(rig_props.rigs):
+             return True
+        
+        # Rig Presets List check
+        preset_props = scene.rig_presets
+        if preset_props.presets and preset_props.selected_preset < len(preset_props.presets):
+            return True
+            
+        return False
 
     def execute(self, context):
-        rig_props = context.scene.rigs
-        selected_index = rig_props.selected_rig
+        scene = context.scene
+        rig_props = scene.rigs
+        preset_props = scene.rig_presets
         
-        if selected_index < 0 or selected_index >= len(rig_props.rigs):
-            self.report({'ERROR'}, "Invalid selection")
+        rig_item = None
+        
+        # Priority 1: Check main rig list if it has a valid selection
+        if rig_props.rigs and 0 <= rig_props.selected_rig < len(rig_props.rigs):
+            rig_item = rig_props.rigs[rig_props.selected_rig]
+        # Priority 2: Check preset list if it has a valid selection
+        elif preset_props.presets and 0 <= preset_props.selected_preset < len(preset_props.presets):
+            rig_item = preset_props.presets[preset_props.selected_preset]
+        
+        if not rig_item:
+            self.report({'ERROR'}, "No rig selected")
             return {'CANCELLED'}
             
-        rig_item = rig_props.rigs[selected_index]
-        
         from .lib import RigFinder
         success, message = RigFinder.append_rig(rig_item)
         

@@ -5,6 +5,9 @@ from . import (
     UI_RigList,
     OP_refresh_rig_list,
     OP_append_rig,
+    UI_PresetList,
+    OP_preset_operators,
+    OP_save_rig_preset,
 )
 
 modules = [
@@ -13,7 +16,10 @@ modules = [
     UI_RigList,
     OP_refresh_rig_list,
     OP_append_rig,
+    UI_PresetList,
+    OP_preset_operators,
     PANEL_rig_manager,
+    OP_save_rig_preset,
 ]
 
 def register():
