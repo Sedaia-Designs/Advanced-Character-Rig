@@ -3,7 +3,7 @@ from . import (
     OP_download_rig,
     OP_download_manifest,
     UI_RigList,
-    OP_RefreshRigList,
+    OP_refresh_rig_list,
     OP_append_rig,
 )
 
@@ -11,7 +11,7 @@ modules = [
     OP_download_rig,
     OP_download_manifest,
     UI_RigList,
-    OP_RefreshRigList,
+    OP_refresh_rig_list,
     OP_append_rig,
     PANEL_rig_manager,
 ]

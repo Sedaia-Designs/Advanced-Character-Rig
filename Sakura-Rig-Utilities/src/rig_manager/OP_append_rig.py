@@ -29,39 +29,16 @@ class AppendRig(T.Operator):
             return {'CANCELLED'}
             
         rig_item = rig_props.rigs[selected_index]
-        rig_name = rig_item.name
-        filepath = os.path.abspath(rig_item.filepath)
         
-        if not os.path.exists(filepath):
-            # Try to see if it's a relative path from addon_dir
-            from ..preferences import get_preferences
-            prefs = get_preferences()
-            alt_path = os.path.abspath(os.path.join(prefs.addon_directory, rig_item.filepath))
-            if os.path.exists(alt_path):
-                filepath = alt_path
-            else:
-                self.report({'ERROR'}, f"Source file not found: {filepath}")
-                return {'CANCELLED'}
-
-        # To append a collection, we use bpy.ops.wm.append or bpy.data.libraries.load
-        # Using libraries.load allows more control, but wm.append is simpler for operators
+        from .lib import RigFinder
+        success, message = RigFinder.append_rig(rig_item)
         
-        # We need the directory inside the blend file
-        directory = os.path.join(filepath, "Collection")
-        inner_filepath = os.path.join(directory, rig_name)
-        
-        try:
-            O.wm.append(
-                filepath=inner_filepath,
-                directory=directory,
-                filename=rig_name
-            )
-            self.report({'INFO'}, f"Appended rig: {rig_name}")
-        except Exception as e:
-            self.report({'ERROR'}, f"Failed to append: {str(e)}")
+        if success:
+            self.report({'INFO'}, message)
+            return {'FINISHED'}
+        else:
+            self.report({'ERROR'}, message)
             return {'CANCELLED'}
-
-        return {'FINISHED'}
 
 # Registering
 def register():

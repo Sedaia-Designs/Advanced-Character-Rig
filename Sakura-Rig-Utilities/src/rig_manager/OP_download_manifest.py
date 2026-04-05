@@ -21,23 +21,22 @@ class DownloadManifest(T.Operator):
         wm = context.window_manager
         wm.progress_begin(0, 100)
 
-        def reporthook(count, block_size, total_size):
+        def progress_callback(count, block_size, total_size):
             if total_size > 0:
                 percent = int(count * block_size * 100 / total_size)
                 wm.progress_update(min(max(0, percent), 100))
 
         try:
-            request.urlretrieve(
-                "https://sakura-sedaia.com/docs/sacr-index.json", 
-                get_preferences().addon_directory + "/Manifest.json",
-                reporthook=reporthook
-            )
-            import time
-            get_preferences().last_manifest_refresh = time.time()
-            self.report({'INFO'}, "Manifest downloaded successfully")
+            from .lib import SacrDownloader
+            success, message = SacrDownloader.download_manifest(progress_callback=progress_callback)
+            
+            if success:
+                self.report({'INFO'}, message)
+            else:
+                self.report({'ERROR'}, f"Failed to download manifest: {message}")
+                return {'CANCELLED'}
         except Exception as e:
-            self.report({'ERROR'}, f"Failed to download manifest: {e}")
-            wm.progress_end()
+            self.report({'ERROR'}, f"Unexpected error during manifest download: {e}")
             return {'CANCELLED'}
         finally:
             wm.progress_end()

@@ -67,6 +67,8 @@ class DeleteRig(T.Operator):
             self.report({'ERROR'}, f"Failed to delete rig: {e}")
             return {'CANCELLED'}
 
+
+        O.sedaia_rigs_ot.refresh_rig_list()
         return {'FINISHED'}
 
 classes = [
