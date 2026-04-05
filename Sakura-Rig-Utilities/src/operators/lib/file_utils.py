@@ -28,3 +28,25 @@ def get_file_size(path):
     if p.exists() and p.is_file():
         return p.stat().st_size
     return 0
+
+def get_manifest_key(key):
+    """Get a key from the blender_manifest.toml file."""
+    import os
+    import re
+    
+    # Path to blender_manifest.toml
+    manifest_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "blender_manifest.toml")
+    
+    if not os.path.exists(manifest_path):
+        return ""
+    
+    with open(manifest_path, 'r') as f:
+        content = f.read()
+    
+    # Very simple TOML parser for basic keys (string/int)
+    # Match key = "value" or key = value
+    match = re.search(rf'^{key}\s*=\s*"?([^"\n]+)"?', content, re.MULTILINE)
+    if match:
+        return match.group(1).strip()
+    
+    return ""
