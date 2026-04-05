@@ -19,6 +19,10 @@ class Prefixer(str):
     def menu(self):
         return f"SEDAIA_RIGS_MT_{self}"
 
+    @property
+    def list(self):
+        return f"SEDAIA_RIGS_UL_{self}"
+
 class AddonPreferences(T.AddonPreferences):
     bl_idname = __package__
     bl_label = "Addon Preferences"

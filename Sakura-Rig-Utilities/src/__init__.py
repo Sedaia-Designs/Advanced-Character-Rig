@@ -29,14 +29,14 @@ import bpy
 from bpy.app.handlers import persistent
 
 from . import preferences
-from . import ops
+from . import lib
 from . import rig_manager
 from . import skin_manager
 
 # Prefs must always be registered first
 modules = [
     preferences,
-    ops,
+    lib,
     rig_manager,
     skin_manager,
 ]
