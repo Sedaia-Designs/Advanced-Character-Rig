@@ -31,18 +31,6 @@ class OP_copy_debug_info(bpy.types.Operator):
             cycles_feature_set = context.scene.cycles.feature_set
             cycles_scene_device = context.scene.cycles.device
 
-        # GPU / System Preferences Info
-        prefs_system = context.preferences.system
-        pixel_size = getattr(prefs_system, "pixel_size", 1.0)
-        gpu_device = "Unknown"
-        
-        # Try to get GPU info from cycles if it's there
-        if hasattr(prefs_system, "devices"):
-            for device in prefs_system.devices:
-                if device.use:
-                    gpu_device = device.name
-                    break
-
         # System info
         os_name = str(platform.uname().system)
         arch = str(platform.uname().machine)
@@ -71,7 +59,6 @@ class OP_copy_debug_info(bpy.types.Operator):
             "render engine": f"{render_engine}",
             "cycles feature set": f"{cycles_feature_set}",
             "cycles device": f"{cycles_scene_device}",
-            "gpu": gpu_device,
             "active rig": rig_info
         }
 

@@ -6,7 +6,27 @@ import bpy.ops as O
 import bpy.utils as U
 import os
 
-from .operators import get_manifest_key
+def get_manifest_key(key):
+    """Get a key from the blender_manifest.toml file."""
+    import os
+    import re
+
+    # Path to blender_manifest.toml
+    manifest_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "blender_manifest.toml")
+
+    if not os.path.exists(manifest_path):
+        return ""
+
+    with open(manifest_path, 'r') as f:
+        content = f.read()
+
+    # Very simple TOML parser for basic keys (string/int)
+    # Match key = "value" or key = value
+    match = re.search(rf'^{key}\s*=\s*"?([^"\n]+)"?', content, re.MULTILINE)
+    if match:
+        return match.group(1).strip()
+
+    return ""
 
 class Prefixer(str):
     @property
@@ -127,23 +147,14 @@ class AddonPreferences(T.AddonPreferences):
     def draw(self, context):
         layout = self.layout
         layout.label(text="Addon Preferences", icon="PREFERENCES")
-        row = layout.row()
-        row.operator(Prefixer("copy_debug_info").operator, icon="FILE_TICK", text="Copy Debug Info")
-        row = layout.row()
-        op = row.operator(Prefixer("open_url").operator, icon="URL", text="Report Issue")
-        op.url = get_manifest_key("issue_tracker")
 
-        op = row.operator(Prefixer("open_url").operator, icon="URL", text="Open Repository")
-        op.url = get_manifest_key("github")
-
-        op = row.operator(Prefixer("open_url").operator, icon="WORLD", text="Website")
-        op.url = get_manifest_key("website")
 
         row = layout.row()
         col = row.column()
         box = col.box()
         box.label(text="Addon Directory")
         box.prop(self, "addon_directory", text="")
+        box.prop(self, "dev_mode", toggle=True, text="Extended Debug Info", icon="CHECKBOX_HLT" if self.dev_mode else "CHECKBOX_DEHLT")
 
         col = row.column()
         box = col.box()
@@ -159,9 +170,10 @@ class AddonPreferences(T.AddonPreferences):
             op = box.operator(Prefixer("download_rig").operator, icon="IMPORT", text="Download")
             op.version = self.sacr_version
 
-        row = box.row(align=True)
-        row.prop(self, "sacr_manifest_refresh_interval", text="Manifest Refresh Interval (Hours)")
-        row.operator(Prefixer("download_manifest").operator, icon="FILE_REFRESH", text="")
+        if bpy.app.online_access:
+            row = box.row(align=True)
+            row.prop(self, "sacr_manifest_refresh_interval", text="Manifest Refresh Interval (Hours)")
+            row.operator(Prefixer("download_manifest").operator, icon="FILE_REFRESH", text="")
 
         if self.dev_mode:
             import datetime
@@ -173,7 +185,20 @@ class AddonPreferences(T.AddonPreferences):
             row.alert = True
             row.label(text="Dev branch may be unstable.", icon="ERROR")
 
-        layout.prop(self, "dev_mode")
+
+        row = layout.row()
+
+        row_issue = row.row(align=True)
+        row_issue.operator(Prefixer("copy_debug_info").operator, icon="FILE_TICK", text="Copy Debug Info")
+        op = row_issue.operator(Prefixer("open_url").operator, icon="URL", text="Report Issue")
+        op.url = get_manifest_key("issue_tracker")
+
+        row_general = row.row(align=True)
+        op = row_general.operator(Prefixer("open_url").operator, icon="URL", text="Open Repository")
+        op.url = get_manifest_key("github")
+
+        op = row_general.operator(Prefixer("open_url").operator, icon="WORLD", text="Website")
+        op.url = get_manifest_key("website")
 
 def get_preferences():
     return bpy.context.preferences.addons[__package__].preferences
