@@ -5,6 +5,8 @@ import zipfile
 from shutil import copyfileobj
 from urllib import request
 from urllib.parse import quote
+from ...lib.blender_utils import get_addon_directory
+from ...lib.file_utils import ensure_directory, delete_directory
 from ...preferences import get_preferences
 
 class SacrDownloader:
@@ -16,7 +18,7 @@ class SacrDownloader:
 
     def _extract_blend_from_zip(self, zip_path, extract_dir):
         """Extract only .blend files from a zip into the target directory."""
-        os.makedirs(extract_dir, exist_ok=True)
+        ensure_directory(extract_dir)
         extract_root = os.path.realpath(extract_dir)
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
             for file_info in zip_ref.infolist():
@@ -42,11 +44,10 @@ class SacrDownloader:
 
     def get_version_info(self, version_str: str):
         """Returns the version entry and branch info for a given version string."""
-        prefs = get_preferences()
-        addon_dir = prefs.addon_directory
-        manifest_path = os.path.join(addon_dir, "Manifest.json")
+        addon_dir = get_addon_directory()
+        manifest_path = addon_dir / "Manifest.json"
 
-        if not os.path.exists(manifest_path):
+        if not manifest_path.exists():
             return None, None
 
         try:
@@ -119,11 +120,11 @@ class SacrDownloader:
                 progress_callback(count, block_size, total_size)
 
         try:
-            prefs = get_preferences()
             manifest_url = "https://sakura-sedaia.com/docs/sacr-index.json"
-            manifest_path = os.path.join(prefs.addon_directory, "Manifest.json")
-            request.urlretrieve(manifest_url, manifest_path, reporthook=reporthook)
+            manifest_path = get_addon_directory() / "Manifest.json"
+            request.urlretrieve(manifest_url, str(manifest_path), reporthook=reporthook)
             
+            prefs = get_preferences()
             import time
             prefs.last_manifest_refresh = time.time()
             return True, "Manifest downloaded successfully"
@@ -214,6 +215,5 @@ class SacrDownloader:
 
     @staticmethod
     def delete_version(version_str: str):
-        version_dir = os.path.join(get_preferences().addon_directory, "sacr", version_str)
-        if os.path.exists(version_dir):
-            shutil.rmtree(version_dir)
+        version_dir = get_addon_directory() / "sacr" / version_str
+        delete_directory(version_dir)

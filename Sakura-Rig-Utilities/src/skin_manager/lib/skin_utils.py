@@ -2,7 +2,8 @@ from base64 import b64decode
 import json
 from urllib import request, error
 from pathlib import Path
-from .utils import lookup_name, is_packed, file_exists
+from ...lib.blender_utils import lookup_name, is_packed
+from ...lib.file_utils import file_exists
 from ...preferences import get_preferences
 import bpy
 
@@ -26,7 +27,8 @@ class SkinUtils:
             return "http_error"
 
     def _is_cached(self):
-        return file_exists(f"{self.prefs.addon_directory}/skins/{self.name}/{self.name}.json")
+        from ...lib.blender_utils import get_addon_directory
+        return file_exists(get_addon_directory() / "skins" / self.name / f"{self.name}.json")
 
     def _retrieve_full_profile(self):
         uuid = self._get_uuid()
