@@ -5,8 +5,8 @@ import zipfile
 from shutil import copyfileobj
 from urllib import request
 from urllib.parse import quote
-from ...lib.blender_utils import get_addon_directory
-from ...lib.file_utils import ensure_directory, delete_directory
+from ...operators.lib.blender_utils import get_addon_directory, allow_online
+from ...operators.lib.file_utils import ensure_directory, delete_directory
 from ...preferences import get_preferences
 
 class SacrDownloader:
@@ -115,6 +115,9 @@ class SacrDownloader:
     @staticmethod
     def download_manifest(progress_callback=None):
         """Download the manifest from the remote server."""
+        if not allow_online():
+            return False, "Online functionality is disabled in Blender settings"
+
         def reporthook(count, block_size, total_size):
             if progress_callback:
                 progress_callback(count, block_size, total_size)
@@ -132,6 +135,9 @@ class SacrDownloader:
             return False, str(e)
 
     def download_version(self, version_str: str, progress_callback=None):
+        if not allow_online():
+            raise RuntimeError("Online functionality is disabled in Blender settings")
+
         target_version, branch_info = self.get_version_info(version_str)
         
         if not target_version:

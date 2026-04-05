@@ -7,6 +7,7 @@ import bpy.utils as U
 import os
 
 from ..preferences import get_preferences, Prefixer
+from ..operators.lib.blender_utils import allow_online
 from .lib import SacrDownloader
 
 class DownloadRig(T.Operator):
@@ -22,6 +23,10 @@ class DownloadRig(T.Operator):
     )
 
     def execute(self, context):
+        if not allow_online():
+            self.report({'WARNING'}, "Online functionality is disabled in Blender settings.")
+            return {'CANCELLED'}
+
         prefs = get_preferences()
         branch_id = prefs.sacr_branch
         self.report({'INFO'}, f"Downloading rig (Version: {self.version}, Branch: {'Stable' if branch_id == '0' else 'Dev'})...")

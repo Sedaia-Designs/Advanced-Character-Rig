@@ -8,6 +8,7 @@ import bpy.ops as O
 import bpy.utils as U
 
 from ..preferences import get_preferences, Prefixer
+from ..operators.lib.blender_utils import allow_online
 
 class DownloadManifest(T.Operator):
     bl_idname = Prefixer("download_manifest").operator
@@ -16,6 +17,10 @@ class DownloadManifest(T.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
+        if not allow_online():
+            self.report({'WARNING'}, "Online functionality is disabled in Blender settings.")
+            return {'CANCELLED'}
+
         self.report({'INFO'}, "Downloading manifest...")
         
         wm = context.window_manager

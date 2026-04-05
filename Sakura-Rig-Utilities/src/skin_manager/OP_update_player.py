@@ -6,6 +6,7 @@ import bpy.ops as O
 import bpy.utils as U
 
 from ..preferences import get_preferences, Prefixer
+from ..operators.lib.blender_utils import allow_online
 from .lib import SkinUtils
 
 
@@ -18,6 +19,10 @@ class UpdatePlayer(T.Operator):
     name: P.StringProperty(name="Player Name")
 
     def execute(self, context):
+        if not allow_online():
+            self.report({'WARNING'}, "Online functionality is disabled in Blender settings.")
+            return {'CANCELLED'}
+
         skin_utils = SkinUtils(self.name)
         result = skin_utils.add_skin()
 

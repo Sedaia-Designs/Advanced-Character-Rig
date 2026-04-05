@@ -2,8 +2,8 @@ from base64 import b64decode
 import json
 from urllib import request, error
 from pathlib import Path
-from ...lib.blender_utils import lookup_name, is_packed
-from ...lib.file_utils import file_exists
+from ...operators.lib.blender_utils import lookup_name, is_packed, allow_online
+from ...operators.lib.file_utils import file_exists
 from ...preferences import get_preferences
 import bpy
 
@@ -18,6 +18,9 @@ class SkinUtils:
         }
 
     def _get_uuid(self):
+        if not allow_online():
+            return "http_error"
+
         name = self.name
 
         try:
@@ -27,10 +30,13 @@ class SkinUtils:
             return "http_error"
 
     def _is_cached(self):
-        from ...lib.blender_utils import get_addon_directory
+        from ...operators.lib.blender_utils import get_addon_directory
         return file_exists(get_addon_directory() / "skins" / self.name / f"{self.name}.json")
 
     def _retrieve_full_profile(self):
+        if not allow_online():
+            return "http_error"
+
         uuid = self._get_uuid()
         if uuid == "http_error":
             return "http_error"
@@ -60,6 +66,9 @@ class SkinUtils:
         return False
 
     def write_new_cache(self):
+        if not allow_online():
+            return 'http_error'
+
         print("Writing new skin cache...")
         
         profile_large = self._retrieve_full_profile()
@@ -134,6 +143,9 @@ class SkinUtils:
         return 'complete'
 
     def add_skin(self):
+        if not allow_online():
+            return 'http_error'
+
         print(f"Adding skin for {self.name}...")
 
         profile_large = self._retrieve_full_profile()
