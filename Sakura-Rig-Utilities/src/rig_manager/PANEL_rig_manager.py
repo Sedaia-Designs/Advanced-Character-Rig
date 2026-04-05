@@ -9,7 +9,8 @@ class RigManagerPanel(T.Panel):
     bl_label = "SACR Rig Manager"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "SACR Rigs"
+    bl_category = "SACR Utils"
+    bl_order = 0
     bl_idname = Prefixer("rig_manager_ui").panel
 
     def draw_header(self, context):

@@ -52,7 +52,21 @@ def refresh_rig_list_on_load(dummy):
         except Exception:
             pass
         return None
+    try:
+        # We use a timer to ensure the context is fully initialized
+        bpy.app.timers.register(refresh, first_interval=0.1)
+    except Exception:
+        pass
 
+@persistent
+def refresh_skin_list_on_load(dummy):
+    """Automatically refresh the rig list when a file is loaded."""
+    def refresh():
+        try:
+            bpy.ops.sedaia_rigs_ot.refresh_skin_list()
+        except Exception:
+            pass
+        return None
     try:
         # We use a timer to ensure the context is fully initialized
         bpy.app.timers.register(refresh, first_interval=0.1)
@@ -66,11 +80,17 @@ def register():
     # Register the load handler
     if refresh_rig_list_on_load not in bpy.app.handlers.load_post:
         bpy.app.handlers.load_post.append(refresh_rig_list_on_load)
-    
+
+    if refresh_skin_list_on_load not in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.append(refresh_skin_list_on_load)
     # Also trigger once on registration (using a timer to avoid context issues)
     def initial_refresh():
         try:
             bpy.ops.sedaia_rigs_ot.refresh_rig_list()
+        except Exception:
+            pass
+        try:
+            bpy.ops.sedaia_rigs_ot.refresh_skin_list()
         except Exception:
             pass
         return None
@@ -84,6 +104,9 @@ def unregister():
     # Unregister the load handler
     if refresh_rig_list_on_load in bpy.app.handlers.load_post:
         bpy.app.handlers.load_post.remove(refresh_rig_list_on_load)
+
+    if refresh_skin_list_on_load in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.remove(refresh_skin_list_on_load)
 
     # Remove timers
     if bpy.app.timers.is_registered(preferences.check_manifest_refresh):

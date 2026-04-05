@@ -13,7 +13,8 @@ class SkinsPanel(T.Panel):
     bl_label = "SACR Skins"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "SACR Skins"
+    bl_category = "SACR Utils"
+    bl_order = 1
     bl_idname = Prefixer("skins_ui").panel
 
     def draw_header(self, context):
