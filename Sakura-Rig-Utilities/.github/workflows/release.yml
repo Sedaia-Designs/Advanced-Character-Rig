@@ -30,29 +30,45 @@ jobs:
         id: metadata
         run: |
           VERSION=$(grep '^version = ' src/blender_manifest.toml | cut -d '"' -f 2)
+          BETA=$(grep '^beta_version = ' src/blender_manifest.toml | cut -d '"' -f 2 || echo "")
           ID=$(grep '^id = ' src/blender_manifest.toml | cut -d '"' -f 2)
-          FILENAME="${ID}_${VERSION}.zip"
+          
+          # Clean BETA of spaces for filename
+          BETA_CLEAN=$(echo $BETA | tr -d ' ')
+          
+          if [ -z "$BETA_CLEAN" ]; then
+            FILENAME="${ID}_${VERSION}.zip"
+            RELEASE_NAME="Release ${VERSION}"
+          else
+            FILENAME="${ID}_${VERSION}_${BETA_CLEAN}.zip"
+            RELEASE_NAME="Release ${VERSION} (${BETA})"
+          fi
           
           # If user provided a tag, use it. Otherwise use v + version.
           if [ -z "${{ github.event.inputs.tag_name }}" ]; then
             TAG="v${VERSION}"
+            if [ ! -z "$BETA_CLEAN" ]; then
+              TAG="${TAG}-${BETA_CLEAN}"
+            fi
           else
             TAG="${{ github.event.inputs.tag_name }}"
           fi
           
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "beta=${BETA}" >> $GITHUB_OUTPUT
           echo "id=${ID}" >> $GITHUB_OUTPUT
           echo "filename=${FILENAME}" >> $GITHUB_OUTPUT
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "release_name=${RELEASE_NAME}" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.metadata.outputs.tag }}
-          name: Release ${{ steps.metadata.outputs.version }}
+          name: ${{ steps.metadata.outputs.release_name }}
           files: dist/${{ steps.metadata.outputs.filename }}
           draft: false
-          prerelease: false
+          prerelease: ${{ steps.metadata.outputs.beta != '' }}
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
