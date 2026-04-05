@@ -1,0 +1,58 @@
+name: Build and Release Blender Extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for the release (e.g. v1.2.3). If empty, version from manifest will be used.'
+        required: false
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Blender
+        uses: xNul/setup-blender@v1.1.0
+        with:
+          blender-version: '4.3.0'
+
+      - name: Build Extension
+        run: |
+          blender --command extension build --source-dir src --output-dir dist
+
+      - name: Extract Metadata
+        id: metadata
+        run: |
+          VERSION=$(grep '^version = ' src/blender_manifest.toml | cut -d '"' -f 2)
+          ID=$(grep '^id = ' src/blender_manifest.toml | cut -d '"' -f 2)
+          FILENAME="${ID}_${VERSION}.zip"
+          
+          # If user provided a tag, use it. Otherwise use v + version.
+          if [ -z "${{ github.event.inputs.tag_name }}" ]; then
+            TAG="v${VERSION}"
+          else
+            TAG="${{ github.event.inputs.tag_name }}"
+          fi
+          
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "id=${ID}" >> $GITHUB_OUTPUT
+          echo "filename=${FILENAME}" >> $GITHUB_OUTPUT
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.metadata.outputs.tag }}
+          name: Release ${{ steps.metadata.outputs.version }}
+          files: dist/${{ steps.metadata.outputs.filename }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
