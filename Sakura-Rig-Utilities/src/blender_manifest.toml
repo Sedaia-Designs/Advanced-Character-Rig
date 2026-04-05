@@ -10,7 +10,7 @@ name = "Sedaia Rig Interfaces Dev Branch"
 tagline = "A control script for use with Sakura's Rigs"
 maintainer = "Sakura Sedaia<sakusedaia@outlook.com>"
 type = "add-on"
-website = "https://sakura-sedaia.com/addon/sakura-rig-interface"
+website = "https://www.sakura-sedaia.com/plugin/sakura-rig-interface"
 issue_tracker = "https://github.com/SakuraSedaia/Sakura-Rig-Interfaces/issues"
 github = "https://github.com/SakuraSedaia/Sakura-Rig-Interfaces/"
 

@@ -12,7 +12,7 @@ def get_manifest_key(key):
     import re
 
     # Path to blender_manifest.toml
-    manifest_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "blender_manifest.toml")
+    manifest_path = os.path.join(os.path.dirname(__file__), "blender_manifest.toml")
 
     if not os.path.exists(manifest_path):
         return ""
