@@ -13,6 +13,20 @@ Standardize naming for operators, panels, and menus using the `Prefixer` class i
 ### 1.2 Modular Registration
 - Each submodule (e.g., `skin_manager`, `rig_manager`) must have its own `register()` and `unregister()` functions.
 - The main `src/__init__.py` acts as the master registry, calling these functions in order.
+- When a module contains more than one class, use the following snippet for registration:
+```python
+classes = [
+  <classes>
+]
+
+def register():
+    for cls in classes:
+        U.register_class(cls)
+
+def unregister():
+    for cls in classes:
+        U.unregister_class(cls)
+```
 
 ### 1.3 Library Centralization
 - **Shared Logic**: Common Blender or filesystem operations (e.g., file existence, network checks) belong in `src/lib/`.
