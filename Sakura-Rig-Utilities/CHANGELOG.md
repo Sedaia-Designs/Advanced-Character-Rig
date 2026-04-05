@@ -12,6 +12,7 @@ Key architectural shifts include moving UI properties from the global `Scene` an
 - Ported and refactored core utility operators into a dedicated `src/operators` module
 - Implemented `allow_online()` guardrails for all network-dependent operations
 - Introduced a GitHub Actions workflow for automated building and releasing
+- Implemented automatic inclusion of `beta_version` in the release filename and tag
 - Standardized class registration using loop-based `register()`/`unregister()` functions
 
 ### Prefixer System
