@@ -29,16 +29,18 @@ import bpy
 from bpy.app.handlers import persistent
 
 from . import preferences
-from . import lib
+from . import operators
 from . import rig_manager
 from . import skin_manager
+from . import sacr_uis
 
 # Prefs must always be registered first
 modules = [
     preferences,
-    lib,
+    operators,
     rig_manager,
     skin_manager,
+    sacr_uis,
 ]
 
 @persistent

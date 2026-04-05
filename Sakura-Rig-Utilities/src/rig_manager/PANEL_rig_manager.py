@@ -30,7 +30,7 @@ class RigManagerPanel(T.Panel):
         row.operator(Prefixer("append_rig").operator, icon="APPEND_BLEND")
 
         row = layout.row(align=True)
-        row.operator(Prefixer("open_directory").operator, icon="FILE_FOLDER")
+        row.operator(Prefixer("open_addon_directory").operator, icon="FILE_FOLDER")
 
         layout.separator()
 

@@ -3,8 +3,8 @@ import bpy.utils as U
 import bpy.ops as O
 from ..preferences import Prefixer, get_preferences
 
-class OpenDirectory(T.Operator):
-    bl_idname = Prefixer("open_directory").operator
+class OpenAddonDirectory(T.Operator):
+    bl_idname = Prefixer("open_addon_directory").operator
     bl_label = "Open Directory"
 
     def execute(self, context):
@@ -12,11 +12,13 @@ class OpenDirectory(T.Operator):
         return {'FINISHED'}
 
 classes = [
-    OpenDirectory,
+    OpenAddonDirectory,
 ]
 
 def register():
-    U.register_class(OpenDirectory)
+    for cls in classes:
+        U.register_class(cls)
 
 def unregister():
-    U.unregister_class(OpenDirectory)
+    for cls in classes:
+        U.unregister_class(cls)

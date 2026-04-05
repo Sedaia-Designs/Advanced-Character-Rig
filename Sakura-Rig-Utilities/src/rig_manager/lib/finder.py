@@ -49,7 +49,7 @@ class RigFinder:
         
         if not os.path.exists(filepath):
             # Try to see if it's a relative path from addon_dir
-            from ...lib.blender_utils import get_addon_directory
+            from ...operators.lib.blender_utils import get_addon_directory
             alt_path = os.path.abspath(get_addon_directory() / rig_item.filepath)
             if os.path.exists(alt_path):
                 filepath = alt_path
