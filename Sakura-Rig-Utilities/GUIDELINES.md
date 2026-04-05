@@ -99,6 +99,13 @@ Use direct module calls (e.g., `U.register_class()` instead of `bpy.utils.regist
 - **No Redundancy**: Use utility modules for shared logic; avoid duplicate classes.
 - **Cleanup**: Remove unused variables, redundant parentheses, and debug prints (use `self.report()`).
 - **Commits**: Group 1-2 features per commit using logical prefixes (e.g., `feat[module]`, `fix[module]`, `refactor[module]`, `chore`, `docs`).
+- **Changelog Style**: All `CHANGELOG.md` entries must follow a standardized hierarchical structure:
+  - **Level 1 Header (#)**: Version number (e.g., `# Version 4.0.0`).
+  - **Level 2 Header (##) - Summary**: A brief overview of the release's purpose and major shifts.
+  - **Level 2 Header (##) - Categories**: Descriptive sections grouping changes (e.g., `## General Extension Changes`, `## Rig UI Changes`).
+  - **Level 3 Header (###) - Specifics**: Modules, features, or systems affected within a category (e.g., `### Prefixer System`).
+  - **Bullet Points**: Use concise bullet points for individual changes.
+  - **Separators**: Use a horizontal rule (`---`) between major version entries.
 - **Archives**: Do not modify files in `archives/` or reference them unless explicitly requested.
 
 ### 4.4 AI Prompt Aliases
