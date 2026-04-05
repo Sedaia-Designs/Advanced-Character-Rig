@@ -15,7 +15,10 @@ class RigListProperties(T.PropertyGroup):
     rigs: P.CollectionProperty(type=RigItem)
     selected_rig: P.IntProperty(name="Selected Rig", default=0)
 
+from ..preferences import Prefixer
+
 class RigList(T.UIList):
+    bl_idname = Prefixer("rig_list").list
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
         layout.label(text=item.name, icon="ARMATURE_DATA")
 

@@ -38,7 +38,7 @@ class SkinsPanel(T.Panel):
         col.row().label(text="Select Profile:")
         row = col.row(align=True)
         column = row.column(align=True)
-        column.template_list("SkinList", "", skin_props, "skins", skin_props, "selected_skin")
+        column.template_list(Prefixer("skin_list").list, "", skin_props, "skins", skin_props, "selected_skin")
 
         column = row.column(align=True)
         column.operator(Prefixer("refresh_skin_list").operator, icon="FILE_REFRESH", text="")

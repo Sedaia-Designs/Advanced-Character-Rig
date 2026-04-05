@@ -23,7 +23,7 @@ class RigManagerPanel(T.Panel):
         row = layout.row()
         column = row.column(align=True)
         rig_props = scene.rigs
-        column.template_list("RigList", "", rig_props, "rigs", rig_props, "selected_rig")
+        column.template_list(Prefixer("rig_list").list, "", rig_props, "rigs", rig_props, "selected_rig")
 
         row = column.row(align=True)
         row.operator(Prefixer("refresh_rig_list").operator, icon="FILE_REFRESH", text="")

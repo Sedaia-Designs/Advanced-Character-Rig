@@ -47,7 +47,10 @@ class SkinListProperties(T.PropertyGroup):
     skins: P.CollectionProperty(type=SkinItem)
     selected_skin: P.IntProperty(name="Selected Skin", default=0)
 
+from ..preferences import Prefixer
+
 class SkinList(T.UIList):
+    bl_idname = Prefixer("skin_list").list
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
         layout.label(text=item.name, icon="TEXTURE_DATA")
 
