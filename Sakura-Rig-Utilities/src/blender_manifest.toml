@@ -13,6 +13,7 @@ type = "add-on"
 website = "https://www.sakura-sedaia.com/plugin/sakura-rig-interface"
 issue_tracker = "https://github.com/SakuraSedaia/Sakura-Rig-Interfaces/issues"
 github = "https://github.com/SakuraSedaia/Sakura-Rig-Interfaces/"
+wiki="https://wiki.sakura-sedaia.com/docs/sedaia-rig-interface/index.html"
 
 tags = ["Rigging", "User Interface"]
 
