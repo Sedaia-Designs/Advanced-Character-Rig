@@ -13,6 +13,9 @@ Version 4 Alpha 3 is largely focused on stability improvements and cleanup, ensu
 - Updated `update_collection` logic in `OP_rig_rename` to use a toggle in user preferences instead of a hardcoded value in the UI.
 - Hardened http request handling in `skin_utils.py` to close connections properly.
 
+### Rig Manager
+- SACR Manifest Downloader now properly refreshes the rig list upon completion.
+
 # Version 4.0.0 Alpha 2
 
 ## Summary

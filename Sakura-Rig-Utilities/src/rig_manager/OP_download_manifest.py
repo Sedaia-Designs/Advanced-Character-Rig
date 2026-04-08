@@ -42,7 +42,9 @@ class DownloadManifest(T.Operator):
             return {'CANCELLED'}
         finally:
             wm.progress_end()
-            
+
+        O.sedaia_rigs_ot.refresh_rig_list()
+
         return {'FINISHED'}
 
 # Registering
