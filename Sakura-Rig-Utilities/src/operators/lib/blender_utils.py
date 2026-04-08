@@ -24,5 +24,5 @@ def lookup_name(bl_list, query: str):
 
 def get_addon_directory():
     """Returns the root directory of the addon."""
-    from ..preferences import get_preferences
+    from ...preferences import get_preferences
     return Path(get_preferences().addon_directory)

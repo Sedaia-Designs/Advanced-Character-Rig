@@ -1,7 +1,6 @@
 import bpy
 import bpy.types as T
 import bpy.props as P
-import bpy.ops as O
 import bpy.utils as U
 from ..preferences import Prefixer
 

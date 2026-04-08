@@ -1,3 +1,14 @@
+# Version 4.0.0 Alpha 3
+
+## Summary
+
+Version 4 Alpha 3 is largely focused on stability improvements and cleanup, ensuring that all features from V3 are implemented carefully and properly. 
+
+## Changes
+
+### General Improvements
+- Cleaned up unnecessary imports
+
 # Version 4.0.0 Alpha 2
 
 ## Summary
