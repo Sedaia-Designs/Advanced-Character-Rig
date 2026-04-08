@@ -7,7 +7,7 @@ from .lib import (
     SACR7_UI2_Face_Panel_Base,
     rig_ver,
     ui_ver,
-    config_objs,
+    ConfigObjs,
 )
 
 class SACR7_UI2_sui_iris(SACR7_UI2_Face_Panel_Base, T.Panel):
@@ -19,13 +19,13 @@ class SACR7_UI2_sui_iris(SACR7_UI2_Face_Panel_Base, T.Panel):
     def draw(self, context):
         rig = context.active_object
         rig_bones = rig.pose.bones
-        props = rig_bones[config_objs["eyes"]]
-        mainProp = rig_bones[config_objs['main']]
+        props = rig_bones[ConfigObjs.eyes]
+        mainProp = rig_bones[ConfigObjs.main]
         ui_props = rig.sacr_r7_ui2_props
 
         rig_child = rig.children_recursive
 
-        mat_obj = utils.lookup_name(bl_list=rig_child, query=config_objs['materials'])
+        mat_obj = utils.lookup_name(bl_list=rig_child, query=ConfigObjs.materials)
         iris_mat = mat_obj.material_slots[1].material.node_tree
         iris_shad = iris_mat.nodes['Iris_Shader']
         pupil_tex = iris_mat.nodes['Pupil_Tex'].image

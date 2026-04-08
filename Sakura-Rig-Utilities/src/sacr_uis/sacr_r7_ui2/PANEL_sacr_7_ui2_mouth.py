@@ -7,7 +7,7 @@ from .lib import (
     SACR7_UI2_Face_Panel_Base,
     rig_ver,
     ui_ver,
-    config_objs,
+    ConfigObjs,
 )
 
 class SACR7_UI2_sui_mouth(SACR7_UI2_Face_Panel_Base, T.Panel):
@@ -21,10 +21,10 @@ class SACR7_UI2_sui_mouth(SACR7_UI2_Face_Panel_Base, T.Panel):
         rig_data = rig.data
         rig_bones = rig.pose.bones
         rig_bc = rig_data.collections_all
-        props = rig_bones[config_objs["mouth"]]
+        props = rig_bones[ConfigObjs.mouth]
         rig_child = rig.children_recursive
 
-        mat_obj = utils.lookup_name(bl_list=rig_child, query=config_objs['materials'])
+        mat_obj = utils.lookup_name(bl_list=rig_child, query=ConfigObjs.materials)
         mouth_back = mat_obj.material_slots[3].material.node_tree.nodes['Material']
         teeth = mat_obj.material_slots[4].material.node_tree.nodes['Material']
 

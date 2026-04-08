@@ -7,7 +7,7 @@ from .lib import (
     SACR7_UI2_Face_Panel_Base,
     rig_ver,
     ui_ver,
-    config_objs,
+    ConfigObjs,
 )
 
 class SACR7_UI2_sui_sclera(SACR7_UI2_Face_Panel_Base, T.Panel):
@@ -19,10 +19,10 @@ class SACR7_UI2_sui_sclera(SACR7_UI2_Face_Panel_Base, T.Panel):
     def draw(self, context):
         rig = context.active_object
         rig_bones = rig.pose.bones
-        props = rig_bones[config_objs["eyes"]]
+        props = rig_bones[ConfigObjs.eyes]
         rig_child = rig.children_recursive
 
-        mat_obj = utils.lookup_name(bl_list=rig_child, query=config_objs['materials'])
+        mat_obj = utils.lookup_name(bl_list=rig_child, query=ConfigObjs.materials)
         sclera_mat = mat_obj.material_slots[2].material.node_tree
         sclera_shad = sclera_mat.nodes['Sclera_Shader']
 

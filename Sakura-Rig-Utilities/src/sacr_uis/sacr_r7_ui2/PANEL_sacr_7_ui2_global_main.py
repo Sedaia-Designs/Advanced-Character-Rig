@@ -7,7 +7,7 @@ from .lib import (
     SACR7_UI2_Panel_Base,
     rig_ver,
     ui_ver,
-    config_objs,
+    ConfigObjs
 )
 
 class SACR7_UI2_ui_global(SACR7_UI2_Panel_Base, T.Panel):
@@ -24,7 +24,7 @@ class SACR7_UI2_ui_global(SACR7_UI2_Panel_Base, T.Panel):
         rig_child = rig.children_recursive
 
         mat_obj = utils.lookup_name(
-            bl_list=rig_child, query=config_objs['materials'])
+            bl_list=rig_child, query=ConfigObjs.materials)
 
         meshCol = utils.lookup_name(
             bl_list=rig_col.children, query="Mesh")
@@ -32,8 +32,8 @@ class SACR7_UI2_ui_global(SACR7_UI2_Panel_Base, T.Panel):
         lite = rig_data.get('lite', False)
         skin = mat_obj.material_slots[0].material.node_tree
         skinTex = skin.nodes["Skin Texture"].image
-        mainProp = rig_bones[config_objs['main']]
-        root = rig_bones[config_objs["root_bone"]]
+        mainProp = rig_bones[ConfigObjs.main]
+        root = rig_bones[ConfigObjs.root_bone]
 
         panel = self.layout
 

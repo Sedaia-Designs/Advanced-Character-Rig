@@ -7,7 +7,7 @@ from .lib import (
     SACR7_UI2_Panel_Base,
     rig_ver,
     ui_ver,
-    config_objs,
+    ConfigObjs
 )
 
 class SACR7_UI2_sui_armor(SACR7_UI2_Panel_Base, T.Panel):
@@ -26,8 +26,8 @@ class SACR7_UI2_sui_armor(SACR7_UI2_Panel_Base, T.Panel):
         rig = context.active_object
         rig_bones = rig.pose.bones
         rig_child = rig.children_recursive
-        mat_obj = utils.lookup_name(bl_list=rig_child, query=config_objs['materials'])
-        mainProp = rig_bones[config_objs["main"]]
+        mat_obj = utils.lookup_name(bl_list=rig_child, query=ConfigObjs.materials)
+        mainProp = rig_bones[ConfigObjs.main]
 
         panel = self.layout
         col = panel.column(align=True)

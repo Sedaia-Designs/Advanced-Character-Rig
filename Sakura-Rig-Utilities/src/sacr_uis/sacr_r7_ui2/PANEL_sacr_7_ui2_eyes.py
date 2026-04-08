@@ -2,12 +2,11 @@ import bpy
 import bpy.types as T
 import bpy.utils as U
 from ...preferences import Prefixer
-from ...operators.lib import blender_utils as utils
+
 from .lib import (
     SACR7_UI2_Face_Panel_Base,
     rig_ver,
     ui_ver,
-    config_objs,
 )
 
 class SACR7_UI2_sui_eyes(SACR7_UI2_Face_Panel_Base, T.Panel):

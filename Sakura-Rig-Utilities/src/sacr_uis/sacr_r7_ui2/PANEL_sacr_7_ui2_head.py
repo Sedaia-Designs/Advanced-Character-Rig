@@ -2,12 +2,11 @@ import bpy
 import bpy.types as T
 import bpy.utils as U
 from ...preferences import Prefixer
-from ...operators.lib import blender_utils as utils
 from .lib import (
     SACR7_UI2_Panel_Base,
     rig_ver,
     ui_ver,
-    config_objs,
+    ConfigObjs
 )
 
 class SACR7_UI2_sui_head(SACR7_UI2_Panel_Base, T.Panel):
@@ -19,7 +18,7 @@ class SACR7_UI2_sui_head(SACR7_UI2_Panel_Base, T.Panel):
     def draw(self, context):
         rig = context.active_object
         rig_bones = rig.pose.bones
-        mainProp = rig_bones[config_objs['main']]
+        mainProp = rig_bones[ConfigObjs.main]
 
         panel = self.layout
         p_row = panel.row()

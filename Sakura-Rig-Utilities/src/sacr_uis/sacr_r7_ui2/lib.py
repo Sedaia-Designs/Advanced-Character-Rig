@@ -12,16 +12,6 @@ rig_info = {
 rig_ver = rig_info['version'][0]
 ui_ver = 2
 
-config_objs = {
-    "main": "Rig_Properties",
-    "face": "Face_Properties",
-    "mouth": "Mouth_Properties",
-    "eyes": "Eye_Properties",
-    "eyebrows": "Eyebrow_Properties",
-    "materials": "MaterialEditor",
-    "root_bone": "SACR_Root"
-}
-
 class ConfigObjs(str):
     main = "Rig_Properties"
     face = "Face_Properties"
@@ -60,7 +50,7 @@ class SACR7_UI2_Face_Panel_Base(SACR7_UI2_Panel_Base):
             return False
         try:
             obj = context.active_object
-            face_on = obj.pose.bones[config_objs["main"]]["Face Toggle"]
+            face_on = obj.pose.bones[ConfigObjs.main]["Face Toggle"]
             return face_on
         except (AttributeError, KeyError, TypeError):
             return False

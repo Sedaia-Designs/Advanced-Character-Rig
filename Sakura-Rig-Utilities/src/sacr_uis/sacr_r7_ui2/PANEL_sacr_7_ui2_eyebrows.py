@@ -7,7 +7,7 @@ from .lib import (
     SACR7_UI2_Face_Panel_Base,
     rig_ver,
     ui_ver,
-    config_objs,
+    ConfigObjs
 )
 
 class SACR7_UI2_sui_eyebrows(SACR7_UI2_Face_Panel_Base, T.Panel):
@@ -21,10 +21,10 @@ class SACR7_UI2_sui_eyebrows(SACR7_UI2_Face_Panel_Base, T.Panel):
         rig_data = rig.data
         rig_bones = rig.pose.bones
         rig_bc = rig_data.collections_all
-        eyebrowProp = rig_bones[config_objs["eyebrows"]]
+        eyebrowProp = rig_bones[ConfigObjs.eyebrows]
         rig_child = rig.children_recursive
 
-        mat_obj = utils.lookup_name(bl_list=rig_child, query=config_objs['materials'])
+        mat_obj = utils.lookup_name(bl_list=rig_child, query=ConfigObjs.materials)
         eyebrowMat = mat_obj.material_slots[6].material.node_tree.nodes['Node']
         eyebrowGrad = eyebrowMat.inputs['Gradient'].default_value
         eyebrowSplit = eyebrowMat.inputs['Split Color'].default_value

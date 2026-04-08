@@ -7,7 +7,7 @@ from .lib import (
     SACR7_UI2_Panel_Base,
     rig_ver,
     ui_ver,
-    config_objs,
+    ConfigObjs
 )
 
 class SACR7_UI2_sui_arm(SACR7_UI2_Panel_Base, T.Panel):
@@ -19,7 +19,7 @@ class SACR7_UI2_sui_arm(SACR7_UI2_Panel_Base, T.Panel):
     def draw(self, context):
         rig = context.active_object
         rig_bones = rig.pose.bones
-        mainProp = rig_bones[config_objs['main']]
+        mainProp = rig_bones[ConfigObjs.main]
         props = rig.sacr_r7_ui2_props
 
         panel = self.layout
