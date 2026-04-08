@@ -30,6 +30,7 @@ from bpy.app.handlers import persistent
 
 from . import preferences
 from . import operators
+from . import misc_ui
 from . import rig_manager
 from . import skin_manager
 from . import sacr_uis
@@ -38,6 +39,7 @@ from . import sacr_uis
 modules = [
     preferences,
     operators,
+    misc_ui,
     rig_manager,
     skin_manager,
     sacr_uis,

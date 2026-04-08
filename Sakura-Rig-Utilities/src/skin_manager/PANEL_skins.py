@@ -5,6 +5,7 @@ import bpy.props as P
 import bpy.ops as O
 import bpy.utils as U
 
+from ..operators.lib.blender_utils import allow_online
 from ..preferences import get_preferences, Prefixer
 
 T.Scene.skins_username = P.StringProperty(name="Username")
@@ -27,11 +28,14 @@ class SkinsPanel(T.Panel):
 
         layout = self.layout
 
-        col = layout.column(align=True)
-        col.row().label(text="Download Skin:")
-        row = col.row(align=True)
-        row.prop(scene, "skins_username", text="")
-        row.operator(Prefixer("download_skin").operator, icon="IMPORT", text="")
+        if not allow_online():
+            layout.label(text="Online functionality is disabled in Blender settings.", icon="ERROR")
+        else:
+            col = layout.column(align=True)
+            col.row().label(text="Download Skin:")
+            row = col.row(align=True)
+            row.prop(scene, "skins_username", text="")
+            row.operator(Prefixer("download_skin").operator, icon="IMPORT", text="")
 
         layout.separator()
 
@@ -56,8 +60,9 @@ class SkinsPanel(T.Panel):
             op = col_ctrl.operator(Prefixer("delete_player").operator, icon="TRASH", text="")
             op.name = selected_skin.name
 
-            op = col_ctrl.operator(Prefixer("update_player").operator, icon="IMPORT", text="")
-            op.name = selected_skin.name
+            if allow_online():
+                op = col_ctrl.operator(Prefixer("update_player").operator, icon="IMPORT", text="")
+                op.name = selected_skin.name
 
         if skin_props.skins:
             selected_skin = skin_props.skins[skin_props.selected_skin]
