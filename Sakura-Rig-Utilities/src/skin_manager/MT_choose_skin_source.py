@@ -5,18 +5,13 @@ import bpy.props as P
 import bpy.ops as O
 import bpy.utils as U
 
-from ..preferences import Prefixer, get_preferences
+from ..preferences import Prefixer
 from ..operators.lib.blender_utils import allow_online
 
 class ChooseSkinSource(T.Operator):
-    bl_label = "Add Skin Profile"
+    bl_label = "Add Skin / Profile"
     bl_idname = Prefixer("choose_skin_source").operator
-    bl_description = "Add a new skin profile from a local file or download from Mojang"
-
-    username: P.StringProperty(
-        name="Username",
-        description="The username for the skin profile"
-    )
+    bl_description = "Add a new skin to a profile or create a new skin profile"
 
     action: P.EnumProperty(
         name="Action",
@@ -29,30 +24,39 @@ class ChooseSkinSource(T.Operator):
 
     def draw(self, context):
         layout = self.layout
-        layout.prop(self, "username", text="Username")
+        layout.prop(context.scene, "skins_username", text="Username")
 
         if allow_online():
-            layout.prop(self, "action", text="Action")
+            layout.label(text="Source")
+            layout.prop(self, "action", text="Action", expand=True)
         else:
             # Automatically pass the action as IMPORT if offline
             self.action = 'IMPORT'
 
 
     def execute(self, context):
-        if not self.username:
+        username = context.scene.skins_username
+        if not username:
             self.report({'ERROR'}, "Please enter a username first")
             return {'CANCELLED'}
 
+        # Ensure refreshing the skin list if any action is taken
+        def refresh():
+            if hasattr(O.sedaia_rigs_ot, "refresh_skin_list"):
+                O.sedaia_rigs_ot.refresh_skin_list()
+
         if self.action == 'IMPORT':
             # This calls the ImportSkinFile operator which has its own dialog (ImportHelper)
-            return O.sedaia_rigs_ot.import_skin_file('INVOKE_DEFAULT', username=self.username)
+            return O.sedaia_rigs_ot.import_skin_file('INVOKE_DEFAULT')
         
         elif self.action == 'DOWNLOAD':
             if not allow_online():
                 self.report({'ERROR'}, "Online functionality is disabled.")
                 return {'CANCELLED'}
-            
-            return O.sedaia_rigs_ot.download_skin(username=self.username)
+
+            res = O.sedaia_rigs_ot.download_skin()
+            refresh()
+            return res
 
         return {'FINISHED'}
 

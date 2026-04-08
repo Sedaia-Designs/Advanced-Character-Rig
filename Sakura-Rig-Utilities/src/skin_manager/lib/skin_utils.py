@@ -127,6 +127,7 @@ class SkinUtils:
         if not skin_exists:
             profile["SKINS"].append({
                 "index": len(profile["SKINS"]),
+                "name": f"Skin {len(profile['SKINS'])}",
                 "url": CURRENT_SKIN_URL,
                 "hash": CURRENT_SKIN_HASH,
                 "path": str(DOWNLOAD_PATH),
@@ -189,6 +190,7 @@ class SkinUtils:
 
         profile["SKINS"].append({
             "index": len(profile["SKINS"]),
+            "name": f"Skin {len(profile['SKINS'])}",
             "url": CURRENT_SKIN_URL,
             "hash": CURRENT_SKIN_HASH,
             "path": str(DOWNLOAD_PATH),
@@ -208,6 +210,79 @@ class SkinUtils:
         if TARGET_DIR.exists():
             shutil.rmtree(TARGET_DIR)
             return 'complete'
+        return 'not_found'
+
+    def import_skin(self, filepath, model='0'):
+        """Import a skin from a local file."""
+        import shutil
+        import hashlib
+
+        TARGET_DIR = Path(f"{self.prefs.addon_directory}/skins/{self.name}")
+        TARGET_DIR.mkdir(parents=True, exist_ok=True)
+
+        # Generate a hash for the file to use as its name
+        with open(filepath, "rb") as f:
+            file_hash = hashlib.sha256(f.read()).hexdigest()
+
+        EXT = Path(filepath).suffix
+        IMPORT_PATH = TARGET_DIR / f"{file_hash}{EXT}"
+
+        if not IMPORT_PATH.exists():
+            shutil.copy2(filepath, IMPORT_PATH)
+
+        JSON_FILE = TARGET_DIR / f"{self.name}.json"
+        is_new_profile = not JSON_FILE.exists()
+        if not is_new_profile:
+            with open(JSON_FILE, "r") as f:
+                profile = json.load(f)
+        else:
+            profile = {
+                "UUID": f"LOCAL_{self.name}",
+                "NAME": self.name,
+                "SKINS": []
+            }
+
+        # Check if already cached
+        for s in profile.get("SKINS", []):
+            if s.get("hash") == file_hash:
+                return 'already_cached'
+
+        profile["SKINS"].append({
+            "index": len(profile["SKINS"]),
+            "name": f"Skin {len(profile['SKINS'])}",
+            "url": None,
+            "hash": file_hash,
+            "path": str(IMPORT_PATH),
+            "model": model,
+            "cape_url": None,
+            "cape_path": None
+        })
+
+        with open(JSON_FILE, "w") as f:
+            json.dump(profile, f, indent=4)
+
+        return 'complete_new' if is_new_profile else 'complete_added'
+
+    def rename_skin(self, skin_index: int, new_name: str):
+        JSON_FILE = Path(f"{self.prefs.addon_directory}/skins/{self.name}/{self.name}.json")
+        if not JSON_FILE.exists():
+            return 'not_found'
+
+        with open(JSON_FILE, "r") as f:
+            profile = json.load(f)
+
+        found = False
+        for s in profile.get("SKINS", []):
+            if s.get("index") == skin_index:
+                s["name"] = new_name
+                found = True
+                break
+        
+        if found:
+            with open(JSON_FILE, "w") as f:
+                json.dump(profile, f, indent=4)
+            return 'complete'
+        
         return 'not_found'
 
     def get_skin_path(self, skin_index: int):
@@ -237,13 +312,17 @@ class SkinUtils:
         if 0 <= skin_index < len(profile["SKINS"]):
             skin = profile["SKINS"].pop(skin_index)
 
-            skin_path = Path(skin.get("path", ""))
-            if skin_path.exists():
-                skin_path.unlink()
+            skin_path_val = skin.get("path")
+            if skin_path_val:
+                skin_path = Path(skin_path_val)
+                if skin_path.exists():
+                    skin_path.unlink()
 
-            cape_path = Path(skin.get("cape_path", ""))
-            if cape_path.exists():
-                cape_path.unlink()
+            cape_path_val = skin.get("cape_path")
+            if cape_path_val:
+                cape_path = Path(cape_path_val)
+                if cape_path.exists():
+                    cape_path.unlink()
 
             for i, s in enumerate(profile["SKINS"]):
                 s["index"] = i

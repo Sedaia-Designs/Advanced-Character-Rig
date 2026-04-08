@@ -1,3 +1,4 @@
+
 from . import (
     PANEL_skins,
     OP_download_skin,
@@ -7,7 +8,10 @@ from . import (
     OP_refresh_skin_list,
     UI_skin_list,
     OP_open_in_viewer,
-    OP_update_player
+    OP_update_player,
+    MT_choose_skin_source,
+    OP_import_skin_file,
+    OP_rename_skin
 )
 
 modules = [
@@ -19,7 +23,10 @@ modules = [
     OP_delete_skin_texture,
     OP_refresh_skin_list,
     OP_open_in_viewer,
-    OP_update_player
+    OP_update_player,
+    MT_choose_skin_source,
+    OP_import_skin_file,
+    OP_rename_skin
 ]
 
 def register():
