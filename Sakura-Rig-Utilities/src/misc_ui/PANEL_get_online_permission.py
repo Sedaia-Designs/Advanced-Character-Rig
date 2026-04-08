@@ -39,6 +39,11 @@ class PANEL_get_online_permission(T.Panel):
         box.label(text="Download the latest SACR Builds", icon='DISCLOSURE_TRI_RIGHT')
         box.label(text="Download Minecraft Skins and Capes", icon='DISCLOSURE_TRI_RIGHT')
 
+        box.separator()
+        row = box.row(align=True)
+        row.operator(Prefixer("enable_online_access").operator, text="Enable Online Access", icon='CHECKMARK')
+
+
 
 
 def register():

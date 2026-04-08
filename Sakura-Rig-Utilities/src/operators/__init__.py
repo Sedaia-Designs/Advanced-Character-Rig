@@ -5,6 +5,7 @@ from . import OP_image_pack
 from . import OP_image_reload
 from . import OP_rig_rename
 from . import OP_copy_debug_info
+from . import OP_enable_online_access
 from . import lib
 
 modules = [
@@ -15,6 +16,7 @@ modules = [
     OP_image_reload,
     OP_rig_rename,
     OP_copy_debug_info,
+    OP_enable_online_access,
 ]
 
 def register():
