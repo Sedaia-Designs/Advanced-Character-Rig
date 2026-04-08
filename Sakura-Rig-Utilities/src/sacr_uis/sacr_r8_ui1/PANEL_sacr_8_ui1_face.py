@@ -6,6 +6,7 @@ from .lib import (
     SACR8_UI1_Panel_Base,
     rig_ver,
     ui_ver,
+    ConfigObjs,
 )
 
 class SEDAIA_PT_SACR8_sui_headConfig(SACR8_UI1_Panel_Base, T.Panel):
@@ -20,7 +21,7 @@ class SEDAIA_PT_SACR8_sui_headConfig(SACR8_UI1_Panel_Base, T.Panel):
         rig_bones = rig.pose.bones
 
         # mainProp = rig_bones["Properties.RigMain"]
-        headProp = rig_bones["Properties.Head"]
+        headProp = rig_bones[ConfigObjs.head]
 
         # UI Layout
         panel = self.layout

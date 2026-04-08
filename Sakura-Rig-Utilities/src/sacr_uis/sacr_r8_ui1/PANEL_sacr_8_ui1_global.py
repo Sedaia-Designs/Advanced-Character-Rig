@@ -10,7 +10,7 @@ from .lib import (
     rig_ver,
     ui_ver,
     mat_obj_name,
-    prop_bones,
+    ConfigObjs,
 )
 
 class SEDAIA_PT_SACR8_ui_global(SACR8_UI1_Panel_Base, T.Panel):
@@ -39,7 +39,7 @@ class SEDAIA_PT_SACR8_ui_global(SACR8_UI1_Panel_Base, T.Panel):
 
         skin = mat_obj.material_slots[0].material.node_tree
         skinTex = skin.nodes["Skin Texture"].image
-        mainProp = rig_bones[prop_bones[0]]
+        mainProp = rig_bones[ConfigObjs.main]
         panel = self.layout
 
         p_row = panel.row()

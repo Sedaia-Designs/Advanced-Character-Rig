@@ -1,18 +1,23 @@
 import bpy
-import bpy.types as T
-from ...preferences import Prefixer
 
 # Global Rig Variables
 rig_ver = 8
 ui_ver = 1
 mat_obj_name = "MaterialEditor"
 prop_bones = [
-    "Properties.RigMain",
-    "Properties.Arms",
-    "Properties.Legs",
-    "Properties.Torso",
-    "Properties.Head",
+    ConfigObjs.main,
+    ConfigObjs.arm,
+    ConfigObjs.leg,
+    ConfigObjs.torso,
+    ConfigObjs.head,
 ]
+
+class ConfigObjs(str):
+    main = "Properties.RigMain"
+    arm = "Properties.Arms"
+    leg = "Properties.Legs"
+    torso = "Properties.Torso"
+    head = "Properties.Head"
 
 class SACR8_UI1_Panel_Base:
     bl_space_type = "VIEW_3D"
