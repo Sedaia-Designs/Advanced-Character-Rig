@@ -226,10 +226,10 @@ class SkinUtils:
         try:
             with open(JSON_FILE, 'r') as f:
                 data = json.load(f)
-                skins = data.get("SKINS", [])
-                target_skin = next((s for s in skins if s.get("index") == skin_index), None)
-                if target_skin and "path" in target_skin:
-                    return Path(target_skin["path"])
+            skins = data.get("SKINS", [])
+            target_skin = next((s for s in skins if s.get("index") == skin_index), None)
+            if target_skin and "path" in target_skin:
+                return Path(target_skin["path"])
         except:
             pass
         return None
