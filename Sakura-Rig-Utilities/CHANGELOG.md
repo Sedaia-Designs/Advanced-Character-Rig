@@ -14,19 +14,19 @@ Version 4 Alpha 3 is largely focused on stability improvements and cleanup, ensu
 - Updated `update_collection` logic in `OP_rig_rename` to use a toggle in user preferences instead of a hardcoded value in the UI.
 - Hardened http request handling in `skin_utils.py` to close connections properly.
 
+### Utils Master
+- Added ability to enable Online Access from the UI without having to navigate to user preferences.
+
 ### Rig Manager
 - SACR Manifest Downloader now properly refreshes the rig list upon completion.
 
 ### Skin Manager
-- Converted the skin source selection menu into a popout dialog for better accessibility and user experience.
-- Implemented execution logic for the skin source selection dialog to trigger local import or Mojang download.
-- Moved the username entry field into the "Add Skin Profile" dialog.
-- Updated `Download Skin` and `Import Skin File` operators to accept a username parameter directly.
-- Removed the global `skins_username` property from the scene to reduce property pollution.
-- Added a `name` key to skin texture entries in JSON metadata for better identification.
-- Implemented a "Rename Skin" operator allowing users to customize display names in the texture selector.
-- New skin imports (local and download) now automatically assign a default name ("Skin X").
-- Integrated a "Rename" button (pencil icon) directly into the Skin Selector UI.
+- Moved Profile Creation logic to a popup modal window, which allows the user to either download a new profile from Mojang or import a skin file into a new profile.
+- Added support for importing local skin files directly from the computer.
+- Added ability to rename individual skins within a profile for better management.
+- Improved UI with custom names and improved feedback during skin imports.
+- Fixed a `NoneType` error when deleting skin textures without capes.
+- Moved "Apply Skin" button to the bottom of the Skin Selector.
 
 # Version 4.0.0 Alpha 2
 

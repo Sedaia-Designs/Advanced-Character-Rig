@@ -3,7 +3,7 @@ schema_version = "1.0.0"
 id = "Sakura_Rig_GUI_Dev"
 
 version = "4.0.0"
-beta_version = "Alpha 2"
+beta_version = "Alpha 3"
 release_channel = "dev"
 
 name = "Sedaia Rig Interfaces Dev Branch"
