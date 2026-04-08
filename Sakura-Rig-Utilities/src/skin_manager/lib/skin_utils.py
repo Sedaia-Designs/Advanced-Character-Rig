@@ -25,7 +25,8 @@ class SkinUtils:
 
         try:
             url = self.moj_api["api"] + name
-            return json.loads(request.urlopen(url).read())["id"]
+            with request.urlopen(url) as response:
+                return json.loads(response.read())["id"]
         except (request.HTTPError, error.URLError):
             return "http_error"
 
@@ -42,8 +43,8 @@ class SkinUtils:
             return "http_error"
         try:
             url = self.moj_api["profile"] + uuid
-            response = request.urlopen(url).read()
-            profile = json.loads(response)
+            with request.urlopen(url) as response:
+                profile = json.loads(response.read())
 
             # Extract the base64 encoded value from the first property
             if "properties" in profile and len(profile["properties"]) > 0:
@@ -262,9 +263,7 @@ class SkinUtils:
 
             with open(JSON_FILE, "w") as f:
                 json.dump(profile, f, indent=4)
-            
             return 'complete'
-        
         return 'not_found'
 
     def apply_skin(self, rig, skin_item):
