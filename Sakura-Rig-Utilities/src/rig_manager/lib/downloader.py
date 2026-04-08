@@ -12,6 +12,11 @@ from ...preferences import get_preferences
 class SacrDownloader:
     BASE_URL = "https://sakura-sedaia.com/lib"
 
+    @staticmethod
+    def sanitize_name(name: str) -> str:
+        """Removes spaces from the given name."""
+        return name.replace(" ", "")
+
     def __init__(self, branch_id: str):
         # "0" for stable, "1" for dev
         self.branch_id = branch_id
@@ -24,7 +29,7 @@ class SacrDownloader:
             for file_info in zip_ref.infolist():
                 if file_info.filename.lower().endswith(".blend"):
                     # Flatten archive paths so .blend files are written directly under extract_dir.
-                    target_name = os.path.basename(file_info.filename)
+                    target_name = self.sanitize_name(os.path.basename(file_info.filename))
                     if not target_name:
                         continue
                     target_path = os.path.realpath(os.path.join(extract_dir, target_name))
@@ -204,7 +209,7 @@ class SacrDownloader:
 
         # Automatically extract .blend files from the downloaded zip into
         # a version-specific `sacr/<version>` directory.
-        version_dir_name = target_version.get("version") or version_str
+        version_dir_name = self.sanitize_name(target_version.get("version") or version_str)
         extract_dir = os.path.join(addon_dir, "sacr", version_dir_name)
         
         if file_name.lower().endswith(".zip"):
@@ -212,7 +217,7 @@ class SacrDownloader:
             return extract_dir
         elif file_name.lower().endswith(".blend"):
             os.makedirs(extract_dir, exist_ok=True)
-            new_destination = os.path.join(extract_dir, file_name)
+            new_destination = os.path.join(extract_dir, self.sanitize_name(file_name))
             # Move or copy the blend file to the version directory
             shutil.copy2(destination, new_destination)
             return extract_dir
@@ -221,5 +226,5 @@ class SacrDownloader:
 
     @staticmethod
     def delete_version(version_str: str):
-        version_dir = get_addon_directory() / "sacr" / version_str
+        version_dir = get_addon_directory() / "sacr" / SacrDownloader.sanitize_name(version_str)
         delete_directory(version_dir)
