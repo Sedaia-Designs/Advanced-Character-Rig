@@ -328,6 +328,16 @@ class SkinUtils:
             rig.data.name = new_name
             rig.data["Rig Name"] = new_name
 
+            obj = bpy.context.active_object
+            if get_preferences().sync_collection_name_with_rig:
+                try:
+                    if obj.users_collection:
+                        obj.users_collection[0].name = new_name
+                except (AttributeError, KeyError, IndexError):
+                    # Fallback for assets or unexpected structures
+                    if hasattr(context, "asset") and context.asset:
+                        context.asset.name = new_name
+
         return True, f"Applied skin: {skin_item.name} (Texture {skin_index})"
 
     @staticmethod
