@@ -91,14 +91,12 @@ class SkinUtils:
         TARGET_DIR.mkdir(parents=True, exist_ok=True)
 
         DOWNLOAD_PATH = TARGET_DIR / f"{CURRENT_SKIN_HASH}.png"
-        
-        # Download skin if not exists
+
         if not DOWNLOAD_PATH.exists():
             with request.urlopen(CURRENT_SKIN_URL) as response, open(DOWNLOAD_PATH, 'wb') as out_file:
                 out_file.write(response.read())
             print(f"Downloaded skin to {DOWNLOAD_PATH}")
 
-        # Check for Cape
         CAPE_URL = None
         CAPE_PATH = None
         if 'CAPE' in textures:
@@ -120,7 +118,6 @@ class SkinUtils:
                 "SKINS": []
             }
 
-        # Add skin to list if not already there
         skin_exists = False
         for s in profile["SKINS"]:
             if s.get("hash") == CURRENT_SKIN_HASH:
@@ -166,24 +163,20 @@ class SkinUtils:
         JSON_FILE = TARGET_DIR / f"{self.name}.json"
 
         if not JSON_FILE.exists():
-            # If no cache exists, just use write_new_cache
             return self.write_new_cache()
 
         with open(JSON_FILE, "r") as f:
             profile = json.load(f)
 
-        # Check if the current skin is already in the list
         for s in profile.get("SKINS", []):
             if s.get("hash") == CURRENT_SKIN_HASH:
                 return 'already_cached'
 
-        # Download new skin
         DOWNLOAD_PATH = TARGET_DIR / f"{CURRENT_SKIN_HASH}.png"
         if not DOWNLOAD_PATH.exists():
             with request.urlopen(CURRENT_SKIN_URL) as response, open(DOWNLOAD_PATH, 'wb') as out_file:
                 out_file.write(response.read())
 
-        # Check for Cape
         CAPE_URL = None
         CAPE_PATH = None
         if 'CAPE' in textures:
@@ -194,7 +187,6 @@ class SkinUtils:
                 with request.urlopen(CAPE_URL) as response, open(CAPE_PATH, 'wb') as out_file:
                     out_file.write(response.read())
 
-        # Add skin to list
         profile["SKINS"].append({
             "index": len(profile["SKINS"]),
             "url": CURRENT_SKIN_URL,
@@ -244,20 +236,15 @@ class SkinUtils:
 
         if 0 <= skin_index < len(profile["SKINS"]):
             skin = profile["SKINS"].pop(skin_index)
-            
-            # Delete skin file
+
             skin_path = Path(skin.get("path", ""))
             if skin_path.exists():
                 skin_path.unlink()
-            
-            # Delete cape file if it's not used by other skins (though currently each skin has its own CAPE_PATH in this impl)
+
             cape_path = Path(skin.get("cape_path", ""))
             if cape_path.exists():
-                # Check if other skins use this cape path before deleting? 
-                # Actually write_new_cache creates unique paths per hash, but here we just delete.
                 cape_path.unlink()
 
-            # Re-index remaining skins
             for i, s in enumerate(profile["SKINS"]):
                 s["index"] = i
 
@@ -266,10 +253,12 @@ class SkinUtils:
             return 'complete'
         return 'not_found'
 
-    def apply_skin(self, rig, skin_item):
+    @staticmethod
+    def apply_skin(rig, skin_item):
         """Apply skin to the rig based on skin_item and SkinUtils instance."""
         import os
 
+        # TODO: This needs to be configurable on a per rig basis, since not every rig will use this exact naming.
         utility_bone_name = "Sedaia.Skin_Utility_Config"
         if utility_bone_name not in rig.pose.bones:
             return False, f"Utility bone '{utility_bone_name}' not found on rig."
@@ -291,20 +280,17 @@ class SkinUtils:
             return False, "Skin texture data not found."
 
         skinMeta = rig.pose.bones[utility_bone_name]
-        
-        # Metadata from bone
+
         mat_obj_query = skinMeta.get("MatObj")
         skin_img_node_id = skinMeta.get("SkinImageNodeID")
         arm_prop_name = skinMeta.get("ArmPropName")
         arm_prop_bone_name = skinMeta.get("ArmPropBone")
         rig_name_suffix = skinMeta.get("RigName", "Rig")
 
-        # Find Material Handler (child object)
         material_manager = lookup_name(bl_list=rig.children, query=mat_obj_query)
         if not material_manager:
             return False, f"Material object '{mat_obj_query}' not found."
-        
-        # Update texture
+
         if material_manager.material_slots:
             mat = material_manager.material_slots[0].material
             if mat and mat.use_nodes:
@@ -335,8 +321,7 @@ class SkinUtils:
                 arm_bone[arm_prop_name] = model_val
             except:
                 pass
-        
-        # Sync Name
+
         if skin_item.sync_name:
             new_name = f"{skin_item.name} - {rig_name_suffix}"
             rig.name = new_name
