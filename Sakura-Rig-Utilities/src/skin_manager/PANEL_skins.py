@@ -28,14 +28,6 @@ class SkinsPanel(T.Panel):
 
         layout = self.layout
 
-        if not allow_online():
-            layout.label(text="Online functionality is disabled in Blender settings.", icon="ERROR")
-        else:
-            col = layout.column(align=True)
-            col.row().label(text="Download Skin:")
-            row = col.row(align=True)
-            row.prop(scene, "skins_username", text="")
-            row.operator(Prefixer("download_skin").operator, icon="IMPORT", text="")
 
         layout.separator()
 
@@ -51,6 +43,7 @@ class SkinsPanel(T.Panel):
         col_list.template_list(Prefixer("skin_list").list, "", skin_props, "skins", skin_props, "selected_skin", rows=rows)
 
         col_ctrl = row.column(align=True)
+        col_ctrl.operator(Prefixer("choose_skin_source").operator, icon="ADD", text="")
         col_ctrl.operator(Prefixer("refresh_skin_list").operator, icon="FILE_REFRESH", text="")
         
         col_ctrl.separator()
@@ -68,13 +61,19 @@ class SkinsPanel(T.Panel):
             selected_skin = skin_props.skins[skin_props.selected_skin]
             box = layout.box()
             box.label(text=f"Selected Profile: {selected_skin.name}", icon="USER")
-            
-            row = box.row(align=True)
-            row.prop(selected_skin, "skin_texture_enum", text="Texture")
-            op = row.operator(Prefixer("delete_skin").operator, icon="X", text="")
+
+            col = box.column(align=True)
+            row = col.row(align=True)
+            row.prop(selected_skin, "skin_texture_enum", text="")
+
+            row.operator(Prefixer("rename_skin").operator, icon="GREASEPENCIL", text="")
+            op = row.operator(Prefixer("delete_skin").operator, icon="TRASH", text="")
             op.name = selected_skin.name
             op.index = int(selected_skin.skin_texture_enum)
-            
+            row = col.row(align=True)
+            op = row.operator(Prefixer("apply_skin").operator, text="Apply Skin", icon="CHECKMARK")
+            op.name = selected_skin.name
+
             # Options
             col = box.column(align=True)
             col.prop(selected_skin, "sync_arms")
@@ -82,8 +81,7 @@ class SkinsPanel(T.Panel):
             col.prop(selected_skin, "sync_cape")
             
             row = box.row(align=True)
-            op = row.operator(Prefixer("apply_skin").operator, icon="TEXTURE_DATA", text="Apply Skin")
-            op.name = selected_skin.name
+
 
             op = row.operator(Prefixer("open_in_viewer").operator, icon="IMAGE_DATA")
             op.name = selected_skin.name

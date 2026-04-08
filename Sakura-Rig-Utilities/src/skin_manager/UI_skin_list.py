@@ -32,8 +32,9 @@ class SkinItem(T.PropertyGroup):
                 
                 items = []
                 for skin in skins:
-                    # Using hash or index as identifier
-                    items.append((str(skin["index"]), f"Skin {skin['index']} ({skin['hash'][:8]})", skin["path"]))
+                    # Using custom name if available, otherwise fallback to hash-based name
+                    display_name = skin.get("name", f"Skin {skin['index']} ({skin['hash'][:8]})")
+                    items.append((str(skin["index"]), display_name, skin["path"]))
                 return items
         except:
             return items
