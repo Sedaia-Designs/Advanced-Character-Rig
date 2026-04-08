@@ -9,6 +9,9 @@ Version 4 Alpha 3 is largely focused on stability improvements and cleanup, ensu
 ### General Improvements
 - Cleaned up unnecessary imports
 
+### Operators
+- Updated `update_collection` logic in `OP_rig_rename` to use a toggle in user preferences instead of a hardcoded value in the UI.
+
 # Version 4.0.0 Alpha 2
 
 ## Summary

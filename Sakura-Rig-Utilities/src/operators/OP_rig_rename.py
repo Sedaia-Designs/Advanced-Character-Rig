@@ -2,7 +2,7 @@ import bpy
 import bpy.types as T
 import bpy.props as P
 import bpy.utils as U
-from ..preferences import Prefixer
+from ..preferences import Prefixer, get_preferences
 
 class OP_rig_rename(T.Operator):
     """Rename the active armature and its data, optionally updating its collection name."""
@@ -14,11 +14,6 @@ class OP_rig_rename(T.Operator):
         name="New Name",
         description="The new name for the rig",
         default=""
-    )
-    update_collection: P.BoolProperty(
-        name="Update Collection",
-        description="Also rename the first collection containing the rig",
-        default=False
     )
 
     @classmethod
@@ -35,8 +30,9 @@ class OP_rig_rename(T.Operator):
         if obj.data:
             obj.data.name = self.name
 
-        if self.update_collection:
+        if get_preferences().sync_collection_name_with_rig:
             try:
+                obj = context.active_object
                 if obj.users_collection:
                     obj.users_collection[0].name = self.name
             except (AttributeError, KeyError, IndexError):

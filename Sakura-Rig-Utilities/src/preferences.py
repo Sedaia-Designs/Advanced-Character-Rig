@@ -143,6 +143,12 @@ class AddonPreferences(T.AddonPreferences):
         description="Select the version of SACR to download"
     )
 
+    sync_collection_name_with_rig: P.BoolProperty(
+        name="Sync Collection Name with Rig",
+        description="Sync the collection name of the rig with the collection name of the selected object",
+        default=True
+    )
+
     def draw(self, context):
         layout = self.layout
         layout.label(text="Addon Preferences", icon="PREFERENCES")
@@ -154,6 +160,7 @@ class AddonPreferences(T.AddonPreferences):
         box.label(text="Addon Directory")
         box.prop(self, "addon_directory", text="")
         box.prop(self, "dev_mode", toggle=True, text="Extended Debug Info", icon="CHECKBOX_HLT" if self.dev_mode else "CHECKBOX_DEHLT")
+        box.prop(self, "sync_collection_name_with_rig", toggle=True, text="Sync Collection Name with Rig", icon="CHECKBOX_HLT" if self.sync_collection_name_with_rig else "CHECKBOX_DEHLT")
 
         col = row.column()
         box = col.box()

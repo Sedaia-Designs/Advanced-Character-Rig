@@ -80,7 +80,6 @@ class SACR7_UI2_ui_global(SACR7_UI2_Panel_Base, T.Panel):
 
         rename = row.operator(Prefixer("rig_rename").operator, icon="FILE_REFRESH", text="")
         rename.name = rig_data.get('Rig Name', "")
-        rename.update_collection = True
 
         row = panel.row()
         row.label(text="Skin Texture")
