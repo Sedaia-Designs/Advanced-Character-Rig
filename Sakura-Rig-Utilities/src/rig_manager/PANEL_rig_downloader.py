@@ -1,10 +1,9 @@
-
+import os
 from ..preferences import Prefixer, get_preferences
 from ..operators.lib.blender_utils import allow_online
 
-
 def rig_downloader(layout):
-
+    prefs = get_preferences()
     download_panel = layout.panel(idname=Prefixer("download_panel").panel, default_closed=True)
 
     header = download_panel[0]
