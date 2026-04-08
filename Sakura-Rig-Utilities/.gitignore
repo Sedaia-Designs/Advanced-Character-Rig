@@ -166,3 +166,6 @@ cython_debug/
 .hidden/
 textures/
 /.hidden/archives/
+
+# Agent
+.junie/
