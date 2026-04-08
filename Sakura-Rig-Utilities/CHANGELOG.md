@@ -28,6 +28,8 @@ Version 4 Alpha 3 is largely focused on stability improvements and cleanup, ensu
 - Fixed a `NoneType` error when deleting skin textures without capes.
 - Moved "Apply Skin" button to the bottom of the Skin Selector.
 
+---
+
 # Version 4.0.0 Alpha 2
 
 ## Summary
