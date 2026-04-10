@@ -206,6 +206,13 @@ class AddonPreferences(T.AddonPreferences):
         op = row_general.operator(Prefixer("open_url").operator, icon="WORLD", text="Website")
         op.url = get_manifest_key("website")
 
+        if get_manifest_key("release_channel") == "dev":
+            row = layout.row()
+            box = row.box()
+            box.label(text="Pre-release Build Info", icon="INFO")
+            box.label(text=f"Addon Version: {get_manifest_key('version')} {get_manifest_key('beta_version')}")
+            box.label(text="Released: " + get_manifest_key("release_date"))
+
 def get_preferences():
     return bpy.context.preferences.addons[__package__].preferences
 

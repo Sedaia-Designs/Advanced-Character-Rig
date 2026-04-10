@@ -3,8 +3,9 @@ schema_version = "1.0.0"
 id = "Sakura_Rig_GUI_Dev"
 
 version = "4.0.0"
-beta_version = "Alpha 3"
+beta_version = "Alpha 4"
 release_channel = "dev"
+release_date = "Not Released"
 
 name = "Sedaia Rig Interfaces Dev Branch"
 tagline = "A control script for use with Sakura's Rigs"

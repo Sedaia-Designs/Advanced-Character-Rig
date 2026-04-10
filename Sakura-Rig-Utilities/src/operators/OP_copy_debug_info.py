@@ -55,7 +55,6 @@ class OP_copy_debug_info(bpy.types.Operator):
             "system": f"{os_name} {os_version}",
             "arch": arch,
             "portable": portable,
-            "pixel size": pixel_size,
             "render engine": f"{render_engine}",
             "cycles feature set": f"{cycles_feature_set}",
             "cycles device": f"{cycles_scene_device}",
