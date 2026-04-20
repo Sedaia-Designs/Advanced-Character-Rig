@@ -111,4 +111,5 @@ Use direct module calls (e.g., `U.register_class()` instead of `bpy.utils.regist
 - **Archives**: Do not modify files in `archives/` or reference them unless explicitly requested.
 
 ### 4.4 AI Prompt Aliases
+- **No Edit:**: When this prefix is used, no code changes shall be made.
 - **Perform Systematic Commits**: When this alias is called, perform systematic commits containing 1-2 features per commit, using proper prefixing as defined in Section 4.3 (e.g., `feat[module]`, `fix[module]`, `refactor[module]`, `chore`, `docs`). Include the required co-author trailer in all commits.
