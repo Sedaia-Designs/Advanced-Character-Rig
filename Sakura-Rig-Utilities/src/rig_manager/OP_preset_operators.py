@@ -10,14 +10,15 @@ class RefreshPresetList(T.Operator):
     bl_idname = Prefixer("refresh_preset_list").operator
     bl_label = "Refresh Preset List"
     bl_description = "Refresh the list of rig presets from the addon directory"
+    bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
         prefs = get_preferences()
         addon_dir = Path(prefs.addon_directory)
-        sacr_dir = addon_dir / "SACR" / "rig_presets"
+        sacr_dir = addon_dir / "SACR" / "sacr_rig_presets"
         
         scene = context.scene
-        rig_presets = scene.rig_presets
+        rig_presets = scene.sacr_rig_presets
         rig_presets.presets.clear()
 
         if sacr_dir.exists():
@@ -32,10 +33,11 @@ class LoadRigPreset(T.Operator):
     bl_idname = Prefixer("load_rig_preset").operator
     bl_label = "Load Rig Preset"
     bl_description = "Load the selected rig preset"
+    bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
         scene = context.scene
-        rig_presets = scene.rig_presets
+        rig_presets = scene.sacr_rig_presets
         if not rig_presets.presets:
             self.report({'ERROR'}, "No presets available")
             return {'CANCELLED'}
@@ -63,7 +65,7 @@ class DeleteRigPreset(T.Operator):
 
     def execute(self, context):
         scene = context.scene
-        rig_presets = scene.rig_presets
+        rig_presets = scene.sacr_rig_presets
         idx = rig_presets.selected_preset
         
         if idx < 0 or idx >= len(rig_presets.presets):

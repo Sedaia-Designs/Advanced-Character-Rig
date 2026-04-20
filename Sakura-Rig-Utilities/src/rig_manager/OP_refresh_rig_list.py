@@ -23,13 +23,13 @@ class RefreshRigList(T.Operator):
             finder.scan_for_rigs()
 
             scene = context.scene
-            rig_props = scene.rigs
+            rig_props = scene.sacr_rigs
 
-            # Clear existing rigs
-            rig_props.rigs.clear()
+            # Clear existing sacr_rigs
+            rig_props.sacr_rigs.clear()
 
             for rig in finder.rig_data:
-                item = rig_props.rigs.add()
+                item = rig_props.sacr_rigs.add()
                 item.name = rig["name"]
                 item.filepath = rig["filepath"]
                 

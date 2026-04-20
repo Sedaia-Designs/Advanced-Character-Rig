@@ -25,21 +25,21 @@ class RigManagerPanel(T.Panel):
 
         row = layout.row()
         col_list = row.column(align=True)
-        rig_props = scene.rigs
+        rig_props = scene.sacr_rigs
         
         rows = 3
-        if len(rig_props.rigs) > 3:
+        if len(rig_props.sacr_rigs) > 3:
             rows = 5
             
-        col_list.template_list(Prefixer("rig_list").list, "", rig_props, "rigs", rig_props, "selected_rig", rows=rows)
+        col_list.template_list(Prefixer("rig_list").list, "", rig_props, "sacr_rigs", rig_props, "selected_rig", rows=rows)
 
         col_ctrl = row.column(align=True)
         col_ctrl.operator(Prefixer("refresh_rig_list").operator, icon="FILE_REFRESH", text="")
         col_ctrl.separator()
 
         col_list_row = col_list.row(align=True)
-        col_list_row.operator(Prefixer("append_rig").operator, icon="APPEND_BLEND", text="Append")
-
+        op = col_list_row.operator(Prefixer("append_rig").operator, icon="APPEND_BLEND", text="Append")
+        op.import_mode = "BASE"
         layout.separator()
 
         # Rig Presets List
@@ -48,7 +48,7 @@ class RigManagerPanel(T.Panel):
         
         row = box.row()
         col_list = row.column(align=True)
-        preset_props = scene.rig_presets
+        preset_props = scene.sacr_rig_presets
         
         rows = 3
         if len(preset_props.presets) > 3:
@@ -63,7 +63,7 @@ class RigManagerPanel(T.Panel):
 
         # Check if the current file is not saved OR if it is not in the presets directory
         addon_dir = Path(prefs.addon_directory)
-        presets_dir = addon_dir / "SACR" / "rig_presets"
+        presets_dir = addon_dir / "SACR" / "sacr_rig_presets"
         current_filepath = Path(bpy.data.filepath) if bpy.data.filepath else None
         
         is_saved = bpy.data.is_saved
@@ -78,7 +78,7 @@ class RigManagerPanel(T.Panel):
             col_ctrl.operator(Prefixer("save_rig_preset").operator, icon="FILE_TICK", text="")
         else:
             col_ctrl.operator(Prefixer("load_rig_preset").operator, icon="FILE_TICK", text="")
-            
+
         col_ctrl.operator(Prefixer("delete_rig_preset").operator, icon="TRASH", text="")
 
         # Name property and Append button below the Preset Manager
@@ -87,7 +87,8 @@ class RigManagerPanel(T.Panel):
         can_import = preset_props.presets and 0 <= preset_props.selected_preset < len(preset_props.presets)
         row = box.row()
         row.enabled = bool(can_import)
-        row.operator(Prefixer("append_rig").operator, icon="APPEND_BLEND", text="Import Preset")
+        op = row.operator(Prefixer("append_rig").operator, icon="APPEND_BLEND", text="Import Preset")
+        op.import_mode = "PRESET"
 
         row = box.row()
         row.operator(Prefixer("open_addon_directory").operator, icon="FILE_FOLDER")

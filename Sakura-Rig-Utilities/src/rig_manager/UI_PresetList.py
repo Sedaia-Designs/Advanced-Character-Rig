@@ -42,13 +42,13 @@ def register():
     for cls in classes:
         U.register_class(cls)
 
-    T.Scene.rig_presets = P.PointerProperty(type=RigPresetListProperties)
+    T.Scene.sacr_rig_presets = P.PointerProperty(type=RigPresetListProperties)
 
 def unregister():
     for cls in classes:
         U.unregister_class(cls)
 
-    del T.Scene.rig_presets
+    del T.Scene.sacr_rig_presets
 
 if __name__ == "__main__":
     register()

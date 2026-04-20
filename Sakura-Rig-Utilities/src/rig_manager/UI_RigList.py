@@ -12,7 +12,7 @@ class RigItem(T.PropertyGroup):
     filepath: P.StringProperty(name="Filepath")
 
 class RigListProperties(T.PropertyGroup):
-    rigs: P.CollectionProperty(type=RigItem)
+    sacr_rigs_collection: P.CollectionProperty(type=RigItem)
     selected_rig: P.IntProperty(name="Selected Rig", default=0)
 
 from ..preferences import Prefixer
@@ -33,13 +33,13 @@ def register():
     for cls in classes:
         U.register_class(cls)
 
-    T.Scene.rigs = P.PointerProperty(type=RigListProperties)
+    T.Scene.sacr_rigs = P.PointerProperty(type=RigListProperties)
 
 def unregister():
     for cls in classes:
         U.unregister_class(cls)
 
-    del T.Scene.rigs
+    del T.Scene.sacr_rigs
 
 
 if __name__ == "__main__":

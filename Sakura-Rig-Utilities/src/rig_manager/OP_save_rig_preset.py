@@ -17,10 +17,10 @@ class SaveRigPreset(T.Operator):
     def execute(self, context):
         PREFS = get_preferences()
         ADDON_DIR = Path(PREFS.addon_directory)
-        SACR_DIR = ADDON_DIR / "SACR" / "rig_presets"
+        SACR_DIR = ADDON_DIR / "SACR" / "sacr_rig_presets"
 
         scene = context.scene
-        preset_props = scene.rig_presets
+        preset_props = scene.sacr_rig_presets
         name_input = preset_props.new_preset_name
 
         if not name_input:
