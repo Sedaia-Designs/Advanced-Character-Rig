@@ -18,11 +18,11 @@ class RenameSkin(T.Operator):
 
     def execute(self, context):
         scene = context.scene
-        skin_props = scene.skins
-        if not skin_props.skins:
+        skin_props = scene.sacr_skins_collection
+        if not skin_props.sacr_skins_collection:
             return {'CANCELLED'}
 
-        selected_skin = skin_props.skins[skin_props.selected_skin]
+        selected_skin = skin_props.sacr_skins_collection[skin_props.selected_skin]
         skin_index = int(selected_skin.skin_texture_enum)
         
         skin_utils = SkinUtils(selected_skin.name)
@@ -39,11 +39,11 @@ class RenameSkin(T.Operator):
 
     def invoke(self, context, event):
         scene = context.scene
-        skin_props = scene.skins
-        if not skin_props.skins:
+        skin_props = scene.sacr_skins_collection
+        if not skin_props.sacr_skins_collection:
             return {'CANCELLED'}
             
-        selected_skin = skin_props.skins[skin_props.selected_skin]
+        selected_skin = skin_props.sacr_skins_collection[skin_props.selected_skin]
         
         # Pre-fill with current name if possible
         import json

@@ -8,7 +8,7 @@ import bpy.utils as U
 from ..operators.lib.blender_utils import allow_online
 from ..preferences import get_preferences, Prefixer
 
-T.Scene.skins_username = P.StringProperty(name="Username")
+T.Scene.sacr_skins_username = P.StringProperty(name="Username")
 
 class SkinsPanel(T.Panel):
     bl_label = "SACR Skins"
@@ -24,7 +24,7 @@ class SkinsPanel(T.Panel):
     def draw(self, context):
         scene = context.scene
         prefs = get_preferences()
-        skin_props = scene.skins
+        skin_props = scene.sacr_skins_collection
 
         layout = self.layout
 
@@ -37,10 +37,10 @@ class SkinsPanel(T.Panel):
         col_list = row.column(align=True)
         
         rows = 3
-        if len(skin_props.skins) > 3:
+        if len(skin_props.sacr_skins_collection) > 3:
             rows = 5
             
-        col_list.template_list(Prefixer("skin_list").list, "", skin_props, "skins", skin_props, "selected_skin", rows=rows)
+        col_list.template_list(Prefixer("skin_list").list, "", skin_props, "sacr_skins_collection", skin_props, "selected_skin", rows=rows)
 
         col_ctrl = row.column(align=True)
         col_ctrl.operator(Prefixer("choose_skin_source").operator, icon="ADD", text="")
@@ -48,8 +48,8 @@ class SkinsPanel(T.Panel):
         
         col_ctrl.separator()
 
-        if skin_props.skins:
-            selected_skin = skin_props.skins[skin_props.selected_skin]
+        if skin_props.sacr_skins_collection:
+            selected_skin = skin_props.sacr_skins_collection[skin_props.selected_skin]
             op = col_ctrl.operator(Prefixer("delete_player").operator, icon="TRASH", text="")
             op.name = selected_skin.name
 
@@ -57,8 +57,8 @@ class SkinsPanel(T.Panel):
                 op = col_ctrl.operator(Prefixer("update_player").operator, icon="IMPORT", text="")
                 op.name = selected_skin.name
 
-        if skin_props.skins:
-            selected_skin = skin_props.skins[skin_props.selected_skin]
+        if skin_props.sacr_skins_collection:
+            selected_skin = skin_props.sacr_skins_collection[skin_props.selected_skin]
             box = layout.box()
             box.label(text=f"Selected Profile: {selected_skin.name}", icon="USER")
 
@@ -85,6 +85,8 @@ class SkinsPanel(T.Panel):
 
             op = row.operator(Prefixer("open_in_viewer").operator, icon="IMAGE_DATA")
             op.name = selected_skin.name
+
+            row.operator(Prefixer("select_alpha_faces").operator, icon="IMAGE_DATA")
 
         layout.separator()
 

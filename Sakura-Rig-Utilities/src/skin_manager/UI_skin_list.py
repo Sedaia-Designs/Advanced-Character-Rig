@@ -45,8 +45,8 @@ class SkinItem(T.PropertyGroup):
     )
 
 class SkinListProperties(T.PropertyGroup):
-    skins: P.CollectionProperty(type=SkinItem)
-    selected_skin: P.IntProperty(name="Selected Skin", default=0)
+    sacr_skins_collection: P.CollectionProperty(type=SkinItem)
+    sacr_selected_skin: P.IntProperty(name="Selected Skin", default=0)
 
 from ..preferences import Prefixer
 
@@ -66,13 +66,13 @@ def register():
     for cls in classes:
         U.register_class(cls)
 
-    T.Scene.skins = P.PointerProperty(type=SkinListProperties)
+    T.Scene.sacr_skins_collection = P.PointerProperty(type=SkinListProperties)
 
 def unregister():
     for cls in classes:
         U.unregister_class(cls)
 
-    del T.Scene.skins
+    del T.Scene.sacr_skins_collection
 
 
 if __name__ == "__main__":

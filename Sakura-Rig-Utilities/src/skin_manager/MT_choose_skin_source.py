@@ -24,7 +24,7 @@ class ChooseSkinSource(T.Operator):
 
     def draw(self, context):
         layout = self.layout
-        layout.prop(context.scene, "skins_username", text="Username")
+        layout.prop(context.scene, "sacr_skins_username", text="Username")
 
         if allow_online():
             layout.label(text="Source")
@@ -35,7 +35,7 @@ class ChooseSkinSource(T.Operator):
 
 
     def execute(self, context):
-        username = context.scene.skins_username
+        username = context.scene.sacr_skins_username
         if not username:
             self.report({'ERROR'}, "Please enter a username first")
             return {'CANCELLED'}

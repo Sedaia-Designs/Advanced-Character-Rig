@@ -19,10 +19,10 @@ class OpenInViewer(T.Operator):
 
     def execute(self, context):
         scene = context.scene
-        skin_props = scene.skins
+        skin_props = scene.sacr_skins_collection
         
         # Find the selected player in the skin list
-        selected_player = next((item for item in skin_props.skins if item.name == self.name), None)
+        selected_player = next((item for item in skin_props.sacr_skins_collection if item.name == self.name), None)
         
         if not selected_player:
             self.report({'ERROR'}, f"Player '{self.name}' not found in the skin list.")

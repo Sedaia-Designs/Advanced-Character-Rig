@@ -1,4 +1,3 @@
-
 from . import (
     PANEL_skins,
     OP_download_skin,
@@ -11,7 +10,8 @@ from . import (
     OP_update_player,
     MT_choose_skin_source,
     OP_import_skin_file,
-    OP_rename_skin
+    OP_rename_skin,
+    OP_select_alpha_faces
 )
 
 modules = [
@@ -26,7 +26,8 @@ modules = [
     OP_update_player,
     MT_choose_skin_source,
     OP_import_skin_file,
-    OP_rename_skin
+    OP_rename_skin,
+    OP_select_alpha_faces
 ]
 
 def register():

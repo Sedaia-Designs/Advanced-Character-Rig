@@ -21,7 +21,7 @@ class DownloadSkin(T.Operator):
 
         prefs = get_preferences()
         scene = context.scene
-        skin_utils = SkinUtils(scene.skins_username)
+        skin_utils = SkinUtils(scene.sacr_skins_username)
 
         new_cache = skin_utils.write_new_cache()
 

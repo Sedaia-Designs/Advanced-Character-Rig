@@ -6,7 +6,7 @@ from ...operators.lib.blender_utils import lookup_name, is_packed, allow_online
 from ...operators.lib.file_utils import file_exists
 from ...preferences import get_preferences
 import bpy
-
+import bpy.types as T
 class SkinUtils:
     def __init__(self, name: str):
         self.name = name
@@ -17,7 +17,7 @@ class SkinUtils:
             "textures": "https://textures.minecraft.net/texture/",
         }
 
-    def _get_uuid(self):
+    def _get_uuid(self) -> str:
         if not allow_online():
             return "http_error"
 
@@ -32,7 +32,7 @@ class SkinUtils:
 
     def _is_cached(self):
         from ...operators.lib.blender_utils import get_addon_directory
-        return file_exists(get_addon_directory() / "skins" / self.name / f"{self.name}.json")
+        return file_exists(get_addon_directory() / "sacr_skins_collection" / self.name / f"{self.name}.json")
 
     def _retrieve_full_profile(self):
         if not allow_online():
@@ -87,7 +87,7 @@ class SkinUtils:
         except KeyError:
             model = "default"
 
-        TARGET_DIR = Path(f"{self.prefs.addon_directory}/skins/{self.name}")
+        TARGET_DIR = Path(f"{self.prefs.addon_directory}/sacr_skins_collection/{self.name}")
         TARGET_DIR.mkdir(parents=True, exist_ok=True)
 
         DOWNLOAD_PATH = TARGET_DIR / f"{CURRENT_SKIN_HASH}.png"
@@ -160,7 +160,7 @@ class SkinUtils:
         except KeyError:
             model = "default"
 
-        TARGET_DIR = Path(f"{self.prefs.addon_directory}/skins/{self.name}")
+        TARGET_DIR = Path(f"{self.prefs.addon_directory}/sacr_skins_collection/{self.name}")
         JSON_FILE = TARGET_DIR / f"{self.name}.json"
 
         if not JSON_FILE.exists():
@@ -206,7 +206,7 @@ class SkinUtils:
 
     def delete_player(self):
         import shutil
-        TARGET_DIR = Path(f"{self.prefs.addon_directory}/skins/{self.name}")
+        TARGET_DIR = Path(f"{self.prefs.addon_directory}/sacr_skins_collection/{self.name}")
         if TARGET_DIR.exists():
             shutil.rmtree(TARGET_DIR)
             return 'complete'
@@ -217,7 +217,7 @@ class SkinUtils:
         import shutil
         import hashlib
 
-        TARGET_DIR = Path(f"{self.prefs.addon_directory}/skins/{self.name}")
+        TARGET_DIR = Path(f"{self.prefs.addon_directory}/sacr_skins_collection/{self.name}")
         TARGET_DIR.mkdir(parents=True, exist_ok=True)
 
         # Generate a hash for the file to use as its name
@@ -264,7 +264,7 @@ class SkinUtils:
         return 'complete_new' if is_new_profile else 'complete_added'
 
     def rename_skin(self, skin_index: int, new_name: str):
-        JSON_FILE = Path(f"{self.prefs.addon_directory}/skins/{self.name}/{self.name}.json")
+        JSON_FILE = Path(f"{self.prefs.addon_directory}/sacr_skins_collection/{self.name}/{self.name}.json")
         if not JSON_FILE.exists():
             return 'not_found'
 
@@ -286,7 +286,7 @@ class SkinUtils:
         return 'not_found'
 
     def get_skin_path(self, skin_index: int):
-        JSON_FILE = Path(f"{self.prefs.addon_directory}/skins/{self.name}/{self.name}.json")
+        JSON_FILE = Path(f"{self.prefs.addon_directory}/sacr_skins_collection/{self.name}/{self.name}.json")
         if not JSON_FILE.exists():
             return None
 
@@ -302,7 +302,7 @@ class SkinUtils:
         return None
 
     def delete_skin(self, skin_index: int):
-        JSON_FILE = Path(f"{self.prefs.addon_directory}/skins/{self.name}/{self.name}.json")
+        JSON_FILE = Path(f"{self.prefs.addon_directory}/sacr_skins_collection/{self.name}/{self.name}.json")
         if not JSON_FILE.exists():
             return 'not_found'
 
@@ -422,7 +422,7 @@ class SkinUtils:
     @staticmethod
     def get_all_skins(addon_directory):
         skins = []
-        skins_dir = Path(addon_directory) / "skins"
+        skins_dir = Path(addon_directory) / "sacr_skins_collection"
         if not skins_dir.exists():
             return skins
         
@@ -441,3 +441,6 @@ class SkinUtils:
                     except:
                         continue
         return skins
+from typing import Dict
+
+

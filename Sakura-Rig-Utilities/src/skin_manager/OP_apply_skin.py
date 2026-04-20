@@ -23,12 +23,12 @@ class ApplySkin(T.Operator):
             return {'CANCELLED'}
 
         scene = context.scene
-        skin_props = scene.skins
-        if not skin_props.skins:
-            self.report({'ERROR'}, "No skins found")
+        skin_props = scene.sacr_skins_collection
+        if not skin_props.sacr_skins_collection:
+            self.report({'ERROR'}, "No sacr_skins_collection found")
             return {'CANCELLED'}
 
-        selected_skin = skin_props.skins[skin_props.selected_skin]
+        selected_skin = skin_props.sacr_skins_collection[skin_props.selected_skin]
         skin_utils = SkinUtils(selected_skin.name)
         
         success, message = skin_utils.apply_skin(rig, selected_skin)

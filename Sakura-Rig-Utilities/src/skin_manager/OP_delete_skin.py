@@ -11,7 +11,7 @@ from .lib import SkinUtils
 class DeletePlayer(T.Operator):
     bl_idname = Prefixer("delete_player").operator
     bl_label = "Delete Player Profile"
-    bl_description = "Delete the selected player profile and all associated skins"
+    bl_description = "Delete the selected player profile and all associated sacr_skins_collection"
     bl_options = {'REGISTER', 'UNDO'}
 
     name: P.StringProperty(name="Player Name")

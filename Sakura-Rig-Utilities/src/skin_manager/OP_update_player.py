@@ -13,7 +13,7 @@ from .lib import SkinUtils
 class UpdatePlayer(T.Operator):
     bl_idname = Prefixer("update_player").operator
     bl_label = "Update Player Profile"
-    bl_description = "Check for new skins and update the player profile"
+    bl_description = "Check for new sacr_skins_collection and update the player profile"
     bl_options = {'REGISTER', 'UNDO'}
 
     name: P.StringProperty(name="Player Name")

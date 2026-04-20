@@ -32,7 +32,7 @@ class ImportSkinFile(T.Operator, ImportHelper):
     )
 
     def execute(self, context):
-        username = context.scene.skins_username
+        username = context.scene.sacr_skins_username
         if not username:
             self.report({'ERROR'}, "Username is required")
             return {'CANCELLED'}

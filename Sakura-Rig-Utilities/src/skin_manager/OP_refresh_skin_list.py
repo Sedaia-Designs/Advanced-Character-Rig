@@ -22,13 +22,13 @@ class RefreshSkinList(T.Operator):
             skins_data = SkinUtils.get_all_skins(addon_dir)
 
             scene = context.scene
-            skin_props = scene.skins
+            skin_props = scene.sacr_skins_collection
 
-            # Clear existing skins
-            skin_props.skins.clear()
+            # Clear existing sacr_skins_collection
+            skin_props.sacr_skins_collection.clear()
 
             for skin in skins_data:
-                item = skin_props.skins.add()
+                item = skin_props.sacr_skins_collection.add()
                 item.name = skin["name"]
                 item.uuid = skin["uuid"]
                 item.json_path = skin["json_path"]
