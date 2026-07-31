@@ -1,0 +1,4 @@
+interface:
+  display_name: "Blender PyCharm Workflow"
+  short_description: "Configure and troubleshoot Blender IDE workflows"
+  default_prompt: "Use $blender-pycharm-workflow to configure or troubleshoot this extension in Blender Development for PyCharm."
