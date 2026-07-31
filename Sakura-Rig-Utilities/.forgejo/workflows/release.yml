@@ -1,0 +1,165 @@
+name: Build and Release Blender Extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for the release (e.g. v1.2.3). If empty, version from manifest will be used.'
+        required: false
+        default: ''
+
+jobs:
+  build:
+    runs-on: docker
+    steps:
+      - name: Checkout Code
+        uses: https://code.forgejo.org/actions/checkout@v4
+
+      - name: Setup Blender
+        uses: https://github.com/xNul/setup-blender@v1.1.0
+        with:
+          blender-version: '4.3.0'
+
+      - name: Build Extension
+        run: |
+          blender --command extension build --source-dir src --output-dir dist
+
+      - name: Extract Metadata
+        id: metadata
+        env:
+          INPUT_TAG_NAME: ${{ inputs.tag_name }}
+        run: |
+          OUTPUT_FILE="${FORGEJO_OUTPUT:-${GITHUB_OUTPUT:?missing step output file}}"
+          VERSION=$(grep '^version = ' src/blender_manifest.toml | cut -d '"' -f 2)
+          BETA=$(grep '^beta_version = ' src/blender_manifest.toml | cut -d '"' -f 2 || true)
+          ID=$(grep '^id = ' src/blender_manifest.toml | cut -d '"' -f 2)
+
+          BETA_CLEAN=$(echo "$BETA" | tr -d ' ')
+
+          if [ -z "$BETA_CLEAN" ]; then
+            FILENAME="${ID}_${VERSION}.zip"
+            RELEASE_NAME="Release ${VERSION}"
+          else
+            FILENAME="${ID}_${VERSION}_${BETA_CLEAN}.zip"
+            RELEASE_NAME="Release ${VERSION} (${BETA})"
+          fi
+
+          if [ -z "$INPUT_TAG_NAME" ]; then
+            TAG="v${VERSION}"
+            if [ -n "$BETA_CLEAN" ]; then
+              TAG="${TAG}-${BETA_CLEAN}"
+            fi
+          else
+            TAG="$INPUT_TAG_NAME"
+          fi
+
+          {
+            echo "version=${VERSION}"
+            echo "beta=${BETA}"
+            echo "id=${ID}"
+            echo "filename=${FILENAME}"
+            echo "tag=${TAG}"
+            echo "release_name=${RELEASE_NAME}"
+          } >> "$OUTPUT_FILE"
+
+      - name: Create Forgejo Release
+        env:
+          FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+          TAG: ${{ steps.metadata.outputs.tag }}
+          RELEASE_NAME: ${{ steps.metadata.outputs.release_name }}
+          BETA: ${{ steps.metadata.outputs.beta }}
+          FILENAME: ${{ steps.metadata.outputs.filename }}
+        run: |
+          set -eu
+
+          if [ -z "${FORGEJO_TOKEN:-}" ]; then
+            echo "Missing required secret: FORGEJO_TOKEN" >&2
+            exit 1
+          fi
+
+          ASSET_PATH="dist/${FILENAME}"
+          if [ ! -f "$ASSET_PATH" ]; then
+            echo "Release asset not found: ${ASSET_PATH}" >&2
+            exit 1
+          fi
+
+          PRERELEASE=false
+          if [ -n "$BETA" ]; then
+            PRERELEASE=true
+          fi
+
+          RELEASE_ID=$(
+            python3 - "$FORGEJO_API_URL" "$FORGEJO_REPOSITORY" "$FORGEJO_TOKEN" "$TAG" "$RELEASE_NAME" "$PRERELEASE" <<'PY'
+          import json
+          import sys
+          import urllib.error
+          import urllib.request
+
+          api_url, repository, token, tag, release_name, prerelease = sys.argv[1:]
+          base = f"{api_url.rstrip('/')}/repos/{repository}"
+          headers = {
+              "Authorization": f"token {token}",
+              "Content-Type": "application/json",
+          }
+
+
+          def request(method, url, body=None):
+              data = json.dumps(body).encode() if body is not None else None
+              req = urllib.request.Request(url, data=data, headers=headers, method=method)
+              try:
+                  with urllib.request.urlopen(req) as res:
+                      return res.status, json.loads(res.read().decode() or "{}")
+              except urllib.error.HTTPError as exc:
+                  payload = exc.read().decode()
+                  if exc.code == 404:
+                      return exc.code, None
+                  raise SystemExit(f"{method} {url} failed with {exc.code}: {payload}")
+
+
+          payload = {
+              "tag_name": tag,
+              "name": release_name,
+              "body": f"Automated release for {tag}.",
+              "draft": False,
+              "prerelease": prerelease == "true",
+          }
+
+          status, release = request("GET", f"{base}/releases/tags/{tag}")
+          if status == 404:
+              _, release = request("POST", f"{base}/releases", payload)
+          else:
+              update_payload = dict(payload)
+              update_payload.pop("tag_name")
+              _, release = request("PATCH", f"{base}/releases/{release['id']}", update_payload)
+
+          print(release["id"])
+          PY
+          )
+
+          python3 - "$FORGEJO_API_URL" "$FORGEJO_REPOSITORY" "$FORGEJO_TOKEN" "$RELEASE_ID" "$FILENAME" <<'PY'
+          import json
+          import sys
+          import urllib.error
+          import urllib.request
+
+          api_url, repository, token, release_id, filename = sys.argv[1:]
+          url = f"{api_url.rstrip('/')}/repos/{repository}/releases/{release_id}"
+          headers = {"Authorization": f"token {token}"}
+
+          req = urllib.request.Request(url, headers=headers)
+          with urllib.request.urlopen(req) as res:
+              release = json.loads(res.read().decode())
+
+          for asset in release.get("assets", []):
+              if asset.get("name") != filename:
+                  continue
+              delete_url = f"{url}/assets/{asset['id']}"
+              delete_req = urllib.request.Request(delete_url, headers=headers, method="DELETE")
+              with urllib.request.urlopen(delete_req):
+                  pass
+          PY
+
+          curl --fail --show-error --silent \
+            -H "Authorization: token ${FORGEJO_TOKEN}" \
+            -F "attachment=@${ASSET_PATH}" \
+            "${FORGEJO_API_URL}/repos/${FORGEJO_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
