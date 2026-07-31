@@ -6,13 +6,8 @@ Sedaia Rig Interfaces (formerly Sakura's Rig Interfaces) is a modern, modular Bl
 
 ## Key Features
 
-- **Modular UI System**: Refactored architecture for better maintainability and performance.
-- **Rig-Specific Properties**: Settings are stored per-object, allowing multiple rigs to coexist with independent configurations.
-- **Rig Manager**: Easily download, append, and manage Sakura rigs from within Blender.
-- **Skin Manager**: Import local skins or download them from Mojang, with support for custom names and player profiles.
-- **Online Access Management**: Enable online features directly from the UI without digging through preferences.
-- **Security Guardrails**: Built-in checks for online functionality to ensure user privacy and safety.
-- **Backward Compatibility**: Synchronizes with legacy rig properties to ensure older assets continue to function.
+Sedaia Rig Interfaces is currently in early development. Its planned tools and
+interfaces are still being built, so features may be incomplete or unavailable.
 
 ---
 
