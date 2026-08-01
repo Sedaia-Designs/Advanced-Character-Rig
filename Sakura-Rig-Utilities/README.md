@@ -17,7 +17,7 @@ interfaces are still being built, so features may be incomplete or unavailable.
 - **Blender 4.2 or newer** (Supports the new Extensions system).
 
 ### Steps
-1. Download the latest `.zip` release from the [Releases page](https://github.com/Sakura-Sedaia/Sedaia-Rig-Interfaces/releases) or the [Blender Extensions platform](https://extensions.blender.org/add-ons/sakura-rig-interfaces/).
+1. Download the latest `.zip` release from the [GitLab Releases page](https://gitlab.com/SakuraSedaia/Sakura-Rig-Interfaces/-/releases) or the [Blender Extensions platform](https://extensions.blender.org/add-ons/sakura-rig-interfaces/).
 2. In Blender, go to **Edit > Preferences > Extensions**.
 3. Click the arrow in the top right and select **Install from Disk...**.
 4. Select the downloaded `.zip` file.
@@ -36,7 +36,7 @@ interfaces are still being built, so features may be incomplete or unavailable.
 
 ## Documentation
 
-Comprehensive documentation is available in the [Wiki](https://github.com/Sakura-Sedaia/Sedaia-Rig-Interfaces/wiki).
+Comprehensive documentation is available in the [project wiki](https://wiki.sakura-sedaia.com/docs/sedaia-rig-interface/index.html).
 
 ---
 
