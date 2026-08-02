@@ -52,10 +52,13 @@ Repository documentation is limited to source layout, development setup, and
 contribution practices. Do not treat a component README as the authoritative
 source for user-facing project documentation.
 
-For changes to Sakura Rig Utilities documentation, edit the local Sedaia Docs
-source at `/Users/Sakura/Documents/WebstormProjects/sakura-project-documentation/src/content/docs/sakura-rig-utilities`.
-Add user-facing contribution guidance to that documentation route as well as
-updating this repository guide when its development workflow changes.
+For changes to Sakura Rig Utilities documentation, an optional local Sedaia
+Docs checkout can be configured with the `SACR_DOCS_ROOT` environment variable.
+Its contribution route is
+`$SACR_DOCS_ROOT/src/content/docs/sakura-rig-utilities`. Keep this value local
+and do not commit a machine-specific path. Add user-facing contribution
+guidance to that documentation route as well as updating this repository guide
+when its development workflow changes.
 
 ## Extension development setup
 

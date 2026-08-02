@@ -358,6 +358,13 @@ practical, run them against a disposable copy of the intended Blender file.
 
 - Read `Extension/README.md`, `Extension/GUIDELINES.md`, this file,
   and the owning feature before broad extension changes.
+- The canonical public Sakura Rig Utilities documentation is hosted at
+  `docs.sakura-sedaia.com`. To edit a local checkout, optionally set
+  `SACR_DOCS_ROOT` to that documentation repository's root; the Sakura Rig
+  Utilities route is then
+  `$SACR_DOCS_ROOT/src/content/docs/sakura-rig-utilities`. Update that route
+  for user-facing behavior, setup, compatibility, release, or contribution
+  guidance. Do not assume the variable is set or commit machine-specific paths.
 - Treat current code, tests, manifest metadata, README, and changelog as the
   evidence for documented behavior.
 - Keep public documentation task-focused and exclude local-machine paths,
