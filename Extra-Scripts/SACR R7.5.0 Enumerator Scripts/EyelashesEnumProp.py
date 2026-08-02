@@ -1,4 +1,4 @@
-#━━━━━━━━━━━━━━━━━━━━
+# ━━━━━━━━━━━━━━━━━━━━
 # Script is using adapted code from experimenting done by Endertainer007
 #
 # This script is meant to make creating Enums in the properties panel,
@@ -9,9 +9,9 @@
 #
 # This Script was written with Blender 5.1 in mind, versions prior or after may or may not work
 #
-#━━━━━━━━━━━━━━━━━━━━
+# ━━━━━━━━━━━━━━━━━━━━
 #     Enum_Data
-#━━━━━━━━━━━━━━━━━━━━
+# ━━━━━━━━━━━━━━━━━━━━
 BONE_NAME: str = "Eye_Properties"
 PROPERTY_NAME: str = "Eyelashes"
 PROPERTY_DESC: str = "What type of arm do you want to use?"
@@ -21,29 +21,25 @@ ENUM_ITEMS: list = [
     ("2", "Super-Slim", "A custom, 3x3x12 layout model not found in Minecraft"),
     ("3", "Super-Slim", "A custom, 3x3x12 layout model not found in Minecraft"),
     ("4", "Super-Slim", "A custom, 3x3x12 layout model not found in Minecraft"),
-    ("5", "Super-Slim", "A custom, 3x3x12 layout model not found in Minecraft")
+    ("5", "Super-Slim", "A custom, 3x3x12 layout model not found in Minecraft"),
 ]
 
-#━━━━━━━━━━━━━━━━━━━━
+# ━━━━━━━━━━━━━━━━━━━━
 #      Process
-#━━━━━━━━━━━━━━━━━━━━
+# ━━━━━━━━━━━━━━━━━━━━
 import bpy
-import bpy.types as T
-import bpy.props as P
-import bpy.ops as O
 
 obj = bpy.context.active_object
 pose_bones = obj.pose.bones
 
+
 def change_prop():
     BONE = pose_bones[BONE_NAME]
     BONE.id_properties_ui(PROPERTY_NAME).update(
-        min=0,
-        max=len(ENUM_ITEMS)-1,
-        items=ENUM_ITEMS,
-        description=PROPERTY_DESC
+        min=0, max=len(ENUM_ITEMS) - 1, items=ENUM_ITEMS, description=PROPERTY_DESC
     )
     BONE.property_overridable_library_set(f'["{PROPERTY_NAME}"]', True)
+
 
 def create_property():
     BONE = pose_bones[BONE_NAME]
@@ -53,6 +49,9 @@ def create_property():
 
     change_prop()
 
+
 if __name__ == "__main__":
-    try: change_prop()
-    except KeyError: create_property()
+    try:
+        change_prop()
+    except KeyError:
+        create_property()

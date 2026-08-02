@@ -1,4 +1,3 @@
-
 import bpy
 import bpy.types as T
 import bpy.props as P

@@ -1,6 +1,4 @@
 import bpy
-import bpy.types as T
-import bpy.props as P
 import bpy.utils as U
 
 from ..lib.panel_type import SACR_Panel
@@ -12,14 +10,10 @@ bl_info = {
     "category": "Interface",
     "version": (3, 0, 0),
     "blender": (5, 1, 0),
-    "location": "View 3D > Tool Window (N) > SACR R7.5"
+    "location": "View 3D > Tool Window (N) > SACR R7.5",
 }
 
-feature_set_enum = {
-    0: "Standard",
-    1: "Lite",
-    2: "Python"
-}
+feature_set_enum = {0: "Standard", 1: "Lite", 2: "Python"}
 
 #
 # Here is a list of features changed when the rig is set to Lite
@@ -29,17 +23,18 @@ feature_set_enum = {
 # - Eyesparkles
 #
 
+
 # Helper Functions
 def sub_panel(ui, helper_obj, prop, label: str):
     col = ui.column(align=True)
     header = col.row()
-    toggle= header.column()
+    toggle = header.column()
     toggle.scale_x = 1
     toggle.prop(
         helper_obj,
         f'["{prop}"]',
         text=label,
-        icon="TRIA_DOWN" if helper_obj[prop] else "TRIA_RIGHT"
+        icon="TRIA_DOWN" if helper_obj[prop] else "TRIA_RIGHT",
     )
     # title = header.column()
     # title.label(text=label)
@@ -49,21 +44,26 @@ def sub_panel(ui, helper_obj, prop, label: str):
     else:
         return None
 
+
 def armor_material_panel(ui, props, materials, section):
-    armor_enum = { # (Toggle Index, Material Index)
-        "Helmet" : (0, "armor_helmet"),
-        "Chestplate" : (1, "armor_chestplate"),
-        "Leggings" : (2, "armor_leggings"),
-        "Boots" : (3, "armor_boots")
+    armor_enum = {  # (Toggle Index, Material Index)
+        "Helmet": (0, "armor_helmet"),
+        "Chestplate": (1, "armor_chestplate"),
+        "Leggings": (2, "armor_leggings"),
+        "Boots": (3, "armor_boots"),
     }
     armor_section = armor_enum[section]
-    material = materials.get(armor_enum[section][1]).node_tree.nodes[f"{section}_Shader"]
+    material = materials.get(armor_enum[section][1]).node_tree.nodes[
+        f"{section}_Shader"
+    ]
 
     row = ui.row(align=True)
-    row.prop(props, '["Armor Toggle"]', index=armor_section[0], text=section, toggle=True)
+    row.prop(
+        props, '["Armor Toggle"]', index=armor_section[0], text=section, toggle=True
+    )
     row2 = row.row(align=True)
     row2.enabled = props["Armor Toggle"][armor_section[0]]
-    row2.prop(material.inputs["Tier"], 'default_value', text="")
+    row2.prop(material.inputs["Tier"], "default_value", text="")
 
     if props["Armor Toggle"][armor_section[0]]:
         mat_column = ui.box().column(align=True)
@@ -82,7 +82,13 @@ def armor_material_panel(ui, props, materials, section):
         mat_column.separator(type="SPACE")
         box = mat_column.box()
         mat = material.inputs["Enchant"]
-        box.prop(mat, "default_value", text="Enchanted", toggle=True, icon="CHECKBOX_HLT" if mat.default_value else "CHECKBOX_DEHLT")
+        box.prop(
+            mat,
+            "default_value",
+            text="Enchanted",
+            toggle=True,
+            icon="CHECKBOX_HLT" if mat.default_value else "CHECKBOX_DEHLT",
+        )
         if mat.default_value:
             input = "Strength"
             box.prop(material.inputs[input], "default_value", text=input)
@@ -90,35 +96,41 @@ def armor_material_panel(ui, props, materials, section):
             input = "Glint Offset"
             box.prop(material.inputs["Location"], "default_value", text=input)
 
+
 def color_table(ui, material, grid, grid_label):
     color_gradient = material.inputs[grid[4]].default_value
     color_split = material.inputs[grid[5]].default_value
 
-    color_table = ui.column(align=True) # Container
+    color_table = ui.column(align=True)  # Container
 
-    row = color_table.row(align=True) # Row 1
+    row = color_table.row(align=True)  # Row 1
     l_col_r1 = row.row(align=True)
     l_col_r1.prop(material.inputs[grid[0]], "default_value", text=grid_label[0])
 
     r_col_r1 = row.row(align=True)
     r_col_r1.prop(material.inputs[grid[1]], "default_value", text=grid_label[1])
-    r_col_r1.enabled=color_split
+    r_col_r1.enabled = color_split
 
-    row = color_table.row(align=True) # Row 2
+    row = color_table.row(align=True)  # Row 2
     l_col_r2 = row.row(align=True)
     l_col_r2.prop(material.inputs[grid[2]], "default_value", text=grid_label[2])
-    l_col_r2.enabled=color_gradient
+    l_col_r2.enabled = color_gradient
 
     r_col_r2 = row.row(align=True)
     r_col_r2.prop(material.inputs[grid[3]], "default_value", text=grid_label[3])
-    r_col_r2.enabled=(color_split and color_gradient)
+    r_col_r2.enabled = color_split and color_gradient
 
-    row = color_table.row(align=True) # Row 3
+    row = color_table.row(align=True)  # Row 3
     l_col_r3 = row.row(align=True)
-    l_col_r3.prop(material.inputs[grid[4]], "default_value", text=grid_label[4], toggle=True)
+    l_col_r3.prop(
+        material.inputs[grid[4]], "default_value", text=grid_label[4], toggle=True
+    )
 
     r_col_r3 = row.row(align=True)
-    l_col_r3.prop(material.inputs[grid[5]], "default_value", text=grid_label[5], toggle=True)
+    l_col_r3.prop(
+        material.inputs[grid[5]], "default_value", text=grid_label[5], toggle=True
+    )
+
 
 def is_packed(file):
     try:
@@ -130,27 +142,31 @@ def is_packed(file):
 def get_img(path):
     return bpy.data.images[path]
 
+
 def toggle_collection(ui, context, prop, label="Collection"):
     # Panel Variables
     collection_inst = context.active_object.pose.bones["PythonConfig.Objects"].get(prop)
     inst_toggle = ui.operator(
         ID("toggle_collection").operator,
         text=label,
-        depress= not collection_inst.hide_viewport,
-        icon="RESTRICT_VIEW_ON" if collection_inst.hide_viewport else "RESTRICT_VIEW_OFF"
+        depress=not collection_inst.hide_viewport,
+        icon=(
+            "RESTRICT_VIEW_ON" if collection_inst.hide_viewport else "RESTRICT_VIEW_OFF"
+        ),
     )
     inst_toggle.collection = collection_inst.name
 
+
 # Main UI
 class PT_Main(SACR_Panel):
-    bl_label="Main Panel"
-    bl_order=0
-    bl_idname=ID("r750_main").panel
+    bl_label = "Main Panel"
+    bl_order = 0
+    bl_idname = ID("r750_main").panel
 
     def draw(self, context):
 
         # Panel Variables
-        obj= context.active_object
+        obj = context.active_object
         pose = obj.pose.bones
         collections = obj.data.collections_all
 
@@ -174,10 +190,7 @@ class PT_Main(SACR_Panel):
 
         if feature_set == "Python":
             ui.prop(
-                collections["Python"],
-                "is_visible",
-                text="Python Config",
-                icon="PLUGIN"
+                collections["Python"], "is_visible", text="Python Config", icon="PLUGIN"
             )
 
         ui.prop(
@@ -185,25 +198,35 @@ class PT_Main(SACR_Panel):
             "enabled",
             text="Reset Rig Scale",
             invert_checkbox=True,
-            icon="CHECKBOX_DEHLT" if root.constraints["NormalizeScale"].enabled else "CHECKBOX_HLT"
+            icon=(
+                "CHECKBOX_DEHLT"
+                if root.constraints["NormalizeScale"].enabled
+                else "CHECKBOX_HLT"
+            ),
         )
 
         ui.label(text="Skin Texture")
         row = ui.row(align=True)
-        row.operator(ID("image_pack").operator, icon="PACKAGE" if is_packed(
-            skin) else "UGLYPACKAGE", text="").path = skin.name
+        row.operator(
+            ID("image_pack").operator,
+            icon="PACKAGE" if is_packed(skin) else "UGLYPACKAGE",
+            text="",
+        ).path = skin.name
 
         filepath_ui = row.row(align=True)
         filepath_ui.enabled = not is_packed(skin)
         filepath_ui.prop(skin, "filepath", text="")
-        filepath_ui.operator(ID("image_reload").operator, icon="FILE_REFRESH", text="").path = skin.name
+        filepath_ui.operator(
+            ID("image_reload").operator, icon="FILE_REFRESH", text=""
+        ).path = skin.name
 
         row = ui.row(align=True)
         toggle_collection(row, context, prop="HatLayer", label="Show Jacket Layer")
-        toggle_collection(row, context, prop="ExtrudeMeshes", label="Show Extrude Heads")
+        toggle_collection(
+            row, context, prop="ExtrudeMeshes", label="Show Extrude Heads"
+        )
 
         ui.separator(type="LINE")
-
 
         ui.label(text="Extras")
 
@@ -213,14 +236,14 @@ class PT_Main(SACR_Panel):
             "is_visible",
             text="Flip Bone",
             toggle=True,
-            icon="HIDE_OFF" if collections["Flip"].is_visible else "HIDE_ON"
+            icon="HIDE_OFF" if collections["Flip"].is_visible else "HIDE_ON",
         )
 
         col.prop(
             main,
             '["Wireframe Bones"]',
             toggle=True,
-            icon="CHECKBOX_HLT" if main["Wireframe Bones"] else "CHECKBOX_DEHLT"
+            icon="CHECKBOX_HLT" if main["Wireframe Bones"] else "CHECKBOX_DEHLT",
         )
 
         col.separator(type="LINE")
@@ -231,7 +254,7 @@ class PT_Main(SACR_Panel):
                 '["Long Hair Rig"]',
                 text="Long Hair",
                 toggle=True,
-                icon="HIDE_OFF" if main["Long Hair Rig"] else "HIDE_ON"
+                icon="HIDE_OFF" if main["Long Hair Rig"] else "HIDE_ON",
             )
 
             hair_box = col.box()
@@ -240,7 +263,7 @@ class PT_Main(SACR_Panel):
                 collections["Hair_Adv"],
                 "is_visible",
                 text="Hair Extra Controls",
-                icon="HIDE_OFF" if collections["Hair_Adv"].is_visible else "HIDE_ON"
+                icon="HIDE_OFF" if collections["Hair_Adv"].is_visible else "HIDE_ON",
             )
 
             ui.separator(type="LINE")
@@ -248,13 +271,22 @@ class PT_Main(SACR_Panel):
 
             col = ui.column(align=True)
             row = col.row(align=True)
-            row.prop(main, '["Show Lattices"]', index=0, text="Body Lattices",
-                     icon="HIDE_OFF" if main["Show Lattices"][0] else "HIDE_ON")
-            row.prop(main, '["Show Lattices"]', index=1, text="Eyelash Lattices",
-                     icon="HIDE_OFF" if main["Show Lattices"][1] else "HIDE_ON")
+            row.prop(
+                main,
+                '["Show Lattices"]',
+                index=0,
+                text="Body Lattices",
+                icon="HIDE_OFF" if main["Show Lattices"][0] else "HIDE_ON",
+            )
+            row.prop(
+                main,
+                '["Show Lattices"]',
+                index=1,
+                text="Eyelash Lattices",
+                icon="HIDE_OFF" if main["Show Lattices"][1] else "HIDE_ON",
+            )
 
             ui.prop(main, '["Female Curves"]', text="Female Curvature")
-
 
             ui.separator(type="LINE")
 
@@ -266,7 +298,6 @@ class PT_Main(SACR_Panel):
         ui.separator(type="LINE")
 
         panel_legs(ui, py_panel_helper, main)
-
 
         if feature_set != "Lite":
             ui.separator(type="LINE")
@@ -282,6 +313,7 @@ class PT_Main(SACR_Panel):
                 for item in armor_enum:
                     armor_material_panel(armor, main, py_materials, item)
 
+
 def panel_arms(ui, panel_helper, props):
     arms = sub_panel(ui, panel_helper, prop="ArmPanel", label="Arms")
     if arms:
@@ -289,7 +321,6 @@ def panel_arms(ui, panel_helper, props):
         row.label(text="Arm Type")
         row = arms.row(align=True)
         row.prop(props, '["Arm Type"]')
-
 
         arms.separator(type="SPACE")
 
@@ -306,6 +337,7 @@ def panel_arms(ui, panel_helper, props):
         col.prop(props, '["Arm Stretch"]', index=1, text="Stretch")
         col.prop(props, '["Arm Wrist IK"]', index=1, text="Wrist IK")
 
+
 def panel_legs(ui, panel_helper, props):
     legs = sub_panel(ui, panel_helper, prop="LegPanel", label="Legs")
     if legs:
@@ -320,6 +352,7 @@ def panel_legs(ui, panel_helper, props):
         col.prop(props, '["Leg FK"]', index=1, text="IK")
         col.prop(props, '["Leg Stretch"]', index=1, text="Stretch")
 
+
 # Face Panel
 class PT_Face(SACR_Panel):
     bl_idname = ID("r750_face").panel
@@ -329,7 +362,7 @@ class PT_Face(SACR_Panel):
     def draw(self, context):
 
         # Panel Variables
-        obj= context.active_object
+        obj = context.active_object
         pose = obj.pose.bones
         collections = obj.data.collections_all
         main = pose["Rig_Properties"]
@@ -357,13 +390,18 @@ class PT_Face(SACR_Panel):
             ui.separator(type="LINE")
 
             ui.separator(type="LINE")
-            panel_eyebrows(ui, pose, py_panel_helper, py_materials, collections, feature_set)
+            panel_eyebrows(
+                ui, pose, py_panel_helper, py_materials, collections, feature_set
+            )
             ui.separator(type="LINE")
-            panel_iris(ui, pose, py_panel_helper, py_materials, collections, feature_set)
+            panel_iris(
+                ui, pose, py_panel_helper, py_materials, collections, feature_set
+            )
             ui.separator(type="LINE")
             panel_sclera(ui, pose, py_panel_helper, py_materials, collections)
             ui.separator(type="LINE")
             panel_mouth(ui, pose, py_panel_helper, py_materials, collections)
+
 
 def panel_eyebrows(ui, pose, python, materials, collections, feature_set):
     props_eb = pose["Eyebrow_Properties"]
@@ -381,18 +419,17 @@ def panel_eyebrows(ui, pose, python, materials, collections, feature_set):
             mat = materials.get("eye_brow").node_tree.nodes["Eyebrow_Shader"]
             node = mat.inputs
             color_table(
-                ui = panel,
-                material = mat,
-                grid = (
-                    "L.Color In","R.Color In",
-                    "L.Color Out","R.Color Out",
-                    "Gradient","Split Color",
+                ui=panel,
+                material=mat,
+                grid=(
+                    "L.Color In",
+                    "R.Color In",
+                    "L.Color Out",
+                    "R.Color Out",
+                    "Gradient",
+                    "Split Color",
                 ),
-                grid_label = (
-                    "","",
-                    "","",
-                    "Gradient","Separate"
-                )
+                grid_label=("", "", "", "", "Gradient", "Separate"),
             )
 
             col = panel.column(heading="Reflections")
@@ -413,6 +450,7 @@ def panel_eyebrows(ui, pose, python, materials, collections, feature_set):
         except:
             pass
 
+
 def panel_iris(ui, pose, python, materials, collections, feature_set):
     eyes = pose["Eye_Properties"]
     panel = sub_panel(ui, python, prop="IrisPanel", label="Iris")
@@ -421,11 +459,7 @@ def panel_iris(ui, pose, python, materials, collections, feature_set):
         col = panel.column()
         col.prop(eyes, '["Inset"]')
         if feature_set != "Lite":
-            col.prop(
-                eyes,
-                '["Eyesparkle"]',
-                toggle=True
-            )
+            col.prop(eyes, '["Eyesparkle"]', toggle=True)
 
         panel.separator(type="LINE")
 
@@ -434,18 +468,17 @@ def panel_iris(ui, pose, python, materials, collections, feature_set):
             col.label(text="Colors", icon="COLOR")
             mat = materials.get("eye_iris").node_tree.nodes["Iris_Shader"]
             color_table(
-                ui = col,
-                material = mat,
-                grid = (
-                    "Color1.L","Color1.R",
-                    "Color2.L","Color2.R",
-                    "Gradient","Heterochromia",
+                ui=col,
+                material=mat,
+                grid=(
+                    "Color1.L",
+                    "Color1.R",
+                    "Color2.L",
+                    "Color2.R",
+                    "Gradient",
+                    "Heterochromia",
                 ),
-                grid_label = (
-                    "","",
-                    "","",
-                    "Gradient","Heterochromia"
-                )
+                grid_label=("", "", "", "", "Gradient", "Heterochromia"),
             )
             col = panel.column()
             col.label(text="Reflections", icon="SHADING_RENDERED")
@@ -467,7 +500,11 @@ def panel_iris(ui, pose, python, materials, collections, feature_set):
                 "default_value",
                 text="Emission",
                 toggle=True,
-                icon="OUTLINER_OB_LIGHT" if mat.inputs[31].default_value else "OUTLINER_DATA_LIGHT"
+                icon=(
+                    "OUTLINER_OB_LIGHT"
+                    if mat.inputs[31].default_value
+                    else "OUTLINER_DATA_LIGHT"
+                ),
             )
             if mat.inputs[31].default_value:
                 col.prop(
@@ -475,7 +512,7 @@ def panel_iris(ui, pose, python, materials, collections, feature_set):
                     "default_value",
                     text="Split",
                     toggle=True,
-                    icon="UNLINKED" if mat.inputs[33].default_value else "LINKED"
+                    icon="UNLINKED" if mat.inputs[33].default_value else "LINKED",
                 )
 
                 if mat.inputs[33].default_value:
@@ -484,16 +521,8 @@ def panel_iris(ui, pose, python, materials, collections, feature_set):
                     color_table(
                         ui=col,
                         material=mat,
-                        grid=(
-                            36,38,
-                            37,39,
-                            35,34
-                        ),
-                        grid_label=(
-                            "", "",
-                            "", "",
-                            "Gradient", "Heterochromia"
-                        )
+                        grid=(36, 38, 37, 39, 35, 34),
+                        grid_label=("", "", "", "", "Gradient", "Heterochromia"),
                     )
                 else:
                     col.prop(mat.inputs[36], "default_value", text="Strength")
@@ -505,7 +534,7 @@ def panel_iris(ui, pose, python, materials, collections, feature_set):
                 "default_value",
                 text="Pupuls",
                 toggle=True,
-                icon="HIDE_OFF" if mat.inputs["Pupils"].default_value else "HIDE_ON"
+                icon="HIDE_OFF" if mat.inputs["Pupils"].default_value else "HIDE_ON",
             )
             if mat.inputs["Pupils"].default_value:
                 box = col.box()
@@ -525,6 +554,7 @@ def panel_iris(ui, pose, python, materials, collections, feature_set):
         except:
             pass
 
+
 def panel_sclera(ui, pose, python, materials, collections):
     eyes = pose["Eye_Properties"]
     panel = sub_panel(ui, python, prop="ScleraPanel", label="Scleras")
@@ -536,20 +566,19 @@ def panel_sclera(ui, pose, python, materials, collections):
 
             col = panel.column()
             col.label(text="Colors", icon="COLOR")
-            mat=materials.get("eye_sclera").node_tree.nodes["Sclera_Shader"]
+            mat = materials.get("eye_sclera").node_tree.nodes["Sclera_Shader"]
             color_table(
-                ui = col,
-                material = mat,
-                grid = (
-                    "Color1.L","Color1.R",
-                    "Color2.L","Color2.R",
-                    "Gradient","Heterochromia",
+                ui=col,
+                material=mat,
+                grid=(
+                    "Color1.L",
+                    "Color1.R",
+                    "Color2.L",
+                    "Color2.R",
+                    "Gradient",
+                    "Heterochromia",
                 ),
-                grid_label = (
-                    "","",
-                    "","",
-                    "Gradient","Heterochromia"
-                )
+                grid_label=("", "", "", "", "Gradient", "Heterochromia"),
             )
 
             col = panel.column()
@@ -559,13 +588,11 @@ def panel_sclera(ui, pose, python, materials, collections):
             col.prop(mat.inputs[20], "default_value", text="Specular")
             col.prop(mat.inputs[21], "default_value", text="Roughness")
 
-
             col = panel.column()
             col.label(text="Clearcoat", icon="SHADING_RENDERED")
             col.prop(mat.inputs[24], "default_value", text="Weight")
             col.prop(mat.inputs[25], "default_value", text="Roughness")
             col.prop(mat.inputs[26], "default_value", text="IOR")
-
 
             col = panel.column(heading="Emissions")
             col.prop(
@@ -573,7 +600,12 @@ def panel_sclera(ui, pose, python, materials, collections):
                 "default_value",
                 text="Emission",
                 toggle=True,
-                icon="OUTLINER_OB_LIGHT" if mat.inputs[31].default_value else "OUTLINER_DATA_LIGHT")
+                icon=(
+                    "OUTLINER_OB_LIGHT"
+                    if mat.inputs[31].default_value
+                    else "OUTLINER_DATA_LIGHT"
+                ),
+            )
             if mat.inputs[31].default_value:
                 col.prop(mat.inputs[33], "default_value", text="Split", toggle=True)
                 if mat.inputs[33].default_value:
@@ -582,21 +614,14 @@ def panel_sclera(ui, pose, python, materials, collections):
                     color_table(
                         ui=col,
                         material=mat,
-                        grid=(
-                            36,38,
-                            37,39,
-                            35,34
-                        ),
-                        grid_label=(
-                            "", "",
-                            "", "",
-                            "Gradient", "Heterochromia"
-                        )
+                        grid=(36, 38, 37, 39, 35, 34),
+                        grid_label=("", "", "", "", "Gradient", "Heterochromia"),
                     )
                 else:
                     panel.prop(mat.inputs[36], "default_value", text="Strength")
         except:
             pass
+
 
 def panel_mouth(ui, pose, python, materials, collections):
     props = pose["Mouth_Properties"]
@@ -609,11 +634,19 @@ def panel_mouth(ui, pose, python, materials, collections):
             mouth_inside = materials.get("mouth_inside").node_tree.nodes["Mouth_Inside"]
             teeth = materials.get("mouth_teeth").node_tree.nodes["Teeth_Shader"]
 
-            panel.prop(mouth_inside.inputs["Base Color"], "default_value", text="Mouth Inside Color")
-
+            panel.prop(
+                mouth_inside.inputs["Base Color"],
+                "default_value",
+                text="Mouth Inside Color",
+            )
 
             panel.prop(teeth.inputs["Base Color"], "default_value", text="Teeth Color")
-            panel.prop(teeth.inputs["Emission"], "default_value", text="Emission Toggle", toggle=True)
+            panel.prop(
+                teeth.inputs["Emission"],
+                "default_value",
+                text="Emission Toggle",
+                toggle=True,
+            )
             if teeth.inputs["Emission"].default_value:
                 box = panel.box()
                 box.prop(teeth.inputs[31], "default_value", text="Emission Color")
@@ -622,6 +655,7 @@ def panel_mouth(ui, pose, python, materials, collections):
         except:
             pass
 
+
 class PT_Collections(SACR_Panel):
     bl_label = "Control Groups"
     bl_idname = ID("r750_collections").panel
@@ -629,7 +663,7 @@ class PT_Collections(SACR_Panel):
 
     def draw(self, context):
 
-        def collection(ui, group: str, name: str, toggle = True):
+        def collection(ui, group: str, name: str, toggle=True):
             ui.prop(collections[group], "is_visible", text=name, toggle=toggle)
 
         def is_on(collection: str):
@@ -641,12 +675,11 @@ class PT_Collections(SACR_Panel):
                 collections[group],
                 "is_visible",
                 text="",
-                icon="CHECKBOX_HLT" if is_on(group) else "CHECKBOX_DEHLT"
+                icon="CHECKBOX_HLT" if is_on(group) else "CHECKBOX_DEHLT",
             )
             row.label(text=label)
 
-
-        obj= context.active_object
+        obj = context.active_object
         pose = obj.pose.bones
         collections = obj.data.collections_all
         python = pose["PythonConfig.Objects"]
@@ -663,19 +696,39 @@ class PT_Collections(SACR_Panel):
             row.enabled = collections["Eyebrows"].is_visible
             col2 = row.column(align=True, heading="Left")
             c_row = col2.row(align=True)
-            c_row.prop(collections["Eyebrow_Left_Simplified"], "is_visible", text="Simple", toggle=True)
+            c_row.prop(
+                collections["Eyebrow_Left_Simplified"],
+                "is_visible",
+                text="Simple",
+                toggle=True,
+            )
 
             c_row2 = col2.row(align=True)
             c_row2.enabled = is_on("Eyebrow_Left_Simplified")
-            c_row2.prop(collections["Eyebrow_Left_Advanced"], "is_visible", text="Advanced", toggle=True)
+            c_row2.prop(
+                collections["Eyebrow_Left_Advanced"],
+                "is_visible",
+                text="Advanced",
+                toggle=True,
+            )
 
             col2 = row.column(align=True, heading="Right")
             c_row = col2.row(align=True)
-            c_row.prop(collections["Eyebrow_Right_Simplified"], "is_visible", text="Simple", toggle=True)
+            c_row.prop(
+                collections["Eyebrow_Right_Simplified"],
+                "is_visible",
+                text="Simple",
+                toggle=True,
+            )
 
             c_row2 = col2.row(align=True)
             c_row2.enabled = collections["Eyebrow_Right_Simplified"].is_visible
-            c_row2.prop(collections["Eyebrow_Right_Advanced"], "is_visible", text="Advanced", toggle=True)
+            c_row2.prop(
+                collections["Eyebrow_Right_Advanced"],
+                "is_visible",
+                text="Advanced",
+                toggle=True,
+            )
 
             panel.separator(type="LINE")
 
@@ -712,7 +765,6 @@ class PT_Collections(SACR_Panel):
             row.enabled = collections["Mouth"].is_visible
             collection(row, "Mouth_Advanced", "Extra")
 
-
         ui.separator(type="LINE")
         panel = sub_panel(ui, py_panel_helper, "BodyBoneColPanel", "Body")
         if panel:
@@ -729,19 +781,19 @@ class PT_Collections(SACR_Panel):
             collection(row_l, "Leg_Left", "Left Leg")
             collection(row_l, "Leg_Right", "Right Leg")
 
-classes = [
-    PT_Main,
-    PT_Face,
-    PT_Collections
-]
+
+classes = [PT_Main, PT_Face, PT_Collections]
+
 
 def register():
     for cls in classes:
         U.register_class(cls)
 
+
 def unregister():
     for cls in reversed(classes):
         U.unregister_class(cls)
+
 
 if __name__ == "__main__":
     register()
