@@ -1,4 +1,0 @@
-interface:
-  display_name: "Python Blender Mentoring"
-  short_description: "Learn Blender extension engineering in context"
-  default_prompt: "Use $python-blender-mentoring to guide this Blender extension task while teaching the relevant concepts."
