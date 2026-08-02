@@ -1,5 +1,9 @@
+import bpy
 import bpy.types as T
 import bpy.utils as U
+import bpy.props as P
+
+from ..lib import ID
 
 # Operators
 class OT_toggle_collection(T.Operator):

@@ -4,6 +4,7 @@ import bpy.props as P
 import bpy.utils as U
 
 from ..lib.panel_type import SACR_Panel
+from ...lib import ID
 
 bl_info = {
     "name": "SACR R7.5 UI",
@@ -27,25 +28,6 @@ feature_set_enum = {
 # - Body Lattices Removed
 # - Eyesparkles
 #
-
-class ID(str):
-    addon_id = "SEDAIA_SACR_R75"
-    @property
-    def panel(self):
-        return f"{self.addon_id}_PT_{self}"
-
-    @property
-    def operator(self):
-        return f"{self.addon_id.lower()}_ot.{self}"
-
-    @property
-    def menu(self):
-        return f"{self.addon_id}_MT_{self}"
-
-    @property
-    def list(self):
-        return f"{self.addon_id}_UL_{self}"
-
 
 # Helper Functions
 def sub_panel(ui, helper_obj, prop, label: str):
@@ -148,61 +130,9 @@ def is_packed(file):
 def get_img(path):
     return bpy.data.images[path]
 
-class OT_set_name(T.Operator):
-    bl_idname = ID("set_name").operator
-    bl_label = "Set Rig Name"
-    bl_options = {"REGISTER", "UNDO"}
-
-    name: P.StringProperty()
-    update_collection: P.BoolProperty()
-
-    def execute(self, context):
-        obj = context.active_object
-        obj.name = self.name
-        obj.data.name = self.name
-
-        if self.update_collection is True:
-            try:
-                obj.users_collection[0].name = self.name
-            except (AttributeError, KeyError):
-                context.asset.name = self.name
-
-        return {"FINISHED"}
-
-class OT_pack(T.Operator):
-    bl_label = ""
-    bl_idname = ID("image_pack").operator
-    bl_options = {"REGISTER", "UNDO"}
-
-    path: P.StringProperty()
-
-    def execute(self, context):
-        self.report({"PROPERTY"}, self.path)
-        image = get_img(self.path)
-        if is_packed(image):
-            if bpy.data.is_saved:
-                image.unpack()
-            else:
-                image.unpack(method="USE_LOCAL")
-        else:
-            image.pack()
-        return {"FINISHED"}
-
-class OT_reload(T.Operator):
-    bl_label = ""
-    bl_idname = ID("image_reload").operator
-    bl_options = {"REGISTER", "UNDO"}
-
-    path: P.StringProperty()
-
-    def execute(self, context):
-
-        get_img(self.path).reload()
-        return {"FINISHED"}
-
 def toggle_collection(ui, context, prop, label="Collection"):
     # Panel Variables
-    collection_inst = context.active_object.pose.bones["PythonReference_OBJ"].get(prop)
+    collection_inst = context.active_object.pose.bones["PythonConfig.Objects"].get(prop)
     inst_toggle = ui.operator(
         ID("toggle_collection").operator,
         text=label,
@@ -215,7 +145,7 @@ def toggle_collection(ui, context, prop, label="Collection"):
 class PT_Main(SACR_Panel):
     bl_label="Main Panel"
     bl_order=0
-    bl_idname=ID("main").panel
+    bl_idname=ID("r750_main").panel
 
     def draw(self, context):
 
@@ -229,7 +159,7 @@ class PT_Main(SACR_Panel):
         eyebrow = pose["Eyebrow_Properties"]
         eyes = pose["Eye_Properties"]
         mouth = pose["Mouth_Properties"]
-        python = pose["PythonReference_OBJ"]
+        python = pose["PythonConfig.Objects"]
         py_panel_helper = pose["PythonConfig.PanelHelper"]
         root = pose["SACR_Root"]
 
@@ -392,7 +322,7 @@ def panel_legs(ui, panel_helper, props):
 
 # Face Panel
 class PT_Face(SACR_Panel):
-    bl_idname = ID("face").panel
+    bl_idname = ID("r750_face").panel
     bl_label = "Face Options"
     bl_order = 1
 
@@ -405,7 +335,7 @@ class PT_Face(SACR_Panel):
         main = pose["Rig_Properties"]
         face = pose["Face_Properties"]
         eyes = pose["Eye_Properties"]
-        python = pose["PythonReference_OBJ"]
+        python = pose["PythonConfig.Objects"]
 
         feature_set = feature_set_enum[obj.data["feature_set"]]
 
@@ -694,7 +624,7 @@ def panel_mouth(ui, pose, python, materials, collections):
 
 class PT_Collections(SACR_Panel):
     bl_label = "Control Groups"
-    bl_idname = ID("collections").panel
+    bl_idname = ID("r750_collections").panel
     bl_order = 2
 
     def draw(self, context):
@@ -719,7 +649,7 @@ class PT_Collections(SACR_Panel):
         obj= context.active_object
         pose = obj.pose.bones
         collections = obj.data.collections_all
-        python = pose["PythonReference_OBJ"]
+        python = pose["PythonConfig.Objects"]
         py_panel_helper = pose["PythonConfig.PanelHelper"]
 
         ui = self.layout
@@ -800,10 +730,6 @@ class PT_Collections(SACR_Panel):
             collection(row_l, "Leg_Right", "Right Leg")
 
 classes = [
-    OT_toggle_collection,
-    OT_set_name,
-    OT_pack,
-    OT_reload,
     PT_Main,
     PT_Face,
     PT_Collections
