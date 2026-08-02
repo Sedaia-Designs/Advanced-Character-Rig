@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Blender Mentoring"
+  short_description: "Learn Blender src engineering in context"
+  default_prompt: "Use $python-blender-mentoring to guide this Blender src task while teaching the relevant concepts."

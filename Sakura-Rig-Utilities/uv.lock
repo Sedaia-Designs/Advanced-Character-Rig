@@ -21,7 +21,7 @@ wheels = [
 ]
 
 [[package]]
-name = "sedaia-rig-interfaces"
+name = "sakura-rig-utilities"
 version = "4.0.0"
 source = { virtual = "." }
 dependencies = [

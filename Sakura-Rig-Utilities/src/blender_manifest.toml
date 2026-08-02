@@ -12,7 +12,7 @@ tagline = "A control script for use with Sakura's Rigs"
 maintainer = "Sakura Sedaia<sakusedaia@outlook.com>"
 type = "add-on"
 website = "https://www.sakura-sedaia.com/projects/sakura-rig-utilities"
-issue_tracker = "https://gitlab.com/sedaia-designs/Sakura-Rig-Interfaces/-/issues"
+issue_tracker = "https://gitlab.com/sedaia-designs/advanced-character-rig/-/issues"
 wiki = "https://docs.sakura-sedaia.com/sedaia-rig-interfaces/"
 
 tags = ["Rigging", "User Interface"]

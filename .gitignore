@@ -1,0 +1,50 @@
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local workspace state
+.idea/
+.vscode/
+.hidden/
+.migration-backups/
+*.code-workspace
+
+# Python and test artifacts
+**/__pycache__/
+**/*.py[cod]
+Sakura-Rig-Utilities/.venv/
+Sakura-Rig-Utilities/venv/
+Sakura-Rig-Utilities/.cache/
+Sakura-Rig-Utilities/.mypy_cache/
+Sakura-Rig-Utilities/.pytest_cache/
+Sakura-Rig-Utilities/.ruff_cache/
+Sakura-Rig-Utilities/.coverage*
+Sakura-Rig-Utilities/htmlcov/
+Sakura-Rig-Utilities/dist/
+Sakura-Rig-Utilities/build/
+Sakura-Rig-Utilities/*.egg-info/
+
+# Extension-local and generated Blender artifacts
+Sakura-Rig-Utilities/.blender/
+Sakura-Rig-Utilities/.temp/
+Sakura-Rig-Utilities/.logs/
+Sakura-Rig-Utilities/.blender-docs/
+Sakura-Rig-Utilities/textures/
+Sakura-Rig-Utilities/linter/
+Sakura-Rig-Utilities/**/*.blend
+Sakura-Rig-Utilities/**/*.blend[0-9]*
+Sakura-Rig-Utilities/**/*.blend@
+Sakura-Rig-Utilities/**/*.blend~
+Sakura-Rig-Utilities/**/*.zip
+Sakura-Rig-Utilities/**/*.whl
+
+# Rig backup and private working files
+Character-Rig/**/*.blend[0-9]*
+Character-Rig/**/*.psd
+Character-Rig/**/*.docs
+Character-Rig/**/*.assets
+Character-Rig/**/textures/
+
+# Agent-local state
+.junie/

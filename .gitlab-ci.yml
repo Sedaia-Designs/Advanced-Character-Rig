@@ -6,6 +6,8 @@ stages:
 default:
   image: python:3.14-slim
   interruptible: true
+  before_script:
+    - cd Sakura-Rig-Utilities
 
 variables:
   PIP_DISABLE_PIP_VERSION_CHECK: "1"
@@ -16,12 +18,17 @@ test:
   script:
     - python -m compileall -q src
     - python -m unittest tests.test_manifest -v
+  rules:
+    - changes:
+        - Sakura-Rig-Utilities/**/*
+        - .gitlab-ci.yml
 
 build_extension:
   stage: build
   before_script:
     - apt-get update
     - apt-get install --yes --no-install-recommends git
+    - cd Sakura-Rig-Utilities
   script:
     - |
       python - <<'PY'
@@ -29,7 +36,7 @@ build_extension:
       import tomllib
       from pathlib import Path
 
-      manifest = tomllib.loads(Path("extension/blender_manifest.toml").read_text())
+      manifest = tomllib.loads(Path("src/blender_manifest.toml").read_text())
       extension_id = manifest["id"]
       version = manifest["version"]
       beta = manifest.get("beta_version", "").strip()
@@ -54,12 +61,12 @@ build_extension:
       )
       PY
     - . build.env
-    - git archive --format=zip --output="dist/${EXTENSION_FILENAME}" HEAD:src
+    - git archive --format=zip --output="dist/${EXTENSION_FILENAME}" HEAD:Sakura-Rig-Utilities/src
   artifacts:
     paths:
-      - dist/*.zip
+      - Sakura-Rig-Utilities/dist/*.zip
     reports:
-      dotenv: build.env
+      dotenv: Sakura-Rig-Utilities/build.env
     expire_in: 30 days
 
 publish_package:

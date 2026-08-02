@@ -2,10 +2,7 @@
 
 Sakura Advanced Character Rig (SACR) is a Blender rig for creating Minecraft-style character renders. It is designed to provide a broad set of posing and customization features while keeping the rig, drivers, and meshes efficient enough for practical scene and render performance.
 
-This repository is the canonical home for SACR rig files and supporting assets. As part of an ongoing repository restructuring, releases and development history from the former version-specific branches are being consolidated here. This branch will become `main`, and the superseded branches will be removed after their data has been migrated.
-
-> [!NOTE]
-> The migration is still in progress. Some versions, assets, or documentation may be reorganized or temporarily unavailable until the restructuring is complete.
+This directory is the canonical home for SACR rig files and supporting assets within the [SACR monorepo](https://gitlab.com/sedaia-designs/advanced-character-rig). Releases and development history from the former standalone and version-specific branches are retained in the monorepo under namespaced refs.
 
 ## Future plans
 
