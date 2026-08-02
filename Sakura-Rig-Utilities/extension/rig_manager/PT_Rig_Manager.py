@@ -4,12 +4,12 @@ import bpy.types as T
 import bpy.props as P
 import bpy.ops as O
 import bpy.utils as U
-from ..lib import Prefixer
+from ..lib import ID
 
 # Write Code Here
 class PT_Rig_Manager(T.Panel):
     bl_label = "Rig Manager"
-    bl_idname = Prefixer("rig_manager").panel
+    bl_idname = ID("rig_manager").panel
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Rig Manager"
@@ -17,7 +17,7 @@ class PT_Rig_Manager(T.Panel):
     def draw(self, context):
         layout = self.layout
         layout.label(text="Rig Manager")
-        layout.operator(Prefixer("download_sacr_manifest").operator)
+        layout.operator(ID("download_sacr_manifest").operator)
 
 
 # Register and unregister classes
