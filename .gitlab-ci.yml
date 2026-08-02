@@ -112,5 +112,5 @@ create_release:
       glab release create "${RELEASE_REF}" \
         --ref "${CI_COMMIT_SHA}" \
         --name "${RELEASE_NAME}" \
-        --notes "Automated release for ${RELEASE_TAG}." \
+        --notes "Automated release for ${RELEASE_REF}." \
         --assets-links "[{\"name\":\"${EXTENSION_FILENAME}\",\"url\":\"${ASSET_URL}\",\"link_type\":\"package\"}]"
