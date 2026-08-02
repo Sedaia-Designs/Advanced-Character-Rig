@@ -50,18 +50,26 @@ build_extension:
 
       commit_tag = os.environ.get("CI_COMMIT_TAG", "")
       requested_tag = os.environ.get("RELEASE_TAG", "")
-      release_tag = commit_tag or requested_tag
+      release_ref = commit_tag or requested_tag
+      release_version = commit_tag.removeprefix("extension/") or requested_tag
 
       Path("dist").mkdir(exist_ok=True)
       Path("build.env").write_text(
           f"EXTENSION_VERSION={version}\n"
           f"EXTENSION_FILENAME={filename}\n"
           f"RELEASE_NAME={release_name}\n"
-          f"RELEASE_TAG={release_tag}\n"
+          f"RELEASE_REF={release_ref}\n"
+          f"RELEASE_VERSION={release_version}\n"
       )
       PY
     - . build.env
     - git archive --format=zip --output="dist/${EXTENSION_FILENAME}" HEAD:Sakura-Rig-Utilities/src
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^extension\//'
+    - if: '$CI_PIPELINE_SOURCE == "web" && $RELEASE_TAG'
+    - changes:
+        - Sakura-Rig-Utilities/**/*
+        - .gitlab-ci.yml
   artifacts:
     paths:
       - Sakura-Rig-Utilities/dist/*.zip
@@ -76,15 +84,15 @@ publish_package:
     - job: build_extension
       artifacts: true
   rules:
-    - if: '$CI_COMMIT_TAG'
+    - if: '$CI_COMMIT_TAG =~ /^extension\//'
     - if: '$CI_PIPELINE_SOURCE == "web" && $RELEASE_TAG'
   script:
-    - test -n "${RELEASE_TAG}"
+    - test -n "${RELEASE_VERSION}"
     - |
       curl --fail-with-body --location \
         --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
         --upload-file "dist/${EXTENSION_FILENAME}" \
-        "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${PACKAGE_NAME}/${RELEASE_TAG}/${EXTENSION_FILENAME}"
+        "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${PACKAGE_NAME}/${RELEASE_VERSION}/${EXTENSION_FILENAME}"
 
 create_release:
   stage: release
@@ -94,14 +102,14 @@ create_release:
       artifacts: true
     - job: publish_package
   rules:
-    - if: '$CI_COMMIT_TAG'
+    - if: '$CI_COMMIT_TAG =~ /^extension\//'
     - if: '$CI_PIPELINE_SOURCE == "web" && $RELEASE_TAG'
   variables:
     GLAB_ENABLE_CI_AUTOLOGIN: "true"
   script:
     - |
-      ASSET_URL="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${PACKAGE_NAME}/${RELEASE_TAG}/${EXTENSION_FILENAME}"
-      glab release create "${RELEASE_TAG}" \
+      ASSET_URL="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${PACKAGE_NAME}/${RELEASE_VERSION}/${EXTENSION_FILENAME}"
+      glab release create "${RELEASE_REF}" \
         --ref "${CI_COMMIT_SHA}" \
         --name "${RELEASE_NAME}" \
         --notes "Automated release for ${RELEASE_TAG}." \
