@@ -10,28 +10,28 @@ from unittest.mock import patch
 
 MODULE_PATH = (
     Path(__file__).parents[1]
-    / "extension"
+    / "src"
     / "lib"
     / "get_files_in_addon_directory.py"
 )
-extension_package = types.ModuleType("extension")
+extension_package = types.ModuleType("src")
 extension_package.__path__ = [str(MODULE_PATH.parents[1])]
-lib_package = types.ModuleType("extension.lib")
+lib_package = types.ModuleType("src.lib")
 lib_package.__path__ = [str(MODULE_PATH.parent)]
-preferences_module = types.ModuleType("extension.preferences")
+preferences_module = types.ModuleType("src.preferences")
 preferences_module.get_preferences = lambda: None
 
 MODULE_SPEC = importlib.util.spec_from_file_location(
-    "extension.lib.get_files_in_addon_directory",
+    "src.lib.get_files_in_addon_directory",
     MODULE_PATH,
 )
 addon_files = importlib.util.module_from_spec(MODULE_SPEC)
 with patch.dict(
     sys.modules,
     {
-        "extension": extension_package,
-        "extension.lib": lib_package,
-        "extension.preferences": preferences_module,
+        "src": extension_package,
+        "src.lib": lib_package,
+        "src.preferences": preferences_module,
     },
 ):
     MODULE_SPEC.loader.exec_module(addon_files)

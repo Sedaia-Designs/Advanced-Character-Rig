@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 
 PROJECT_ROOT = Path(__file__).parents[1]
-EXTENSION_ROOT = PROJECT_ROOT / "extension"
+EXTENSION_ROOT = PROJECT_ROOT / "src"
 
 
 def _load_module(name: str, path: Path):
@@ -20,13 +20,13 @@ def _load_module(name: str, path: Path):
     return module
 
 
-extension_package = types.ModuleType("extension")
+extension_package = types.ModuleType("src")
 extension_package.__path__ = [str(EXTENSION_ROOT)]
-lib_package = types.ModuleType("extension.lib")
+lib_package = types.ModuleType("src.lib")
 lib_package.__path__ = [str(EXTENSION_ROOT / "lib")]
-rig_manager_package = types.ModuleType("extension.rig_manager")
+rig_manager_package = types.ModuleType("src.rig_manager")
 rig_manager_package.__path__ = [str(EXTENSION_ROOT / "rig_manager")]
-rig_manager_lib_package = types.ModuleType("extension.rig_manager.lib")
+rig_manager_lib_package = types.ModuleType("src.rig_manager.lib")
 rig_manager_lib_package.__path__ = [
     str(EXTENSION_ROOT / "rig_manager" / "lib")
 ]
@@ -34,29 +34,29 @@ rig_manager_lib_package.__path__ = [
 with patch.dict(
     sys.modules,
     {
-        "extension": extension_package,
-        "extension.lib": lib_package,
-        "extension.rig_manager": rig_manager_package,
-        "extension.rig_manager.lib": rig_manager_lib_package,
+        "src": extension_package,
+        "src.lib": lib_package,
+        "src.rig_manager": rig_manager_package,
+        "src.rig_manager.lib": rig_manager_lib_package,
     },
 ):
     exceptions = _load_module(
-        "extension.lib.exceptions",
+        "src.lib.exceptions",
         EXTENSION_ROOT / "lib" / "exceptions.py",
     )
     hash_module = _load_module(
-        "extension.lib.hash",
+        "src.lib.hash",
         EXTENSION_ROOT / "lib" / "hash.py",
     )
 
-    http_module = types.ModuleType("extension.lib.http")
+    http_module = types.ModuleType("src.lib.http")
     lib_package.exceptions = exceptions
     lib_package.hash = hash_module
     lib_package.http = http_module
-    sys.modules["extension.lib.http"] = http_module
+    sys.modules["src.lib.http"] = http_module
 
     manifest = _load_module(
-        "extension.rig_manager.lib.manifest",
+        "src.rig_manager.lib.manifest",
         EXTENSION_ROOT / "rig_manager" / "lib" / "manifest.py",
     )
 

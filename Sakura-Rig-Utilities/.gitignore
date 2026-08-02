@@ -31,7 +31,7 @@ build/
 .pdm-build/
 __pypackages__/
 
-# Blender extension local/build artifacts
+# Blender src local/build artifacts
 .blender/
 .temp/
 .logs/

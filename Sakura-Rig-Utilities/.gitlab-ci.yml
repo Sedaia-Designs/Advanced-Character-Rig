@@ -14,7 +14,7 @@ variables:
 test:
   stage: test
   script:
-    - python -m compileall -q extension
+    - python -m compileall -q src
     - python -m unittest tests.test_manifest -v
 
 build_extension:
@@ -54,7 +54,7 @@ build_extension:
       )
       PY
     - . build.env
-    - git archive --format=zip --output="dist/${EXTENSION_FILENAME}" HEAD:extension
+    - git archive --format=zip --output="dist/${EXTENSION_FILENAME}" HEAD:src
   artifacts:
     paths:
       - dist/*.zip
