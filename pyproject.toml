@@ -3,6 +3,14 @@ name = "Sakura_Rig_Utilities"
 version = "4.0.0"
 requires-python = ">=3.13"
 dependencies = [
-    "fake-bpy-module-latest>=20260719",
+    "black==26.5.1",
+    "fake-bpy-module-5.2",
     "pip>=26.1.2",
+]
+
+[dependency-groups]
+dev = [
+    "black[d]>=26.5.1",
+    "numpy>=2.5.1",
+    "typing-extensions>=4.16.0",
 ]
