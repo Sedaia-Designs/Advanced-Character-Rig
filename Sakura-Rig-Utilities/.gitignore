@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python tooling
+.cache/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+dist/
+build/
+*.egg-info/
+.eggs/
+*.egg
+.pdm-python
+.pdm-external-configs.json
+.pdm-build/
+__pypackages__/
+
+# Blender src local/build artifacts
+.blender/
+.temp/
+.logs/
+.blender-docs/
+*.blend
+*.blend[0-9]*
+*.blend@
+*.blend~
+*.zip
+*.whl
+
+# Local assets and private scratch data
+.hidden/
+/.hidden/archives/
+textures/
+linter/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# PyCharm / JetBrains
+.idea/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Agent
+.junie/

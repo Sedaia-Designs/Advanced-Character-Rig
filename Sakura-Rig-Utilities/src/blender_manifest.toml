@@ -1,0 +1,35 @@
+schema_version = "1.0.0"
+
+id = "Sakura_Rig_GUI_Dev"
+
+version = "4.0.0"
+beta_version = "Alpha 4"
+release_channel = "dev"
+release_date = "Not Released"
+
+name = "Sedaia Rig Interfaces Dev Branch"
+tagline = "A control script for use with Sakura's Rigs"
+maintainer = "Sakura Sedaia<sakusedaia@outlook.com>"
+type = "add-on"
+website = "https://www.sakura-sedaia.com/projects/sakura-rig-utilities"
+issue_tracker = "https://gitlab.com/sedaia-designs/Sakura-Rig-Interfaces/-/issues"
+wiki = "https://docs.sakura-sedaia.com/sedaia-rig-interfaces/"
+
+tags = ["Rigging", "User Interface"]
+
+blender_version_min = "4.2.0"
+
+license = ["SPDX:GPL-3.0-or-later"]
+
+[permissions]
+network = "Download Skin and Rigs from various sources"
+files = "Save and Store Player Skin Information and Downloaded Rigs"
+
+[build]
+paths_exclude_pattern = [
+  "__pycache__/",
+  "/.git/",
+  "/*.zip",
+]
+
+wheels = []

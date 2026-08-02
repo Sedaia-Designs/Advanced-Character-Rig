@@ -1,0 +1,101 @@
+stages:
+  - test
+  - build
+  - release
+
+default:
+  image: python:3.14-slim
+  interruptible: true
+
+variables:
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PACKAGE_NAME: "sedaia-rig-interfaces"
+
+test:
+  stage: test
+  script:
+    - python -m compileall -q src
+    - python -m unittest tests.test_manifest -v
+
+build_extension:
+  stage: build
+  before_script:
+    - apt-get update
+    - apt-get install --yes --no-install-recommends git
+  script:
+    - |
+      python - <<'PY'
+      import os
+      import tomllib
+      from pathlib import Path
+
+      manifest = tomllib.loads(Path("extension/blender_manifest.toml").read_text())
+      extension_id = manifest["id"]
+      version = manifest["version"]
+      beta = manifest.get("beta_version", "").strip()
+      beta_slug = beta.replace(" ", "")
+      filename = f"{extension_id}_{version}"
+      release_name = f"Release {version}"
+      if beta_slug:
+          filename += f"_{beta_slug}"
+          release_name += f" ({beta})"
+      filename += ".zip"
+
+      commit_tag = os.environ.get("CI_COMMIT_TAG", "")
+      requested_tag = os.environ.get("RELEASE_TAG", "")
+      release_tag = commit_tag or requested_tag
+
+      Path("dist").mkdir(exist_ok=True)
+      Path("build.env").write_text(
+          f"EXTENSION_VERSION={version}\n"
+          f"EXTENSION_FILENAME={filename}\n"
+          f"RELEASE_NAME={release_name}\n"
+          f"RELEASE_TAG={release_tag}\n"
+      )
+      PY
+    - . build.env
+    - git archive --format=zip --output="dist/${EXTENSION_FILENAME}" HEAD:src
+  artifacts:
+    paths:
+      - dist/*.zip
+    reports:
+      dotenv: build.env
+    expire_in: 30 days
+
+publish_package:
+  stage: release
+  image: curlimages/curl:latest
+  needs:
+    - job: build_extension
+      artifacts: true
+  rules:
+    - if: '$CI_COMMIT_TAG'
+    - if: '$CI_PIPELINE_SOURCE == "web" && $RELEASE_TAG'
+  script:
+    - test -n "${RELEASE_TAG}"
+    - |
+      curl --fail-with-body --location \
+        --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+        --upload-file "dist/${EXTENSION_FILENAME}" \
+        "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${PACKAGE_NAME}/${RELEASE_TAG}/${EXTENSION_FILENAME}"
+
+create_release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/cli:latest
+  needs:
+    - job: build_extension
+      artifacts: true
+    - job: publish_package
+  rules:
+    - if: '$CI_COMMIT_TAG'
+    - if: '$CI_PIPELINE_SOURCE == "web" && $RELEASE_TAG'
+  variables:
+    GLAB_ENABLE_CI_AUTOLOGIN: "true"
+  script:
+    - |
+      ASSET_URL="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${PACKAGE_NAME}/${RELEASE_TAG}/${EXTENSION_FILENAME}"
+      glab release create "${RELEASE_TAG}" \
+        --ref "${CI_COMMIT_SHA}" \
+        --name "${RELEASE_NAME}" \
+        --notes "Automated release for ${RELEASE_TAG}." \
+        --assets-links "[{\"name\":\"${EXTENSION_FILENAME}\",\"url\":\"${ASSET_URL}\",\"link_type\":\"package\"}]"
