@@ -1,7 +1,7 @@
 [project]
 name = "Sakura_Rig_Utilities"
 version = "4.0.0"
-requires-python = ">=3.14"
+requires-python = ">=3.13"
 dependencies = [
     "fake-bpy-module-latest>=20260719",
     "pip>=26.1.2",

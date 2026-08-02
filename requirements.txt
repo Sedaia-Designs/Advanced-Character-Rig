@@ -1,2 +1,3 @@
 fake-bpy-module-latest>=20260719
 pip>=26.1.2
+bpy_addon_build>=0.5.1

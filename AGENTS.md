@@ -25,7 +25,7 @@ history and remote but retain separate validation and release requirements.
 
 ### Sakura Rig Utilities
 
-- Component root: `Sakura-Rig-Utilities/`
+- Component root: `Extension/`
 - Remote: `git@gitlab.com:sedaia-designs/advanced-character-rig.git`
 - Contains the Python `uv` project and the Blender Extension runtime.
 - Run Python, test, dependency, build, and extension Git commands from this
@@ -83,7 +83,7 @@ the task matches its trigger:
   configuration, Blender installation selection, API stubs, launch/debug,
   reload-on-save, extension source paths, or IDE-versus-runtime diagnosis.
 - `edit-changelog`: changelog curation, `Unreleased`, release notes, or version
-  section preparation. Do not edit `Sakura-Rig-Utilities/CHANGELOG.md` unless requested.
+  section preparation. Do not edit `Extension/CHANGELOG.md` unless requested.
 - `git-commit`: staging, commit-message preparation, or committing. Do not
   create a commit unless requested.
 
@@ -110,23 +110,23 @@ extension.
 
 ## Repository Structure
 
-- `Sakura-Rig-Utilities/src`: active Blender extension source.
-- `Sakura-Rig-Utilities/src/__init__.py`: top-level Blender registration entry point.
-- `Sakura-Rig-Utilities/src/blender_manifest.toml`: extension identity, compatibility,
+- `Extension/src`: active Blender extension source.
+- `Extension/src/__init__.py`: top-level Blender registration entry point.
+- `Extension/src/blender_manifest.toml`: extension identity, compatibility,
   permissions, and build metadata.
-- `Sakura-Rig-Utilities/src/loader.py`: feature-package loading and registration order.
-- `Sakura-Rig-Utilities/src/preferences.py`: addon preferences and extension-local storage.
-- `Sakura-Rig-Utilities/src/interface`: shared interface definitions.
-- `Sakura-Rig-Utilities/src/lib`: extension-wide reusable Python logic.
-- `Sakura-Rig-Utilities/src/rig_manager`: rig manager operators, panels, lists, and local
+- `Extension/src/loader.py`: feature-package loading and registration order.
+- `Extension/src/preferences.py`: addon preferences and extension-local storage.
+- `Extension/src/interface`: shared interface definitions.
+- `Extension/src/lib`: extension-wide reusable Python logic.
+- `Extension/src/rig_manager`: rig manager operators, panels, lists, and local
   reusable logic.
-- `Sakura-Rig-Utilities/src/skin_manager`: skin manager feature package.
-- `Sakura-Rig-Utilities/src/wheels`: declared extension wheels or placeholders.
-- `Sakura-Rig-Utilities/tests`: automated tests that can run outside Blender where practical.
+- `Extension/src/skin_manager`: skin manager feature package.
+- `Extension/src/wheels`: declared extension wheels or placeholders.
+- `Extension/tests`: automated tests that can run outside Blender where practical.
 - `.run`: workspace-level shared PyCharm run configurations.
 - `.agents/skills`: repository-local agent skills.
-- `Sakura-Rig-Utilities/pyproject.toml`: Python project metadata and development dependencies.
-- `Sakura-Rig-Utilities/uv.lock`: locked Python development environment.
+- `pyproject.toml`: Python project metadata and development dependencies.
+- `uv.lock`: locked Python development environment.
 - `.hidden/`: private or archived material; ignore unless explicitly requested.
 - `Character-Rig/Versions`: archived or versioned Blender rig deliverables.
 - `Character-Rig/Assets`: source assets used by the rig project.
@@ -150,9 +150,9 @@ assuming a package or module exists.
 
 ## Blender Extension Rules
 
-- Keep active runtime code under `Sakura-Rig-Utilities/src`.
+- Keep active runtime code under `Extension/src`.
 - Keep manifest metadata, permissions, build exclusions, platforms, and wheels
-  in `Sakura-Rig-Utilities/src/blender_manifest.toml`.
+  in `Extension/src/blender_manifest.toml`.
 - Keep the manifest `id` stable unless an intentional migration is requested.
   It is the canonical extension identity used by Blender repositories.
 - Declare `network` and `files` permissions accurately when a feature requires
@@ -206,7 +206,7 @@ assuming a package or module exists.
 ## Registration and Lifecycle
 
 - Every feature package must expose `register()` and `unregister()`.
-- Add new feature packages to `Sakura-Rig-Utilities/src/loader.py` so they participate in the
+- Add new feature packages to `Extension/src/loader.py` so they participate in the
   top-level lifecycle.
 - Add feature modules to the owning package's module list.
 - Register Blender classes with `bpy.utils.register_class`.
@@ -297,8 +297,8 @@ import bpy.utils as U
 
 Use `blender-pycharm-workflow` for IDE-specific tasks.
 
-- Configure `Sakura-Rig-Utilities/src` as the source folder.
-- Treat `Sakura-Rig-Utilities/src/blender_manifest.toml` as the canonical extension identity
+- Configure `Extension/src` as the source folder.
+- Treat `Extension/src/blender_manifest.toml` as the canonical extension identity
   and compatibility source.
 - Use the project uv interpreter and version-matched `bpy` stubs for completion
   and static inspection.
@@ -317,13 +317,13 @@ Use `blender-pycharm-workflow` for IDE-specific tasks.
 Validation must be proportional to risk.
 
 - For extension Python edits, run `python -m compileall src` from
-  `Sakura-Rig-Utilities/` using the project interpreter when available.
-- Run targeted tests under `Sakura-Rig-Utilities/tests` for reusable logic and
+  `Extension/` using the project interpreter when available.
+- Run targeted tests under `Extension/tests` for reusable logic and
   regression coverage.
 - Add tests for new logic and important edge cases when it can be isolated from
   Blender.
 - For manifest edits, parse or inspect
-  `Sakura-Rig-Utilities/src/blender_manifest.toml` and confirm identity, compatibility,
+  `Extension/src/blender_manifest.toml` and confirm identity, compatibility,
   permissions, build exclusions, and wheels are accurate.
 - For registration, RNA properties, context-sensitive operators, UI drawing,
   reload behavior, and Blender data access, validate inside Blender when
@@ -331,7 +331,7 @@ Validation must be proportional to risk.
 - Test scripts and commands before documenting or recommending them.
 - State what was run, what passed, and what was not validated. Distinguish
   stub-backed checks from actual Blender runtime checks.
-- There is no frontend build step for `Sakura-Rig-Utilities/`.
+- There is no frontend build step for `Extension/`.
 
 For `Character-Rig/` changes, validation normally requires opening the affected
 `.blend` file in the supported Blender version and checking the edited rig,
@@ -344,19 +344,19 @@ practical, run them against a disposable copy of the intended Blender file.
 
 ## Dependencies and Build Hygiene
 
-- Keep `Sakura-Rig-Utilities/pyproject.toml` and `Sakura-Rig-Utilities/uv.lock` aligned
+- Keep `pyproject.toml` and `uv.lock` aligned
   when dependencies change.
 - Do not edit generated artifacts unnecessarily.
 - Do not commit Python caches, local Blender state, virtual environments,
   packaged ZIPs, wheels, test caches, or downloaded private assets.
-- Keep `Sakura-Rig-Utilities/.gitignore` aligned with generated Python, Blender, IDE,
+- Keep `Extension/.gitignore` aligned with generated Python, Blender, IDE,
   and local asset files.
 - Do not commit `.DS_Store` or other operating-system metadata.
 - Verify ignored generated files are not tracked before committing.
 
 ## Documentation
 
-- Read `Sakura-Rig-Utilities/README.md`, `Sakura-Rig-Utilities/GUIDELINES.md`, this file,
+- Read `Extension/README.md`, `Extension/GUIDELINES.md`, this file,
   and the owning feature before broad extension changes.
 - Treat current code, tests, manifest metadata, README, and changelog as the
   evidence for documented behavior.
@@ -364,7 +364,7 @@ practical, run them against a disposable copy of the intended Blender file.
   credentials, private assets, and security-sensitive implementation details.
 - Use repository-relative paths when documenting source locations.
 - Do not modify `.hidden/` unless the user explicitly requests it.
-- Do not edit `Sakura-Rig-Utilities/CHANGELOG.md` unless requested; use `edit-changelog` when it is
+- Do not edit `Extension/CHANGELOG.md` unless requested; use `edit-changelog` when it is
   in scope.
 - Do not create or update `.logs/` unless asked for session logging or a context
   summary. Use `.logs/summary_YYYY-MM-DD.md` for a requested summary.
@@ -397,7 +397,7 @@ For work that benefits from a written plan:
 - Use author `SakuraSedaia <sakusedaia@outlook.com>` unless the user specifies
   another author.
 - Do not add Junie or another co-author unless explicitly requested.
-- For `Sakura-Rig-Utilities/`, use `[Type -> module] Description`, or
+- For `Extension/`, use `[Type -> module] Description`, or
   `[Type] Description` when more than two modules are affected.
 - Valid types include `Feature`, `Refactor`, `Chore`, `Cleanup`, `Asset`, `Fix`,
   `Docs`, `Style`, and `Test`.

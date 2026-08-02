@@ -13,25 +13,25 @@ Desktop.ini
 # Python and test artifacts
 **/__pycache__/
 **/*.py[cod]
-Sakura-Rig-Utilities/.venv/
-Sakura-Rig-Utilities/venv/
-Sakura-Rig-Utilities/.cache/
-Sakura-Rig-Utilities/.mypy_cache/
-Sakura-Rig-Utilities/.pytest_cache/
-Sakura-Rig-Utilities/.ruff_cache/
-Sakura-Rig-Utilities/.coverage*
-Sakura-Rig-Utilities/htmlcov/
-Sakura-Rig-Utilities/dist/
-Sakura-Rig-Utilities/build/
+Extension/.venv/
+Extension/venv/
+Extension/.cache/
+Extension/.mypy_cache/
+Extension/.pytest_cache/
+Extension/.ruff_cache/
+Extension/.coverage*
+Extension/htmlcov/
+Extension/dist/
+Extension/build/
 Sakura-Rig-Utilities/*.egg-info/
 
 # Extension-local and generated Blender artifacts
-Sakura-Rig-Utilities/.blender/
-Sakura-Rig-Utilities/.temp/
-Sakura-Rig-Utilities/.logs/
-Sakura-Rig-Utilities/.blender-docs/
-Sakura-Rig-Utilities/textures/
-Sakura-Rig-Utilities/linter/
+Extension/.blender/
+Extension/.temp/
+Extension/.logs/
+Extension/.blender-docs/
+Extension/textures/
+Extension/linter/
 Sakura-Rig-Utilities/**/*.blend
 Sakura-Rig-Utilities/**/*.blend[0-9]*
 Sakura-Rig-Utilities/**/*.blend@

@@ -5,17 +5,17 @@ This monorepo contains the Sakura Advanced Character Rig (SACR), the Sakura Rig 
 ## Projects
 
 - [`Character-Rig/`](Character-Rig/) contains released and development Blender rig files, source assets, and rig documentation.
-- [`Sakura-Rig-Utilities/`](Sakura-Rig-Utilities/) contains the Blender Extension runtime, tests, manifest, and Python tooling.
+- [`Extension/`](Extension/) contains the Blender Extension runtime, tests, manifest, and Python tooling.
 - [`Extra-Scripts/`](Extra-Scripts/) contains standalone Blender helpers used for one-off rig development tasks.
 
 The rig and extension retain their independent release lifecycles. Historical branches and tags imported from their former repositories are namespaced with `rig/` and `extension/`.
 
 ## Development
 
-Python and extension commands run from `Sakura-Rig-Utilities/`:
+Python and extension commands run from `Extension/`:
 
 ```shell
-cd Sakura-Rig-Utilities
+cd Extension
 uv run python -m compileall src
 uv run python -m unittest discover -s tests -v
 ```

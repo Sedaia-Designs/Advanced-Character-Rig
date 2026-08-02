@@ -7,7 +7,7 @@ default:
   image: python:3.14-slim
   interruptible: true
   before_script:
-    - cd Sakura-Rig-Utilities
+    - cd Extension
 
 variables:
   PIP_DISABLE_PIP_VERSION_CHECK: "1"
@@ -20,7 +20,7 @@ test:
     - python -m unittest tests.test_manifest -v
   rules:
     - changes:
-        - Sakura-Rig-Utilities/**/*
+        - Extension/**/*
         - .gitlab-ci.yml
 
 build_extension:
@@ -28,7 +28,7 @@ build_extension:
   before_script:
     - apt-get update
     - apt-get install --yes --no-install-recommends git
-    - cd Sakura-Rig-Utilities
+    - cd Extension
   script:
     - |
       python - <<'PY'
@@ -63,18 +63,18 @@ build_extension:
       )
       PY
     - . build.env
-    - git archive --format=zip --output="dist/${EXTENSION_FILENAME}" HEAD:Sakura-Rig-Utilities/src
+    - git archive --format=zip --output="dist/${EXTENSION_FILENAME}" HEAD:Extension/src
   rules:
     - if: '$CI_COMMIT_TAG =~ /^extension\//'
     - if: '$CI_PIPELINE_SOURCE == "web" && $RELEASE_TAG'
     - changes:
-        - Sakura-Rig-Utilities/**/*
+        - Extension/**/*
         - .gitlab-ci.yml
   artifacts:
     paths:
-      - Sakura-Rig-Utilities/dist/*.zip
+      - Extension/dist/*.zip
     reports:
-      dotenv: Sakura-Rig-Utilities/build.env
+      dotenv: Extension/build.env
     expire_in: 30 days
 
 publish_package:
