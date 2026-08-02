@@ -1,0 +1,2 @@
+fake-bpy-module-latest>=20260719
+pip>=26.1.2
