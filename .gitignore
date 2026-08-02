@@ -8,7 +8,6 @@ Desktop.ini
 .vscode/
 .hidden/
 .migration-backups/
-*.code-workspace
 
 # Python and test artifacts
 **/__pycache__/

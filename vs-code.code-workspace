@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"blender.addon.sourceDirectory": "./Extension/src",
+		"blender.addon.reloadOnSave": true,
+		"python.autoComplete.extraPaths": ["${workspaceFolder}/.venv/lib/python3.13/site-packages"],
+		"python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+		"python.analysis.extraPaths": [
+			"${workspaceFolder}/Extension/src"
+		],
+		"python.analysis.diagnosticSeverityOverrides": {
+        	"reportMissingModuleSource": "none"
+		},
+		"pylint.args": [
+			"--disable=E0401"
+		]
+	},
+	"extensions": {
+		"recommendations": [
+			"JacquesLucke.blender-development",
+			"ms-python.python",
+			"ms-python.vscode-pylance",
+			"yzhang.markdown-all-in-one",
+			"ms-python.black-formatter"
+		]
+	}
+}
