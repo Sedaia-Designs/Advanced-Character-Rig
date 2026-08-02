@@ -3,13 +3,13 @@ import bpy
 import bpy.types as T
 import bpy.props as P
 import bpy.utils as U
-from ..lib import Prefixer, exceptions
+from ..lib import ID, exceptions
 from .lib import manifest
 from ..preferences import get_preferences as prefs
 
 class OT_download_available_riglist(T.Operator):
     """Download the SACR manifest from https://sakura-sedaia.com"""
-    bl_idname = Prefixer("download_sacr_manifest").operator
+    bl_idname = ID("download_sacr_manifest").operator
     bl_label = "Update SACR Manifest"
 
     download_to: P.StringProperty(name="Download To", default="")

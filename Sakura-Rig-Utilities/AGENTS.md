@@ -147,13 +147,13 @@ assuming a package or module exists.
 
 ## Naming and Blender IDs
 
-- Use the repository's `Prefixer` helper for operator, panel, menu, and UI-list
+- Use the repository's `ID` helper for operator, panel, menu, and UI-list
   IDs when available.
 - Operators use `Prefixer("name").operator`.
 - Panels use `Prefixer("name").panel`.
 - Menus use `Prefixer("name").menu`.
 - UI lists use `Prefixer("name").list`.
-- Add a missing ID helper to the inherited `Prefixer` implementation before
+- Add a missing ID helper to the inherited `ID` implementation before
   inventing a parallel naming system.
 - Follow the existing filename convention for feature classes:
   `OT_*` or `OP_*` for operators, `PT_*` or `PANEL_*` for panels, and `UI_*`

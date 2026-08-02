@@ -5,7 +5,7 @@ This document outlines the architectural patterns, coding standards, and develop
 ## 1. Project Architecture & Patterns
 
 ### 1.1 Prefixer System
-Standardize naming for operators, panels, and menus using the `Prefixer` class in `src/preferences.py` to prevent UI collisions.
+Standardize naming for operators, panels, and menus using the `ID` class in `src/preferences.py` to prevent UI collisions.
 - **Operator ID**: `sedaia_rigs_ot.your_op_name`
 - **Panel ID**: `SEDAIA_RIGS_PT_your_panel_name`
 - **Menu ID**: `SEDAIA_RIGS_MT_your_menu_name`

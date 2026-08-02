@@ -4,7 +4,7 @@ The Libs package is where all the utility functions and classes are stored. Thes
 from . import exceptions
 
 
-class Prefixer(str):
+class ID(str):
     @property
     def panel(self):
         return f"SEDAIA_RIGS_PT_{self}"
