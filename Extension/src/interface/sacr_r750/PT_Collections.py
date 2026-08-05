@@ -1,10 +1,9 @@
-from .lib import ui
-from ...lib import ID, ui as global_ui
-
+from .lib import types
+from ...sru_lib import ID, ui as global_ui
 import bpy.utils as U
 
 
-class PT_Collections(ui.types.SACR_UI73_Panel):
+class PT_Collections(types.SACR_UI73_Panel):
     bl_label = "Control Groups"
     bl_idname = ID("r750_collections").panel
     bl_order = 2

@@ -1,8 +1,7 @@
-import bpy
 import bpy.utils as U
 
-from .lib import ui, enums
-from ...lib import ID, ui as global_ui, image
+from .lib import enums, types
+from ...sru_lib import ID, ui as global_ui, image
 
 
 def toggle_collection(parent_ui, context, prop, label="Collection"):
@@ -71,7 +70,7 @@ def armor_material_panel(parent_ui, props, materials, section):
             box.prop(material.inputs["Location"], "default_value", text=input)
 
 
-class PT_Main(ui.types.SACR_UI73_Panel):
+class PT_Main(types.SACR_UI73_Panel):
     bl_label = "Main Panel"
     bl_order = 0
     bl_idname = ID("r750_main").panel

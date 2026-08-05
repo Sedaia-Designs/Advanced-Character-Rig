@@ -1,11 +1,10 @@
-import bpy
 import bpy.utils as U
 
-from .lib import ui, enums
-from ...lib import ID, ui as global_ui, image
+from .lib import ui, enums, types
+from ...sru_lib import ID, ui as global_ui
 
 
-class PT_Face(ui.types.SACR_UI73_Panel):
+class PT_Face(types.SACR_UI73_Panel):
     """
     Represents a Face Options panel in the user interface.
 
