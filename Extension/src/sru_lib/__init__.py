@@ -1,8 +1,9 @@
 """
-The Libs package is where all the utility functions and classes are stored. These functions do not directly use bpy, however, are relied on by the different operators. These can range anywhere from simple downloaders, to even image processing.
+The Lib's package is a central store for commonly used code artifacts, including but not limited to Types declarations, Image Data manipulations, Exception declarations, etc.
 """
 
 from . import exceptions
+from . import types
 
 
 class ID(str):

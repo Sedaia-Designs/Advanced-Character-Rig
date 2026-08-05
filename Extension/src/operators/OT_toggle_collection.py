@@ -3,14 +3,15 @@ import bpy.types as T
 import bpy.utils as U
 import bpy.props as P
 
-from ..lib import ID
+from ..sru_lib import ID
+
 
 # Operators
 class OT_toggle_collection(T.Operator):
     bl_idname = ID("toggle_collection").operator
-    bl_label="Toggle Collection"
+    bl_label = "Toggle Collection"
 
-    collection : P.StringProperty()
+    collection: P.StringProperty()
 
     def execute(self, context):
         obj = context.active_object
@@ -25,10 +26,12 @@ class OT_toggle_collection(T.Operator):
             collection.hide_viewport = True
             collection.hide_render = True
 
-        return {'FINISHED'}
+        return {"FINISHED"}
+
 
 def register():
     U.register_class(OT_toggle_collection)
+
 
 def unregister():
     U.unregister_class(OT_toggle_collection)

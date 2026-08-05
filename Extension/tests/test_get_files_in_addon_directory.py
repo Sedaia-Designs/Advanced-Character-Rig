@@ -7,22 +7,18 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
-
 MODULE_PATH = (
-    Path(__file__).parents[1]
-    / "src"
-    / "lib"
-    / "get_files_in_addon_directory.py"
+    Path(__file__).parents[1] / "src" / "sru_lib" / "finder.py"
 )
 extension_package = types.ModuleType("src")
 extension_package.__path__ = [str(MODULE_PATH.parents[1])]
-lib_package = types.ModuleType("src.lib")
+lib_package = types.ModuleType("src.sru_lib")
 lib_package.__path__ = [str(MODULE_PATH.parent)]
 preferences_module = types.ModuleType("src.preferences")
 preferences_module.get_preferences = lambda: None
 
 MODULE_SPEC = importlib.util.spec_from_file_location(
-    "src.lib.get_files_in_addon_directory",
+    "src.sru_lib.finder",
     MODULE_PATH,
 )
 addon_files = importlib.util.module_from_spec(MODULE_SPEC)
@@ -30,14 +26,22 @@ with patch.dict(
     sys.modules,
     {
         "src": extension_package,
-        "src.lib": lib_package,
-        "src.preferences": preferences_module,
+        "src.sru_lib": lib_package,
+        "preferences": preferences_module,
     },
 ):
     MODULE_SPEC.loader.exec_module(addon_files)
 
 
 class FindFilesInDirectoryWithFilterTests(unittest.TestCase):
+    def filtered_search(self, directory, pattern):
+        with patch.object(
+            addon_files,
+            "get_preferences",
+            return_value=SimpleNamespace(addon_data_location=directory),
+        ):
+            return addon_files.finder().filtered_search(pattern)
+
     def test_returns_only_files_matching_patterns(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -45,14 +49,7 @@ class FindFilesInDirectoryWithFilterTests(unittest.TestCase):
             (root / "character.blend1").touch()
             (root / "notes.txt").touch()
 
-            with patch.object(
-                addon_files,
-                "get_preferences",
-                return_value=SimpleNamespace(addon_data_location=directory),
-            ):
-                result = addon_files.find_files_in_addon_directory_with_filter(
-                    "*.blend*"
-                )
+            result = self.filtered_search(directory, "*.blend*")
 
         self.assertEqual(
             {Path(file).name for file in result},
@@ -66,14 +63,7 @@ class FindFilesInDirectoryWithFilterTests(unittest.TestCase):
             expected_file = nested_directory / "character.blend"
             expected_file.touch()
 
-            with patch.object(
-                addon_files,
-                "get_preferences",
-                return_value=SimpleNamespace(addon_data_location=directory),
-            ):
-                result = addon_files.find_files_in_addon_directory_with_filter(
-                    "*.blend*"
-                )
+            result = self.filtered_search(directory, "*.blend*")
 
         self.assertEqual(result, [str(expected_file)])
 
@@ -86,14 +76,7 @@ class FindFilesInDirectoryWithFilterTests(unittest.TestCase):
             for file in (blend_file, json_file, ignored_file):
                 file.touch()
 
-            with patch.object(
-                addon_files,
-                "get_preferences",
-                return_value=SimpleNamespace(addon_data_location=directory),
-            ):
-                result = addon_files.find_files_in_addon_directory_with_filter(
-                    ["*.blend", "*.json"]
-                )
+            result = self.filtered_search(directory, ["*.blend", "*.json"])
 
         self.assertEqual(set(result), {str(blend_file), str(json_file)})
 

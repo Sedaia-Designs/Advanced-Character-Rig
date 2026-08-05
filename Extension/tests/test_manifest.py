@@ -7,7 +7,6 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-
 PROJECT_ROOT = Path(__file__).parents[1]
 EXTENSION_ROOT = PROJECT_ROOT / "src"
 
@@ -22,38 +21,36 @@ def _load_module(name: str, path: Path):
 
 extension_package = types.ModuleType("src")
 extension_package.__path__ = [str(EXTENSION_ROOT)]
-lib_package = types.ModuleType("src.lib")
-lib_package.__path__ = [str(EXTENSION_ROOT / "lib")]
+lib_package = types.ModuleType("src.sru_lib")
+lib_package.__path__ = [str(EXTENSION_ROOT / "sru_lib")]
 rig_manager_package = types.ModuleType("src.rig_manager")
 rig_manager_package.__path__ = [str(EXTENSION_ROOT / "rig_manager")]
 rig_manager_lib_package = types.ModuleType("src.rig_manager.lib")
-rig_manager_lib_package.__path__ = [
-    str(EXTENSION_ROOT / "rig_manager" / "lib")
-]
+rig_manager_lib_package.__path__ = [str(EXTENSION_ROOT / "rig_manager" / "lib")]
 
 with patch.dict(
     sys.modules,
     {
         "src": extension_package,
-        "src.lib": lib_package,
+        "src.sru_lib": lib_package,
         "src.rig_manager": rig_manager_package,
         "src.rig_manager.lib": rig_manager_lib_package,
     },
 ):
     exceptions = _load_module(
-        "src.lib.exceptions",
-        EXTENSION_ROOT / "lib" / "exceptions.py",
+        "src.sru_lib.exceptions",
+        EXTENSION_ROOT / "sru_lib" / "exceptions.py",
     )
     hash_module = _load_module(
-        "src.lib.hash",
-        EXTENSION_ROOT / "lib" / "hash.py",
+        "src.sru_lib.hash",
+        EXTENSION_ROOT / "sru_lib" / "hash.py",
     )
 
-    http_module = types.ModuleType("src.lib.http")
+    http_module = types.ModuleType("src.sru_lib.http")
     lib_package.exceptions = exceptions
     lib_package.hash = hash_module
     lib_package.http = http_module
-    sys.modules["src.lib.http"] = http_module
+    sys.modules["src.sru_lib.http"] = http_module
 
     manifest = _load_module(
         "src.rig_manager.lib.manifest",

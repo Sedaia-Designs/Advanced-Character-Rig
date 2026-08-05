@@ -3,7 +3,8 @@ import bpy.types as T
 import bpy.props as P
 import bpy.utils as U
 
-from ..lib import ID
+from ..sru_lib import ID
+
 
 class OT_pack_image(T.Operator):
     bl_label = ""
@@ -24,8 +25,10 @@ class OT_pack_image(T.Operator):
             image.pack()
         return {"FINISHED"}
 
+
 def register():
     U.register_class(OT_pack_image)
+
 
 def unregister():
     U.unregister_class(OT_pack_image)

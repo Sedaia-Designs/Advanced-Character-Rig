@@ -4,7 +4,9 @@ import bpy.types as T
 import bpy.props as P
 import bpy.ops as O
 import bpy.utils as U
-from ..lib import ID
+from ..sru_lib import ID
+from ..sru_lib import types
+
 
 # Write Code Here
 class PT_Rig_Manager(T.Panel):
@@ -21,9 +23,7 @@ class PT_Rig_Manager(T.Panel):
 
 
 # Register and unregister classes
-classes = (
-    PT_Rig_Manager,
-)
+classes = (PT_Rig_Manager,)
 
 
 def register():

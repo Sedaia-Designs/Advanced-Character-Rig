@@ -2,12 +2,14 @@ import bpy
 import bpy.types as T
 import bpy.props as P
 import bpy.utils as U
-from ..lib import ID, exceptions
+from ..sru_lib import ID, exceptions
 from .lib import manifest
 from ..preferences import get_preferences as prefs
 
+
 class OT_download_available_riglist(T.Operator):
     """Download the SACR manifest from https://sakura-sedaia.com"""
+
     bl_idname = ID("download_sacr_manifest").operator
     bl_label = "Update SACR Manifest"
 
@@ -29,7 +31,9 @@ class OT_download_available_riglist(T.Operator):
 
         try:
             # Attempt to download the manifest
-            manifest.download(destination=download_to, timeout=prefs().online_access_timeout)
+            manifest.download(
+                destination=download_to, timeout=prefs().online_access_timeout
+            )
         except exceptions.HttpDownloadError as e:
             self.report({"ERROR"}, f"Error downloading SACR manifest: {e}")
             return {"CANCELLED"}
@@ -37,7 +41,9 @@ class OT_download_available_riglist(T.Operator):
             self.report({"ERROR"}, f"Error validating checksum for SACR manifest: {e}")
             return {"CANCELLED"}
         except ValueError as e:
-            self.report({"ERROR"}, f"Function could not run due to invalid parameter: {e}")
+            self.report(
+                {"ERROR"}, f"Function could not run due to invalid parameter: {e}"
+            )
             return {"CANCELLED"}
         except OSError as e:
             self.report({"ERROR"}, f"A file operation error has occurred: {e}")
@@ -51,6 +57,7 @@ class OT_download_available_riglist(T.Operator):
 
 def register():
     U.register_class(OT_download_available_riglist)
+
 
 def unregister():
     U.unregister_class(OT_download_available_riglist)

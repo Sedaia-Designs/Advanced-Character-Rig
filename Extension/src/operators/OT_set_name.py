@@ -2,7 +2,8 @@ import bpy.types as T
 import bpy.props as P
 import bpy.utils as U
 
-from ..lib import ID
+from ..sru_lib import ID
+
 
 class OT_set_name(T.Operator):
     bl_idname = ID("set_name").operator
@@ -25,8 +26,10 @@ class OT_set_name(T.Operator):
 
         return {"FINISHED"}
 
+
 def register():
     U.register_class(OT_set_name)
+
 
 def unregister():
     U.unregister_class(OT_set_name)

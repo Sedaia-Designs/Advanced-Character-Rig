@@ -1,12 +1,13 @@
 from pathlib import Path
 
-from ...lib import http, hash, exceptions
+from ...sru_lib import http, hash, exceptions
+
 
 def download(
-        source_url: str = "https://sakura-sedaia.com/json/sacr-index.json",
-        checksum_url: str = "https://sakura-sedaia.com/json/sacr-index.json.sha256",
-        destination: str | Path | None = None,
-        timeout: int = 5,
+    source_url: str = "https://sakura-sedaia.com/json/sacr-index.json",
+    checksum_url: str = "https://sakura-sedaia.com/json/sacr-index.json.sha256",
+    destination: str | Path | None = None,
+    timeout: int = 5,
 ) -> Path:
     """
     Download, update, or repair the local SACR manifest.
@@ -48,7 +49,9 @@ def download(
 
     # Download a complete validated pair if either local artifact is missing.
     if not manifest_local.exists() or not checksum_local.exists():
-        return http.download_with_checksum(source_url, checksum_url, manifest_local, timeout)["file_path"]
+        return http.download_with_checksum(
+            source_url, checksum_url, manifest_local, timeout
+        )["file_path"]
 
     checksum_remote = destination_dir / "sacr-index.json.sha256.tmp"
     manifest_remote = destination_dir / "sacr-index.json.tmp"
@@ -94,7 +97,9 @@ def download(
                 ) from e
 
             if hash.SHA256(manifest_remote).calculate() != sha256_remote:
-                raise exceptions.ChecksumValidationError(f"Could not validate remote manifest file.")
+                raise exceptions.ChecksumValidationError(
+                    f"Could not validate remote manifest file."
+                )
 
             manifest_remote.replace(manifest_local)
 

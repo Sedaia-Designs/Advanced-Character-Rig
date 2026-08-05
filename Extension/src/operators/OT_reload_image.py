@@ -3,7 +3,8 @@ import bpy.types as T
 import bpy.props as P
 import bpy.utils as U
 
-from ..lib import ID
+from ..sru_lib import ID
+
 
 class OT_reload_image(T.Operator):
     bl_label = ""
@@ -17,8 +18,10 @@ class OT_reload_image(T.Operator):
         bpy.data.images[self.path].reload()
         return {"FINISHED"}
 
+
 def register():
     U.register_class(OT_reload_image)
+
 
 def unregister():
     U.unregister_class(OT_reload_image)
