@@ -117,7 +117,7 @@ extension.
 - `Extension/src/loader.py`: feature-package loading and registration order.
 - `Extension/src/preferences.py`: addon preferences and extension-local storage.
 - `Extension/src/interface`: shared interface definitions.
-- `Extension/src/lib`: extension-wide reusable Python logic.
+- `Extension/src/sru_lib`: extension-wide reusable Python logic.
 - `Extension/src/rig_manager`: rig manager operators, panels, lists, and local
   reusable logic.
 - `Extension/src/skin_manager`: skin manager feature package.

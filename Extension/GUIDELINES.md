@@ -29,7 +29,7 @@ def unregister():
 ```
 
 ### 1.3 Library Centralization
-- **Shared Logic**: Common Blender or filesystem operations (e.g., file existence, network checks) belong in `src/lib/`.
+- **Shared Logic**: Common Blender or filesystem operations (e.g., file existence, network checks) belong in `src/sru_lib/`.
 - **Module Logic**: Complex module-specific logic (e.g., skin application, rig downloading) must be in a `lib/` subfolder within that module.
 - **Thin Operators**: Operators should be thin wrappers that call library functions.
 
