@@ -8,11 +8,11 @@ maintained together here.
 
 ## What's in this repository?
 
-| Component | Purpose | Start here |
-| --- | --- | --- |
-| [`Character-Rig/`](Character-Rig/) | SACR `.blend` releases and source assets | [Project documentation](https://docs.sakura-sedaia.com) |
-| [`Extension/`](Extension/) | Sakura Rig Utilities extension source and automated tests | [Project documentation](https://docs.sakura-sedaia.com) |
-| [`Extra-Scripts/`](Extra-Scripts/) | Standalone helpers for interactive, one-off Blender tasks | The script that matches the task |
+| Component                          | Purpose                                                   | Start here                                              |
+|------------------------------------|-----------------------------------------------------------|---------------------------------------------------------|
+| [`Character-Rig/`](Character-Rig/) | SACR `.blend` releases and source assets                  | [Project documentation](https://docs.sakura-sedaia.com) |
+| [`Extension/`](Extension/)         | Sakura Rig Utilities extension source and automated tests | [Project documentation](https://docs.sakura-sedaia.com) |
+| [`Extra-Scripts/`](Extra-Scripts/) | Standalone helpers for interactive, one-off Blender tasks | The script that matches the task                        |
 
 The rig files, extension, and scripts are intentionally separate. A helper
 script may rely on the current Blender file and is not automatically part of
@@ -51,7 +51,7 @@ It requires Blender 4.2 or newer. To install a released extension package:
 2. In Blender, open **Edit > Preferences > Extensions**.
 3. Open the menu in the upper-right, choose **Install from Disk…**, and select
    the downloaded `.zip`.
-4. Enable the extension, then open the 3D Viewport sidebar with `N` and find
+4. Enable the extension, then open the 3D Viewport sidebar with, and find
    the **Sedaia** tab.
 
 Sakura Rig Utilities is intended to become the preferred way to discover,
@@ -68,8 +68,13 @@ hosted project documentation.
 
 ## Development
 
+> [!NOTE]
+> It is recommended to use either Visual Studio Code or PyCharm using their associated Blender Development plugins. 
+> - For Visual Studio Code, install the [Blender Development]([https://marketplace.visualstudio.com/items?itemName=BlenderFoundation.blender-development](https://marketplace.visualstudio.com/items?itemName=JacquesLucke.blender-development)) extension by Jacques Lucke. 
+> - For PyCharm, install the [Blender Development](https://plugins.jetbrains.com/plugin/18389-blender-development) plugin by Sakura Sedaia.
+
 The Python development environment is defined by the root
-[`pyproject.toml`](pyproject.toml); extension source lives in `Extension/src`.
+[`pyproject.toml`](pyproject.toml); the extension source lives in `Extension/src`.
 Install [uv](https://docs.astral.sh/uv/) and a Python version compatible with
 the project (currently Python 3.13 or newer), then run from the repository
 root:
@@ -104,7 +109,9 @@ and [Fluxer](https://fluxer.gg/M9gYmCdr).
 
 ## License
 
-Licensing is component-specific. Consult
-[`Character-Rig/LICENSE`](Character-Rig/LICENSE) for rig assets and
-[`Extension/LICENSE`](Extension/LICENSE) for the Blender extension before
-redistributing or modifying a component.
+This Repository and all content featured within it are licensed under the GNU/GPL V3. Consult
+[`LICENSE`](LICENSE) for more information.
+
+## AI Usage
+
+This project was made in tandem with AI tools. AI was used to help write unit tests, documentation, code analysis and automate tasks. Very little of the actual source code was written using an LLM.

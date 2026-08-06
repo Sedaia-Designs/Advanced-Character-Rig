@@ -5,11 +5,11 @@ Utilities, or the repository's Blender helper scripts. This monorepo contains
 three independent components, so begin by choosing the component that owns the
 change:
 
-| Component | Use it for |
-| --- | --- |
-| `Character-Rig/` | Rig `.blend` files and rig assets |
-| `Extension/` | The Sakura Rig Utilities Blender Extension and its tests |
-| `Extra-Scripts/` | Standalone, interactive Blender helpers |
+| Component        | Use it for                                               |
+|------------------|----------------------------------------------------------|
+| `Character-Rig/` | Rig `.blend` files and rig assets                        |
+| `Extension/`     | The Sakura Rig Utilities Blender Extension and its tests |
+| `Extra-Scripts/` | Standalone, interactive Blender helpers                  |
 
 Do not move code between these components just because they share a repository.
 In particular, an extra script is not extension runtime code unless the change
@@ -37,9 +37,8 @@ or use-case details so the maintainers can evaluate it.
 4. Keep each merge request focused. Do not include unrelated cleanup, generated
    files, local Blender state, or downloaded assets.
 
-Please follow the applicable component license:
-[`Character-Rig/LICENSE`](Character-Rig/LICENSE) for the rig and assets, and
-[`Extension/LICENSE`](Extension/LICENSE) for the extension.
+This Repository and all content featured within it are licensed under the GNU/GPL V3. Consult
+[`LICENSE`](LICENSE) for more information.
 
 ## Documentation
 
@@ -95,11 +94,17 @@ the extension package at `Extension/src`. The bundled `fake-bpy-module` package
 provides editor-facing Blender API stubs; it supports completion and static
 inspection but cannot validate Blender runtime behavior.
 
-### PyCharm with Blender Development for PyCharm
-
 This project uses Sakura Sedaia's
 [Blender Development for PyCharm](https://www.sakura-sedaia.com/projects/blender-development)
-plugin. It is not yet published on the JetBrains Marketplace, so obtain its
+plugin. It is recommended to use PyCharm 2026.1 or newer when developing on this project to make use
+of the latest configuration settings. A Visual Studio Code workspace is also available
+for those who prefer that IDE and/or don't want to use PyCharm.
+
+Other IDEs may be used but do not have preset configurations for this project.
+
+### PyCharm with Blender Development for PyCharm
+
+It is not yet published on the JetBrains Marketplace, so obtain its
 plugin archive from the project page and install it manually:
 
 1. In PyCharm, open **Settings/Preferences > Plugins**.
@@ -122,7 +127,7 @@ plugin's generated link configuration to work around an extension error.
 
 ### Visual Studio Code with Blender Development
 
-1. pen the root-level [`vs-code.code-workspace`](vs-code.code-workspace) file
+1. Open the root-level [`vs-code.code-workspace`](vs-code.code-workspace) file
    with **File > Open Workspace from File…**. It opens this monorepo at the
    same root level used by the shared PyCharm configuration. Do not open an
    individual component folder instead.
