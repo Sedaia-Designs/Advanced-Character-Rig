@@ -4,6 +4,7 @@ The Lib's package is a central store for commonly used code artifacts, including
 
 from . import exceptions
 from . import types
+from . import archiveutil
 
 
 class ID(str):
