@@ -4,12 +4,9 @@ import tempfile
 import types
 import unittest
 from pathlib import Path
-from types import SimpleNamespace
 from unittest.mock import patch
 
-MODULE_PATH = (
-    Path(__file__).parents[1] / "src" / "sru_lib" / "finder.py"
-)
+MODULE_PATH = Path(__file__).parents[1] / "src" / "sru_lib" / "file.py"
 extension_package = types.ModuleType("src")
 extension_package.__path__ = [str(MODULE_PATH.parents[1])]
 lib_package = types.ModuleType("src.sru_lib")
@@ -18,7 +15,7 @@ preferences_module = types.ModuleType("src.preferences")
 preferences_module.get_preferences = lambda: None
 
 MODULE_SPEC = importlib.util.spec_from_file_location(
-    "src.sru_lib.finder",
+    "src.sru_lib.file",
     MODULE_PATH,
 )
 addon_files = importlib.util.module_from_spec(MODULE_SPEC)
@@ -35,12 +32,7 @@ with patch.dict(
 
 class FindFilesInDirectoryWithFilterTests(unittest.TestCase):
     def filtered_search(self, directory, pattern):
-        with patch.object(
-            addon_files,
-            "get_preferences",
-            return_value=SimpleNamespace(addon_data_location=directory),
-        ):
-            return addon_files.finder().filtered_search(pattern)
+        return addon_files.Search(directory).filtered_walk(pattern)
 
     def test_returns_only_files_matching_patterns(self):
         with tempfile.TemporaryDirectory() as directory:

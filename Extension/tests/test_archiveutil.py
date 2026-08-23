@@ -7,9 +7,8 @@ import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
-
 EXTENSION_ROOT = Path(__file__).parents[1] / "src"
-ARCHIVEUTIL_PATH = EXTENSION_ROOT / "sru_lib" / "archiveutil.py"
+FILE_PATH = EXTENSION_ROOT / "sru_lib" / "file.py"
 EXCEPTIONS_PATH = EXTENSION_ROOT / "sru_lib" / "exceptions.py"
 
 extension_package = types.ModuleType("src")
@@ -34,7 +33,7 @@ with patch.dict(
     },
 ):
     exceptions = _load_module("src.sru_lib.exceptions", EXCEPTIONS_PATH)
-    archiveutil = _load_module("src.sru_lib.archiveutil", ARCHIVEUTIL_PATH)
+    file_util = _load_module("src.sru_lib.file", FILE_PATH)
 
 
 class ZipExtractionTests(unittest.TestCase):
@@ -63,7 +62,7 @@ class ZipExtractionTests(unittest.TestCase):
         )
         destination = self.root / "extracted"
 
-        archiveutil.Zip(self.archive_path).extract(
+        file_util.Zip(self.archive_path).extract(
             destination,
             only_glob=["*.py"],
             max_depth=1,
@@ -82,7 +81,7 @@ class ZipExtractionTests(unittest.TestCase):
         self.write_archive({"file1.txt": "root", "Subdir/file2.py": "nested"})
         destination = self.root / "extracted"
 
-        archiveutil.Zip(self.archive_path).extract(destination, only_glob=[])
+        file_util.Zip(self.archive_path).extract(destination, only_glob=[])
 
         self.assertTrue((destination / "file1.txt").is_file())
         self.assertTrue((destination / "Subdir" / "file2.py").is_file())
@@ -91,7 +90,7 @@ class ZipExtractionTests(unittest.TestCase):
         self.write_archive({"../outside.txt": "unsafe"})
 
         with self.assertRaises(exceptions.UnsafeArchiveMemberError):
-            archiveutil.Zip(self.archive_path).extract(
+            file_util.Zip(self.archive_path).extract(
                 self.root / "extracted",
                 only_glob=[],
             )
@@ -100,7 +99,7 @@ class ZipExtractionTests(unittest.TestCase):
         self.write_archive({"Subdir\\outside.txt": "unsafe"})
 
         with self.assertRaises(exceptions.UnsafeArchiveMemberError):
-            archiveutil.Zip(self.archive_path).extract(
+            file_util.Zip(self.archive_path).extract(
                 self.root / "extracted",
                 only_glob=[],
             )
@@ -109,7 +108,7 @@ class ZipExtractionTests(unittest.TestCase):
         self.archive_path.write_text("not a zip")
 
         with self.assertRaises(exceptions.ArchiveExtractionError):
-            archiveutil.Zip(self.archive_path).extract(
+            file_util.Zip(self.archive_path).extract(
                 self.root / "extracted",
                 only_glob=[],
             )

@@ -1,9 +1,60 @@
+import os
 import zipfile
-
-from fnmatch import fnmatchcase
+from fnmatch import fnmatch, fnmatchcase
 from pathlib import Path, PurePosixPath, PureWindowsPath
-
 from . import exceptions
+
+
+class Search:
+    """
+    Finder is a utility class for searching and listing files in a specified directory.
+
+    This class is designed to perform file-related operations including listing all files
+    in a directory and filtering files based on specified patterns. The search functionality
+    supports shell-style wildcard matching and is case-sensitive.
+
+    Attributes:
+        path (str): The base directory path where file operations are performed.
+    """
+
+    def __init__(self, path: str | Path):
+        self.path = path
+
+    def filtered_walk(self, pattern: str | list[str]) -> list[str]:
+        """
+        Searches for files in a directory that match given patterns.
+
+        This method traverses the directory structure starting from the specified path
+        and searches for files whose names match one or more patterns provided. The
+        search is case-sensitive and uses shell-style wildcards for pattern matching.
+
+        Arguments:
+            pattern (str | list[str]): A single string pattern or a list of string
+                patterns to search for. Patterns follow shell-style wildcard rules.
+
+        Returns:
+            list[str]: A list of file paths that match the specified patterns.
+        """
+        walkList: list[str] = [
+            os.path.join(root, file)
+            for root, _, files in os.walk(self.path)
+            for file in files
+        ]
+        if type(pattern) is str:
+            pattern = [pattern]
+        return [
+            file
+            for file in walkList
+            if any(fnmatch(Path(file).name, pattern) for pattern in pattern)
+        ]
+
+    def walk(self) -> list[str]:
+        """Get all files in the provided directory."""
+        return [
+            os.path.join(root, file)
+            for root, _, files in os.walk(self.path)
+            for file in files
+        ]
 
 
 class Zip:
@@ -98,3 +149,7 @@ class Zip:
             )
 
         return member_path
+
+
+if __name__ == "__main__":
+    print(find_files_in_directory_with_filter("*.blend*"))
