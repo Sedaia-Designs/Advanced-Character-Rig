@@ -83,11 +83,6 @@ class PT_Main(types.SACR_UI73_Panel):
         collections = obj.data.collections_all
 
         main = pose["Rig_Properties"]
-        face = pose["Face_Properties"]
-        eyebrow = pose["Eyebrow_Properties"]
-        eyes = pose["Eye_Properties"]
-        mouth = pose["Mouth_Properties"]
-        python = pose["PythonConfig.Objects"]
         py_panel_helper = pose["PythonConfig.PanelHelper"]
         root = pose["SACR_Root"]
 
@@ -104,6 +99,7 @@ class PT_Main(types.SACR_UI73_Panel):
             ui.prop(
                 collections["Python"], "is_visible", text="Python Config", icon="PLUGIN"
             )
+            ui.label(text="Test")
 
         ui.prop(
             root.constraints["NormalizeScale"],
