@@ -5,6 +5,7 @@ from typing import TypedDict
 from . import exceptions
 from .hash import SHA256
 
+
 class DownloadWithChecksumResult(TypedDict):
     """
     Represents the result of a file download operation, including the file path,
@@ -21,9 +22,11 @@ class DownloadWithChecksumResult(TypedDict):
         sha256_string (str): The SHA-256 hash of the downloaded file as a
             string.
     """
+
     file_path: Path
     checksum_path: Path
     sha256_string: str
+
 
 def download(url: str, destination: str | Path, timeout: int) -> Path:
     """
@@ -50,8 +53,8 @@ def download(url: str, destination: str | Path, timeout: int) -> Path:
 
     try:
         with request.urlopen(
-                url,
-                timeout=timeout,
+            url,
+            timeout=timeout,
         ) as response:
             with destination_tmp.open("wb") as destination_file:
                 destination_file.write(response.read())
@@ -85,7 +88,9 @@ def download(url: str, destination: str | Path, timeout: int) -> Path:
     return destination
 
 
-def download_with_checksum(url: str, checksum_url: str, destination: str | Path, timeout: int) -> DownloadWithChecksumResult:
+def download_with_checksum(
+    url: str, checksum_url: str, destination: str | Path, timeout: int
+) -> DownloadWithChecksumResult:
     """
     Download a file and its SHA-256 checksum.
 
@@ -116,21 +121,24 @@ def download_with_checksum(url: str, checksum_url: str, destination: str | Path,
         try:
             checksum = SHA256(checksum_path_tmp).read()
         except exceptions.InvalidChecksumFileError as exc:
-            raise exceptions.ChecksumValidationError(f"Checksum validation failed for {url}") from exc
+            raise exceptions.ChecksumValidationError(
+                f"Checksum validation failed for {url}"
+            ) from exc
 
         download(url, file_tmp, timeout)
 
-
         if SHA256(file_tmp).calculate() != checksum:
-            raise exceptions.ChecksumValidationError(f"Checksum validation failed for {url}")
+            raise exceptions.ChecksumValidationError(
+                f"Checksum validation failed for {url}"
+            )
 
         file_tmp.replace(file_path)
         checksum_path_tmp.replace(checksum_path)
 
         return {
-            "file_path" : file_path,
-            "checksum_path" : checksum_path,
-            "sha256_string" : checksum
+            "file_path": file_path,
+            "checksum_path": checksum_path,
+            "sha256_string": checksum,
         }
 
     except Exception:
