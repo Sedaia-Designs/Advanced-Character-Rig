@@ -4,13 +4,9 @@ version = "4.0.0"
 requires-python = ">=3.13"
 dependencies = [
     "black==26.5.1",
-    "fake-bpy-module-5.2",
-    "pip>=26.1.2",
+    "fake-bpy-module",
+    "pip==26.2.1",
 ]
 
 [dependency-groups]
-dev = [
-    "black[d]>=26.5.1",
-    "numpy>=2.5.1",
-    "typing-extensions>=4.16.0",
-]
+dev = ["fake-bpy-module-5.1", "black[d]>=26.5.1", "numpy>=2.5.1", "typing-extensions>=4.16.0"]

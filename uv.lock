@@ -167,12 +167,21 @@ wheels = [
 ]
 
 [[package]]
-name = "fake-bpy-module-5-2"
+name = "fake-bpy-module"
+version = "20260823"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/54/58/b3f425f5100bfc6810179d80b4f81ac4adc6e793f3a568ec8c8b009b22b8/fake_bpy_module-20260823.tar.gz", hash = "sha256:ef1195ec9d727dfca2b18ed56b9c7a3ed71b9372143b2b5447e4b7c56f754a41", size = 960153, upload-time = "2026-08-23T06:24:53.922Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7d/55/165667a823a579787ba925dc54bc8bda12ddcaa929b7b6f33299e217123b/fake_bpy_module-20260823-py3-none-any.whl", hash = "sha256:3b07f7f66878c019a856aea835bf663a20b47a78823b96b4cf65545bc50fdc55", size = 1108186, upload-time = "2026-08-23T06:24:52.189Z" },
+]
+
+[[package]]
+name = "fake-bpy-module-5-1"
 version = "20260730"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/76/8c/95c6ead563863ff10551bb72e12305934e31f1dda152182aae125e80d2c9/fake_bpy_module_5_2-20260730.tar.gz", hash = "sha256:0db44b866f9bf6e018ec1802207481617529b6c9402930c92e9513205d6f4f34", size = 948626, upload-time = "2026-07-30T04:10:22.707Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9d/f6/c3c203b9382dec8cfa2dddf742d581ed969d7ce113556e8c8db8ce842d99/fake_bpy_module_5_1-20260730.tar.gz", hash = "sha256:a096129716f9fd82d80c86cc42215c9f2872b6b3d3f216f6a5530608cc3b670d", size = 906183, upload-time = "2026-07-30T04:10:25.908Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/79/89/a27073478c3d0154e2b62013dc7d405e0686fc1b75f0a3499f875fee43ae/fake_bpy_module_5_2-20260730-py3-none-any.whl", hash = "sha256:bc8faaafabd277b347128a2fb5189f7b635427812a1832e69295c14589965fe8", size = 1095618, upload-time = "2026-07-30T04:10:21.169Z" },
+    { url = "https://files.pythonhosted.org/packages/ef/40/271294000c56f81676341d488db124e6ab254104bad29a836f5697b73442/fake_bpy_module_5_1-20260730-py3-none-any.whl", hash = "sha256:fdbc8c6fcbe75ce49455012fc45c1e4328a206320224c75c1a653be94aba7038", size = 1048003, upload-time = "2026-07-30T04:10:24.438Z" },
 ]
 
 [[package]]
@@ -407,11 +416,11 @@ wheels = [
 
 [[package]]
 name = "pip"
-version = "26.1.2"
+version = "26.2.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/01/91/47e7d486260f618783899587af63ccf7980fb60245c3e63dd4571c6b57ad/pip-26.1.2.tar.gz", hash = "sha256:f49cd134c61cf2fd75e0ce2676db03e4054504a5a4986d00f8299ae632dc4605", size = 1840799, upload-time = "2026-05-31T17:33:58.56Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ae/15/4500e320e6b101ec3b719ae85b697d9940b6cda672bc555bd6016fc60c6f/pip-26.2.1.tar.gz", hash = "sha256:f6ad667e89a1fe78046c8f13232b247200f5258d7828f3f7883d660878e0813f", size = 1848877, upload-time = "2026-08-04T22:51:14.148Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5d/95/6b5cb3461ea5673ba0995989746db58eb18b91b54dbf331e72f569540946/pip-26.1.2-py3-none-any.whl", hash = "sha256:382ff9f685ee3bc25864f820aa50505825f10f5458ffff07e30a6d96e5715cab", size = 1813144, upload-time = "2026-05-31T17:33:56.772Z" },
+    { url = "https://files.pythonhosted.org/packages/f3/6e/1736e5b4ae2b778ef2f81c47d797de9f891d4d8acb047a24ca37a60294dd/pip-26.2.1-py3-none-any.whl", hash = "sha256:71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e", size = 1816632, upload-time = "2026-08-04T22:51:12.472Z" },
 ]
 
 [[package]]
@@ -530,13 +539,14 @@ version = "4.0.0"
 source = { virtual = "." }
 dependencies = [
     { name = "black" },
-    { name = "fake-bpy-module-5-2" },
+    { name = "fake-bpy-module" },
     { name = "pip" },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "black", extra = ["d"] },
+    { name = "fake-bpy-module-5-1" },
     { name = "numpy" },
     { name = "typing-extensions" },
 ]
@@ -544,13 +554,14 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "black", specifier = "==26.5.1" },
-    { name = "fake-bpy-module-5-2" },
-    { name = "pip", specifier = ">=26.1.2" },
+    { name = "fake-bpy-module" },
+    { name = "pip", specifier = "==26.2.1" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "black", extras = ["d"], specifier = ">=26.5.1" },
+    { name = "fake-bpy-module-5-1" },
     { name = "numpy", specifier = ">=2.5.1" },
     { name = "typing-extensions", specifier = ">=4.16.0" },
 ]
