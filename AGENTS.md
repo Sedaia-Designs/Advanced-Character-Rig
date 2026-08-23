@@ -358,6 +358,10 @@ practical, run them against a disposable copy of the intended Blender file.
 
 - Read `Extension/README.md`, `Extension/GUIDELINES.md`, this file,
   and the owning feature before broad extension changes.
+- `Blender-Docs/` is a local-only, plain-text reference copy of the Blender
+  5.2 manual and Python API. Use `rg` to consult its `.txt` pages when a
+  Blender API or documented behavior needs verification; do not modify,
+  regenerate, stage, or commit this downloaded reference corpus.
 - The canonical public Sakura Rig Utilities documentation is hosted at
   `docs.sakura-sedaia.com`. To edit a local checkout, optionally set
   `SACR_DOCS_ROOT` to that documentation repository's root; the Sakura Rig

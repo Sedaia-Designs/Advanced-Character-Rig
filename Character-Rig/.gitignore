@@ -1,9 +1,6 @@
-*.blend1
+# Rig source assets and private working files
 *.psd
-*.blend2
-*.blend3
-*.blend4
 *.docs
 *.assets
 *.hidden
-*/textures
+textures/

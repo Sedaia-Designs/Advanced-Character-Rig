@@ -6,44 +6,21 @@ Desktop.ini
 # Local workspace state
 .idea/
 .vscode/
-.hidden/
+/.hidden/
 .migration-backups/
+*.code-workspace
 
 # Python and test artifacts
 **/__pycache__/
 **/*.py[cod]
-Extension/.venv/
-Extension/venv/
-Extension/.cache/
-Extension/.mypy_cache/
-Extension/.pytest_cache/
-Extension/.ruff_cache/
-Extension/.coverage*
-Extension/htmlcov/
-Extension/dist/
-Extension/build/
-Sakura-Rig-Utilities/*.egg-info/
+**/*$py.class
+**/*.so
 
-# Extension-local and generated Blender artifacts
-Extension/.blender/
-Extension/.temp/
-Extension/.logs/
-Extension/.blender-docs/
-Extension/textures/
-Extension/linter/
-Sakura-Rig-Utilities/**/*.blend
-Sakura-Rig-Utilities/**/*.blend[0-9]*
-Sakura-Rig-Utilities/**/*.blend@
-Sakura-Rig-Utilities/**/*.blend~
-Sakura-Rig-Utilities/**/*.zip
-Sakura-Rig-Utilities/**/*.whl
-
-# Rig backup and private working files
-Character-Rig/**/*.blend[0-9]*
-Character-Rig/**/*.psd
-Character-Rig/**/*.docs
-Character-Rig/**/*.assets
-Character-Rig/**/textures/
+# Blender backup files
+**/*.blend[0-9]*
+**/*.blend@
+**/*.blend~
 
 # Agent-local state
 .junie/
+/Blender-Docs/
