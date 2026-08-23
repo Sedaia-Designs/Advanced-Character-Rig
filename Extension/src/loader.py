@@ -20,19 +20,18 @@ if "interface" in locals():
 else:
     from . import interface
 
-module = (
-    preferences,
-    operators,
-    interface,
-)
+module = (preferences, operators, interface, rig_manager)
+
 
 def register():
     for m in module:
         m.register()
 
+
 def unregister():
     for m in reversed(module):
         m.unregister()
+
 
 def reload_rig():
     for m in module:

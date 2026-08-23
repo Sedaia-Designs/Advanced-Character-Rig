@@ -17,10 +17,23 @@ class PT_Rig_Manager(T.Panel):
     bl_category = "Rig Manager"
 
     def draw(self, context):
-        layout = self.layout
-        layout.label(text="Rig Manager")
-        layout.operator(ID("download_sacr_manifest").operator)
 
+        scene = context.scene
+
+        layout = self.layout
+        layout.label(text="Rig Manager Test")
+        layout.operator(ID("download_sacr_manifest").operator)
+        layout.template_list(
+            ID("rig_list").list, # listtype_name
+            "", # list_id, leave Empty
+            scene, # dataptr, Data from which to take the Collection Property
+            "sacr_rigs", # propname, Identifier of the Collection propery in data, never None
+            scene, # active_dataptr, Data from which to take the integer property, index of the active item (never None)
+            "selected_rig", # active_propname, Identifier of the integer property in active_data, index of the active item (never None)
+            rows=2,
+            maxrows=6,
+            columns=2
+        )
 
 # Register and unregister classes
 classes = (PT_Rig_Manager,)
