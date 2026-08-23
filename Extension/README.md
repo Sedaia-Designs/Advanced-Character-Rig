@@ -1,46 +1,7 @@
-# Sedaia Rig Interfaces
+# SACR R7.4.1 Archive Extension
 
-Sedaia Rig Interfaces (formerly Sakura's Rig Interfaces) is a modern, modular Blender extension designed to provide advanced UI controls and management tools for Sakura's Rigs. It features a robust rig-specific property system, streamlined rig and skin management, and a collection of utility operators to enhance the rigging workflow.
+Install this directory with Blender's **Get Extensions** menu. It packages the
+legacy R7.4.1 controls with the shared `sacr_core.skin_api` skin service.
 
----
-
-## Key Features
-
-Sedaia Rig Interfaces is currently in early development. Its planned tools and
-interfaces are still being built, so features may be incomplete or unavailable.
-
----
-
-## Installation
-
-### Prerequisites
-- **Blender 4.2 or newer** (Supports the new Extensions system).
-
-### Steps
-1. Download the latest `.zip` release from the [GitLab Releases page](https://gitlab.com/sedaia-designs/advanced-character-rig/-/releases) or the [Blender Extensions platform](https://extensions.blender.org/add-ons/sakura-rig-interfaces/).
-2. In Blender, go to **Edit > Preferences > Extensions**.
-3. Click the arrow in the top right and select **Install from Disk...**.
-4. Select the downloaded `.zip` file.
-5. Ensure the extension is enabled.
-
----
-
-## Usage
-
-1. Open a Sakura Character Rig (available at [sakura-sedaia.com](https://sakura-sedaia.com/rigs/sacr)).
-2. Locate the **Sedaia** tab in the Sidebar (`N` panel) of the 3D Viewport.
-3. Use the **Rig Manager** to fetch new rigs or the **Skin Manager** to apply custom textures.
-4. Adjust rig-specific settings in the **SACR R7 UI** panels.
-
----
-
-## Documentation
-
-Comprehensive documentation is available in the [project wiki](https://wiki.sakura-sedaia.com/docs/sedaia-rig-interface/index.html).
-
----
-
-## Credits
-
-- Developed by **Sakura Sedaia**.
-- Built using **Blender's Extension System**.
+The panels appear only when the active armature advertises the matching SACR
+R7 UI2 identifier. The extension requires Blender 5.0 or newer.
