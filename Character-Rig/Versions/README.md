@@ -1,20 +1,30 @@
 # Versions Archive
 
-Archived builds are organized by project family and semantic version:
+The source rig archive follows the same channel and version hierarchy as the
+[CDN upload tree](../CDN-Upload/sakura-character-rig/):
 
 ```text
 Versions/
-├── Legacy/
-│   └── SAMR <major.minor.patch>/
-└── SACR R<major>/
-    └── R<major.minor.patch>/
-        ├── Dev/       # Pre-release and development builds, when available
-        └── Extras/    # Release-specific supporting assets, when available
+├── release/
+│   └── R<major>/<major.minor.patch>/
+├── beta/
+│   └── B<major>/<major.minor.patch>/
+└── canary/
+    └── C<major>/<major.minor.patch>/
 ```
 
-Stable release files live directly in their version directory. Development builds
-and release-specific extras remain inside the version they belong to. Development
-builds for an abandoned version number are filed under the release they transitioned
-into rather than creating a version directory for an unreleased version.
+Each version directory holds its `.blend` files and any version-specific notes,
+images, or extras. Legacy SAMR releases use `release/R0/<version>/` and retain
+the `SAMR` filename prefix. Release candidates and Beta builds belong in
+`beta`; Alpha and Proto builds belong in `canary`.
 
-See the project [changelog](../CHANGELOG.md) for documented release dates and changes.
+Rig filenames follow the [build naming conventions](../../README.md#build-naming-conventions):
+`SACR.<channel><major.minor.patch>[-modifier].blend`, with `R`, `B`, or `C`
+for the channel. For example, `release/R7/7.2.0/SACR.R7.2.0-Standard.blend`
+is a source rig. The corresponding download is a ZIP under
+`CDN-Upload/sakura-character-rig/release/R7/7.2.0/`; upload archive names omit
+`.blend`. The Pack ZIPs for releases 7.2.0 through 7.4.1 also include the
+companion `SRGUI.R3.1.0.zip`.
+
+Do not edit a source `.blend` through the CDN copy. Rebuild the matching ZIP
+after changing a rig or its supporting files.

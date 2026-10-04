@@ -1,0 +1,43 @@
+Sakuras Advanced Character Rig
+Version: V2
+
+Features:
+  Advanced Facerig
+  HD Skin+Eye Support (Full HD Skins dont work on extruded version)
+  125 Degree Sharp Bends
+  FK + Global IK + Local IK Controls for Arms and Legs
+  Armor
+  
+Changelog V2:
+    Changed:
+        * All Face controls have been moved to the new Face Control Object
+        * Tweaked Mouth Function, should be better for Movement
+        * Tweaked Alex Arms
+        * Added Shape Keys to the wrists
+        * New Material Object, now displays Face Materials when Face is enabled.
+        * Tweaked Torso Rotation (AGAIN)
+        * Higher Poly Count in Viewport
+        * Pupils now selectable by default
+        * Extrudable version of the rig is making a return
+        
+        
+    Added:
+        + IK Foot Switchers
+        + Armor
+        + New Face Control Panel
+        + Female Mode
+        + Emotion Controls to the Mouth
+        + Pupils now scale when Main Controller is Scaled
+        + Added Pointy Teeth to Teeth Mesh
+        
+    Removed:
+        - Removed Easy Pupil UV's
+            * These were removed because it added more UV Maps that were unneccesary, it is recomended the UV's on the eyes be edited manually:
+        
+
+Notes:
+    SACR is designed to be used with HD skins, as such UV's on the base model are set to match, making Extruding ugly unless you want to fix the UV's yourself.
+    
+    In SACR V1.1a the Pupils had a Easy UV Control, I am removing this because each HD eye is different, some are shaped differently, and some are not aligned with the 64x64 Pixel Alignment, as such the UV's must be changed Manually through the UV Editor which is why Pupils are left Selectable
+    
+    Fancy Feet are not in this version, they may appear later on in the future when I learn how to make them, but for now there is none.

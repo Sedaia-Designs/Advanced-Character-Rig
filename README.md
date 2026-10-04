@@ -22,6 +22,22 @@ Historical branches and tags imported from the former rig and extension
 repositories use the `rig/` and `extension/` namespaces. Stable releases,
 experimental builds, and older files remain available for long-term access.
 
+### Build Naming Conventions:
+
+There is a very specific build name convention that I have adopted on October 4th, 2026 that clears up 
+development branches from stable. Each rig will have 3 channels, the Stable/Release, Beta, and Canary. 
+
+| Prefix | Branch                 | Purpose                                                                                                             |
+|--------|------------------------|---------------------------------------------------------------------------------------------------------------------|
+| R      | Stable/Release         | The stable channel are production ready rigs that are able to be used in production environments                    |
+| B      | Beta/Release Candidate | These rigs are mostly stable, but not quite ready for production as they have a few rough patches to iron out       |
+| C      | Alpha/Canary           | These rigs are **not** ready for production, and are solely meant for experimentation and development environments. |
+
+The filename hierarchy will always be `SACR.<Branch>X.X.X-<Modifier>`, with modifier suffix being the type of build or pre-release, and will be omitted when not necessary. 
+E.g. Release 7.0.0 Lite will be `SACR.R7.0.0-Lite`, 7.2.0 Beta 2 will be `SACR.B7.2.0-B02`, Release 6.3.1 Standard is `SACR.R6.3.1`
+
+Version Archives with a `Packaged` type, typically the Rig file and the associated addon, will always have the `-Pack` Suffix.
+
 ## Use SACR
 
 1. Browse [`Character-Rig/Versions/`](Character-Rig/Versions/) and select the
