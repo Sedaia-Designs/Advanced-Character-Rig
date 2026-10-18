@@ -1,7 +1,7 @@
 import bpy.utils as U
 
-from .lib import ui, enums, types
-from .lib import ID, RIG_ID_GROUP, ui as global_ui
+from ..ui import ui, enums, types
+from ..ui import ID, RIG_ID_GROUP, ui as global_ui
 
 
 class PT_Face(types.SACR_UI750_Panel):

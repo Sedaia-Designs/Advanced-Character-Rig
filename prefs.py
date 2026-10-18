@@ -20,7 +20,7 @@ from bpy.props import StringProperty, BoolProperty
 from bpy.types import AddonPreferences, Context, Preferences, Operator
 import bpy
 
-from .sacr_core.lib import ID
+from .core.ids import ID
 
 bl_info = {
     "name": __package__,  # UI Name

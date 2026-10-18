@@ -8,34 +8,18 @@ if "prefs" in locals():
 else:
     from . import prefs
 
-if "skin_ui" in locals():
-    reload(skin_ui)
+if "skins" in locals():
+    reload(skins)
 else:
-    from .sedaia_ui import SKIN_utility_ui as skin_ui
+    from .features import skins
 
-if "skin_api" in locals():
-    reload(skin_api)
+if "rigs" in locals():
+    reload(rigs)
 else:
-    from .sacr_core import skin_api
-
-if "sacr_r7_legacy" in locals():
-    reload(sacr_r7_legacy)
-else:
-    from .sedaia_ui import SACR_R7_UI1 as sacr_r7_legacy
-
-if "sacr_r741" in locals():
-    reload(sacr_r741)
-else:
-    from .sedaia_ui import SACR_R7_UI2 as sacr_r741
+    from .features import rigs
 
 
-if "sacr_r750" in locals():
-    reload(sacr_r750)
-else:
-    from .sedaia_ui import SACR_R7_UI3 as sacr_r750
-
-
-modules = (prefs, skin_ui, skin_api, sacr_r7_legacy, sacr_r741, sacr_r750)
+modules = (prefs, rigs, skins)
 
 
 def register():

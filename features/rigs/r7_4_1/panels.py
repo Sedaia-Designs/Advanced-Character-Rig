@@ -2,8 +2,9 @@
 import bpy
 from bpy.types import Panel, PoseBone
 from bpy.props import EnumProperty
-from ..sacr_core import skin_api as utils
-from ..sacr_core.lib import ID
+from ....core.blender import find_named, is_packed
+from ....core.ids import ID
+from ..shared import OPS as utility_ops
 # endregion
 # region Manifest
 bl_info = {
@@ -135,10 +136,10 @@ class SACR7_UI2_ui_global(SACR7_UI2_panel, Panel):
         rig_bc = rig_data.collections_all
         rig_child = rig.children_recursive
 
-        mat_obj = utils.lookup_name(
+        mat_obj = find_named(
             bl_list=rig_child, query=config_objs['materials'])
 
-        meshCol = utils.lookup_name(
+        meshCol = find_named(
             bl_list=rig_col.children, query="Mesh")
 
         lite = rig_data['lite']
@@ -156,19 +157,19 @@ class SACR7_UI2_ui_global(SACR7_UI2_panel, Panel):
         row.prop(rig_data, '["Rig Name"]', text="Rig Name")
 
         rename = row.operator(
-            utils.ops["rig_rename"], icon="FILE_REFRESH", text="")
+            utility_ops["rig_rename"], icon="FILE_REFRESH", text="")
         rename.name = rig_data['Rig Name']
         rename.update_collection = True
 
         row = panel.row()
         row.label(text="Skin Texture")
         row = panel.row(align=True)
-        row.operator(utils.ops['image_pack'], icon="PACKAGE" if utils.is_packed(
+        row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
             skinTex) else "UGLYPACKAGE", text="").path = skinTex.name
         row = row.row(align=True)
-        row.enabled = not utils.is_packed(skinTex)
+        row.enabled = not is_packed(skinTex)
         row.prop(skinTex, "filepath", text="")
-        row.operator(utils.ops['image_reload'], icon="FILE_REFRESH",
+        row.operator(utility_ops['image_reload'], icon="FILE_REFRESH",
                      text="").path = skinTex.name
 
         row = panel.row()
@@ -268,7 +269,7 @@ class SACR7_UI2_sui_eyebrows(SACR7_UI2_face_panel, Panel):
 
         rig_child = rig.children_recursive
 
-        mat_obj = utils.lookup_name(
+        mat_obj = find_named(
             bl_list=rig_child, query=config_objs['materials'])
 
 
@@ -426,7 +427,7 @@ class SACR7_UI2_sui_iris(SACR7_UI2_face_panel, Panel):
         # set Child Object Indices
         rig_child = rig.children_recursive
 
-        mat_obj = utils.lookup_name(
+        mat_obj = find_named(
             bl_list=rig_child, query=config_objs['materials'])
 
         iris_mat = mat_obj.material_slots[1].material.node_tree
@@ -628,12 +629,12 @@ class SACR7_UI2_sui_iris(SACR7_UI2_face_panel, Panel):
                 row = panel_ui.row(align=True)
                 row.enabled = iris_shad.inputs[43].default_value > 0
                 row = row.row(align=True)
-                row.operator(utils.ops['image_pack'], icon="PACKAGE" if utils.is_packed(
+                row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
                     pupil_tex) else "UGLYPACKAGE", text="").path = pupil_tex.name
                 row = row.row(align=True)
-                row.enabled = not utils.is_packed(pupil_tex)
+                row.enabled = not is_packed(pupil_tex)
                 row.prop(pupil_tex, "filepath", text="")
-                row.operator(utils.ops['image_reload'], icon="FILE_REFRESH",
+                row.operator(utility_ops['image_reload'], icon="FILE_REFRESH",
                              text="").path = pupil_tex.name
 
 
@@ -667,7 +668,7 @@ class SACR7_UI2_sui_sclera(SACR7_UI2_face_panel, Panel):
         # set Child Object Indices
         rig_child = rig.children_recursive
 
-        mat_obj = utils.lookup_name(
+        mat_obj = find_named(
             bl_list=rig_child, query=config_objs['materials'])
 
         iris_mat = mat_obj.material_slots[2].material.node_tree
@@ -828,7 +829,7 @@ class SACR7_UI2_sui_mouth(SACR7_UI2_face_panel, Panel):
         # set Child Object Indices
         rig_child = rig.children_recursive
 
-        mat_obj = utils.lookup_name(
+        mat_obj = find_named(
             bl_list=rig_child, query=config_objs['materials'])
 
         mouth_back = mat_obj.material_slots[3].material.node_tree.nodes['Material']
@@ -1095,7 +1096,7 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
         # set Child Object Indices
         rig_child = rig.children_recursive
 
-        mat_obj = utils.lookup_name(
+        mat_obj = find_named(
             bl_list=rig_child, query=config_objs['materials'])
 
         mainProp = rig_bones[config_objs["main"]]
@@ -1113,12 +1114,12 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
         Mat = mat_obj.material_slots[8].material.node_tree.nodes["Armor Texture"].image
 
         row = column.row(align=True)
-        row.operator(utils.ops['image_pack'], icon="PACKAGE" if utils.is_packed(
+        row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
             Mat) else "UGLYPACKAGE", text="").path = Mat.name
         row = row.row(align=True)
-        row.enabled = not utils.is_packed(Mat)
+        row.enabled = not is_packed(Mat)
         row.prop(Mat, "filepath", text="")
-        row.operator(utils.ops['image_reload'], icon="FILE_REFRESH",
+        row.operator(utility_ops['image_reload'], icon="FILE_REFRESH",
                      text="").path = Mat.name
 
         column.separator(type='SPACE')
@@ -1133,12 +1134,12 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
         Mat = mat_obj.material_slots[9].material.node_tree.nodes["Armor Texture"].image
 
         row = column.row(align=True)
-        row.operator(utils.ops['image_pack'], icon="PACKAGE" if utils.is_packed(
+        row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
             Mat) else "UGLYPACKAGE", text="").path = Mat.name
         row = row.row(align=True)
-        row.enabled = not utils.is_packed(Mat)
+        row.enabled = not is_packed(Mat)
         row.prop(Mat, "filepath", text="")
-        row.operator(utils.ops['image_reload'], icon="FILE_REFRESH",
+        row.operator(utility_ops['image_reload'], icon="FILE_REFRESH",
                      text="").path = Mat.name
 
         column.separator(type='SPACE')
@@ -1153,12 +1154,12 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
         Mat = mat_obj.material_slots[10].material.node_tree.nodes["Armor Texture"].image
 
         row = column.row(align=True)
-        row.operator(utils.ops['image_pack'], icon="PACKAGE" if utils.is_packed(
+        row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
             Mat) else "UGLYPACKAGE", text="").path = Mat.name
         row = row.row(align=True)
-        row.enabled = not utils.is_packed(Mat)
+        row.enabled = not is_packed(Mat)
         row.prop(Mat, "filepath", text="")
-        row.operator(utils.ops['image_reload'], icon="FILE_REFRESH",
+        row.operator(utility_ops['image_reload'], icon="FILE_REFRESH",
                      text="").path = Mat.name
 
         column.separator(type='SPACE')
@@ -1173,12 +1174,12 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
         Mat = mat_obj.material_slots[11].material.node_tree.nodes["Armor Texture"].image
 
         row = column.row(align=True)
-        row.operator(utils.ops['image_pack'], icon="PACKAGE" if utils.is_packed(
+        row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
             Mat) else "UGLYPACKAGE", text="").path = Mat.name
         row = row.row(align=True)
-        row.enabled = not utils.is_packed(Mat)
+        row.enabled = not is_packed(Mat)
         row.prop(Mat, "filepath", text="")
-        row.operator(utils.ops['image_reload'], icon="FILE_REFRESH",
+        row.operator(utility_ops['image_reload'], icon="FILE_REFRESH",
                      text="").path = Mat.name
 
 

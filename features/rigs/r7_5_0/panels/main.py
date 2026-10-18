@@ -1,8 +1,8 @@
 import bpy.utils as U
 
-from .lib import enums, types
-from .lib import ID, RIG_ID_GROUP, ui as global_ui, image
-from ...sacr_core import skin_api
+from ..ui import enums, types
+from ..ui import ID, RIG_ID_GROUP, ui as global_ui, image
+from ...shared import OPS as utility_ops
 
 
 def toggle_collection(parent_ui, context, prop, label="Collection"):
@@ -117,7 +117,7 @@ class PT_Main(types.SACR_UI750_Panel):
         ui.label(text="Skin Texture")
         row = ui.row(align=True)
         row.operator(
-            skin_api.ops["image_pack"],
+            utility_ops["image_pack"],
             icon="PACKAGE" if image.is_packed(skin) else "UGLYPACKAGE",
             text="",
         ).path = skin.name
@@ -126,7 +126,7 @@ class PT_Main(types.SACR_UI750_Panel):
         filepath_ui.enabled = not image.is_packed(skin)
         filepath_ui.prop(skin, "filepath", text="")
         filepath_ui.operator(
-            skin_api.ops["image_reload"], icon="FILE_REFRESH", text=""
+            utility_ops["image_reload"], icon="FILE_REFRESH", text=""
         ).path = skin.name
 
         row = ui.row(align=True)

@@ -12,7 +12,7 @@ dev = [
 ]
 
 [tool.pyright]
-include = ["__init__.py", "modules.py", "prefs.py", "sacr_core", "sedaia_ui", "Extra-Scripts"]
+include = ["__init__.py", "modules.py", "prefs.py", "core", "features", "scripts"]
 exclude = ["lib", ".venv", "**/__pycache__"]
 venvPath = "."
 venv = ".venv"

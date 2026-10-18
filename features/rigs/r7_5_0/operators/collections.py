@@ -5,7 +5,7 @@ import bpy.props as P
 import bpy.types as T
 import bpy.utils as U
 
-from .lib import ID, RIG_ID_GROUP
+from ..ui import ID, RIG_ID_GROUP
 
 
 class OT_toggle_collection(T.Operator):

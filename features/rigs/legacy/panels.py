@@ -1,4 +1,5 @@
-from ..sacr_core import skin_api as sedaia_utils
+from ....core.blender import is_packed
+from ..shared import OPS as utility_ops
 from bpy.types import Panel
 import bpy
 rig = "SACR"
@@ -83,12 +84,12 @@ class SEDAIA_PT_sacr_7_uiGlobal(Panel):
             row = layout.row()
             row.label(text="Skin Texture")
             row = layout.row(align=True)
-            row.operator(sedaia_utils.ops['image_pack'], icon="PACKAGE" if sedaia_utils.is_packed(
+            row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
                 skinTex) else "UGLYPACKAGE", text="").path = skinTex.name
             row = row.row(align=True)
-            row.enabled = not sedaia_utils.is_packed(skinTex)
+            row.enabled = not is_packed(skinTex)
             row.prop(skinTex, "filepath", text="")
-            row.operator(sedaia_utils.ops['image_reload'],
+            row.operator(utility_ops['image_reload'],
                          icon="FILE_REFRESH", text="").path = skinTex.name
 
             layout.separator(type="LINE")

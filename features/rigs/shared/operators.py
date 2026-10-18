@@ -11,12 +11,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Generic rig operators."""
+"""Shared file and rig operators used by SACR interface features."""
 
 from bpy.props import BoolProperty, StringProperty
 from bpy.types import Operator
+from bpy.ops import wm
+from bpy.utils import extension_path_user
 
-from .lib import ID
+from .... import prefs
+from ....core.ids import ID
+
+
+class FILE_open(Operator):
+    bl_label = "Open"
+    bl_idname = ID("file_open").operator_for("UTIL")
+
+    path: StringProperty(default=extension_path_user(prefs.bl_info["name"], create=True, path=""))
+
+    def execute(self, context):
+        wm.path_open(filepath=self.path)
+        return {"FINISHED"}
 
 
 class RIGS_set_name(Operator):

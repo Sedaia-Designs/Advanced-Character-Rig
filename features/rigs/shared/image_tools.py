@@ -17,8 +17,8 @@ import bpy
 from bpy.props import StringProperty
 from bpy.types import Operator
 
-from .common import is_packed
-from .lib import ID
+from ....core.blender import is_packed
+from ....core.ids import ID
 
 
 def pack_img(name):
