@@ -12,6 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 # region Imports and Common Variables
+from .SKIN_utility_ui import SEDAIA_SKIN_PT
 from .. import prefs
 from ..sacr_core.lib import ID
 from ..sacr_core import skin_api as sedaia_utils
@@ -36,44 +37,49 @@ bl_info = {
     "category": "Interface",
 }
 # endregion
-# region Module Settings
-class SEDAIA_SKIN_PT:
+
+# region Skin Utility
+class SEDAIA_SKIN_PT_ui_skinUtility(SEDAIA_SKIN_PT, Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Download Skins"
 
-# endregion
-# region Skin Utility
-class SEDAIA_SKIN_PT_ui_skinUtility(SEDAIA_SKIN_PT, Panel):
     # Panel Info
     bl_label = "Skin Utility"
-    bl_idname = ID("skin_utility_ui").panel_for("MAIN")
+    bl_idname = ID("skin_utility_ui_v2").panel_for("MAIN")
     bl_order = 0
 
-    utility_bone_name = "Sedaia.Skin_Utility_Config"
-    skin_path = prefs.config['player_default_dir']
-    cape_enable = False
+    skin_config_bone = "PythonConfig.Skin"
+    # Has the following options
+    # - RigName: String = SACR R7
+    # - SkinImageNodeID: String = Skin Texture
+    # - SyncArms: Boolean
+    # - SyncName: Boolean
+    # - Username: String
 
-    @classmethod
-    def poll(self, context):
-        try:
-            r = context.active_object
-            if r and r.type == "ARMATURE" and r.data:
-                if context.active_object.pose.bones[self.utility_bone_name] is not None:
-                    return True
-                else:
-                    return False
-            else:
-                return False
-        except (AttributeError, KeyError, TypeError):
-            return False
+    material_config_bone = "PythonConfig.Materials"
+    # Contains the material settings for:
+    # - armor_boots
+    # - armor_chestplate
+    # - armor_helmet
+    # - armor_leggings
+    # - eye_brow
+    # - eye_iris
+    # - eye_lash
+    # - eye_sclera
+    # - eye_sparkle
+    # - mouth_inside
+    # - mouth_teeth
+    # - skin
+
+    skin_path = prefs.config['player_default_dir']
 
     def draw(self, context):
         # Rig Data
         rig = context.active_object
         rig_bones = rig.pose.bones
         try:
-            skinProp = rig_bones[self.utility_bone_name]
+            skinProp = rig_bones[self.skin_config_bone]
         except KeyError:
             skinProp = None
 
@@ -103,9 +109,6 @@ class SEDAIA_SKIN_PT_ui_skinUtility(SEDAIA_SKIN_PT, Panel):
             b_col = p_row.column()
             b_col.prop(
                 skinProp, '["SyncArms"]', toggle=False, text="Sync Arm Type")
-            if self.cape_enable:
-                b_col.prop(
-                    skinProp, '["SyncCape"]', toggle=False, text="Sync Cape Status")
 
             b_col.prop(
                 skinProp, '["SyncName"]', toggle=False, text="Set Rig Name to Username")

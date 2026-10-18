@@ -1,4 +1,4 @@
-"""Explicit registration order for the archived SACR R7.4.1 extension."""
+"""Explicit registration order for supported SACR R7 interfaces."""
 
 from importlib import reload
 
@@ -18,6 +18,11 @@ if "skin_api" in locals():
 else:
     from .sacr_core import skin_api
 
+if "sacr_r7_legacy" in locals():
+    reload(sacr_r7_legacy)
+else:
+    from .sedaia_ui import SACR_R7_UI1 as sacr_r7_legacy
+
 if "sacr_r741" in locals():
     reload(sacr_r741)
 else:
@@ -30,7 +35,7 @@ else:
     from .sedaia_ui import SACR_R7_UI3 as sacr_r750
 
 
-modules = (prefs, skin_ui, skin_api, sacr_r741, sacr_r750)
+modules = (prefs, skin_ui, skin_api, sacr_r7_legacy, sacr_r741, sacr_r750)
 
 
 def register():

@@ -14,16 +14,20 @@
 # region Imports and Common Variables
 from .. import prefs
 from .lib import ID
+from .common import allow_online, download, file_exists, is_packed, lookup_name, retrieve_json
+from .file_ops import FILE_open
+from .image_ops import IMAGE_pack, IMAGE_reload, get_img, pack_img, reload_img
+from .rig_ops import RIGS_set_name
 from pathlib import Path
 from shutil import rmtree
 import json
 from base64 import b64decode
-from urllib import request, error
+from urllib import request
 import os
 from bpy.ops import wm
 import bpy.ops as O
 from bpy.utils import (extension_path_user, register_class, unregister_class)
-from bpy.props import (BoolProperty, StringProperty, IntProperty)
+from bpy.props import (BoolProperty, IntProperty)
 from bpy.types import (
     Menu,
     Operator,
@@ -101,135 +105,6 @@ menus: dict = {
     "skin_regen": ID("skin_regen").menu_for(menu_id),
     "skin_purge": ID("skin_purge").menu_for(menu_id),
 }
-
-
-# endregion
-# region Utility Functions (def)
-def allow_online():
-    return bpy.app.online_access
-
-
-def file_exists(path):
-    return Path(path).exists()
-
-
-def is_packed(file):
-    try:
-        return file.packed_files.values() != []
-    except:
-        return False
-
-
-def lookup_name(bl_list: dict, query: str):
-    for i in enumerate(bl_list):
-        if query in i[1].name:
-            return bl_list[i[0]]
-        else:
-            continue
-
-    return None
-
-
-# endregion
-# region HTTP Operations (def)
-REQUEST_TIMEOUT_SECONDS = 15
-
-
-def download(url, path):
-    with request.urlopen(url, timeout=REQUEST_TIMEOUT_SECONDS) as response:
-        Path(path).write_bytes(response.read())
-
-
-def retrieve_json(url):
-    try:
-        with request.urlopen(url, timeout=REQUEST_TIMEOUT_SECONDS) as response:
-            return json.loads(response.read())
-    except (request.HTTPError, error.URLError, json.JSONDecodeError):
-        return "http_error"
-
-
-# endregion
-# region File Ops Classes
-class FILE_open(Operator):
-    bl_label = "Open"
-    bl_idname = ops['file_open']
-
-    path: StringProperty(default=config["file_path"])
-
-    def execute(self, context):
-        wm.path_open(filepath=self.path)
-        return {"FINISHED"}
-
-
-# endregion
-# region Image Functions (def)
-def pack_img(name):
-    image = get_img(name)
-    if is_packed(image):
-        if bpy.data.is_saved:
-            image.unpack()
-        else:
-            image.unpack(method="USE_LOCAL")
-    else:
-        image.pack()
-
-
-def get_img(path):
-    return bpy.data.images[path]
-
-
-def reload_img(name):
-    get_img(name).reload()
-
-
-# endregion
-# region Image Classes
-class IMAGE_pack(Operator):
-    bl_label = ""
-    bl_idname = ops['image_pack']
-    bl_options = {"REGISTER", "UNDO"}
-
-    path: StringProperty()
-
-    def execute(self, context):
-        pack_img(self.path)
-        return {"FINISHED"}
-
-
-class IMAGE_reload(Operator):
-    bl_label = ""
-    bl_idname = ops['image_reload']
-    bl_options = {"REGISTER", "UNDO"}
-
-    path: StringProperty()
-
-    def execute(self, context):
-        reload_img(self.path)
-        return {"FINISHED"}
-
-
-# endregion
-# region Rig Classes
-class RIGS_set_name(Operator):
-    bl_idname = ops['rig_rename']
-    bl_label = "Set Rig Name"
-    bl_options = {"REGISTER", "UNDO"}
-
-    name: StringProperty()
-    update_collection: BoolProperty()
-
-    def execute(self, context):
-        obj = context.active_object
-        obj.name = self.name
-        obj.data.name = self.name
-
-        if self.update_collection is True:
-            try:
-                obj.users_collection[0].name = self.name
-            except (AttributeError, KeyError):
-                context.asset.name = self.name
-
-        return {"FINISHED"}
 
 
 # endregion

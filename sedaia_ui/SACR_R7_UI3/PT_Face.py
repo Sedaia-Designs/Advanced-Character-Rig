@@ -206,8 +206,8 @@ def panel_iris(parent_ui, pose, python, materials, collections, rig_feature_set)
                 if mat.inputs[33].default_value:
                     col = panel.box().column()
                     col.label(text="Emission Strength")
-                    color_table(
-                        ui=col,
+                    ui.tables.eye_colors(
+                        parent_ui=col,
                         material=mat,
                         grid=(36, 38, 37, 39, 35, 34),
                         grid_label=("", "", "", "", "Gradient", "Heterochromia"),
@@ -299,8 +299,8 @@ def panel_sclera(parent_ui, pose, python, materials, collections):
                 if mat.inputs[33].default_value:
                     col = panel.box().column()
                     col.label(text="Emission Strength")
-                    color_table(
-                        ui=col,
+                    ui.tables.eye_colors(
+                        parent_ui=col,
                         material=mat,
                         grid=(36, 38, 37, 39, 35, 34),
                         grid_label=("", "", "", "", "Gradient", "Heterochromia"),

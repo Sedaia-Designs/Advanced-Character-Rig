@@ -1,18 +1,18 @@
 schema_version = "1.0.0"
 
-id = "sacr_r7_5_0"
-version = "7.5.0"
-name = "SACR Rig Interface"
-tagline = "Controls and skin tools for SACR R7.5.0"
+id = "Sakura_Rig_GUI"
+version = "4.0.0"
+name = "Sakura Character Rig Interface"
+tagline = "Controls and skin tools for SACR R7.5.0 and R7.4.1"
 maintainer = "Sakura Sedaia"
 type = "add-on"
-website = "https://www.sakura-sedaia.com/projects/sacr"
+website = "https://www.sedaia-designs.org/products/sakura-character-rig"
 
 # # Optional: tag list defined by Blender and server, see:
 # # https://docs.blender.org/manual/en/dev/advanced/extensions/tags.html
 tags = ["Rigging", "User Interface"]
 
-blender_version_min = "5.0.0"
+blender_version_min = "5.2.0"
 # # Optional: Blender version that the extension does not support, earlier versions are supported.
 # # This can be omitted and defined later on the extensions platform if an issue is found.
 # blender_version_max = "5.1.0"
@@ -52,7 +52,7 @@ license = ["SPDX:GPL-3.0-or-later"]
 # # For longer explanations use the documentation or detail page.
 #
 [permissions]
-network = "Download Minecraft player skin data when Online Access is enabled"
+network = "Download Minecraft skin data when Online Access is enabled"
 files = "Store downloaded Minecraft player skin data in extension storage"
 # clipboard = "Copy and paste bone transforms"
 
@@ -65,4 +65,19 @@ paths_exclude_pattern = [
   "__pycache__/",
   "/.git/",
   "/*.zip",
+  "/.agents/",
+  "/.venv/",
+  "/.idea/",
+  "/.gitignore",
+  "/.gitattributes",
+  "/.DS_Store",
+  "/AGENTS.md",
+  "/CHANGELOG.md",
+  "/CONTRIBUTING.md",
+  "/README.md",
+  "/Extra-Scripts/",
+  "/lib/",
+  "/blender-workspace.toml",
+  "/pyproject.toml",
+  "/uv.lock",
 ]
