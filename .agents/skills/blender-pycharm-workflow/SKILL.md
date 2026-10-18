@@ -9,14 +9,14 @@ Use Blender Development for PyCharm as development tooling around this repositor
 
 ## Inspect Before Changing
 
-1. Read `AGENTS.md`, `pyproject.toml`, `extension/blender_manifest.toml`, and relevant shared files under `../../../.run`.
+1. Read `AGENTS.md`, `pyproject.toml`, `blender_manifest.toml`, and `blender-workspace.toml`.
 2. Inspect the current plugin configuration or error evidence before editing project metadata.
-3. Preserve unrelated `../../../.run`, interpreter, manifest, and source changes.
+3. Preserve unrelated workspace configuration, interpreter, manifest, and source changes.
 4. Prefer fixing extension code or metadata when the plugin is correctly exposing a real Blender error.
 
 ## Keep Project Identity Aligned
 
-- Configure `extension/` as the extension source folder; it contains both `__init__.py` and `blender_manifest.toml`.
+- Configure the repository root as the extension source folder; it contains both `__init__.py` and `blender_manifest.toml`.
 - Treat the manifest `id` as the canonical extension identity. The plugin may enable it through a module name shaped like `bl_ext.<repository>.<manifest-id>`.
 - Treat a symlink name as development configuration, not as the canonical manifest ID.
 - When the extension fails to reload after an ID, repository, source-folder, or symlink change, check for a stale enabled module before changing source code.
@@ -31,7 +31,7 @@ Use Blender Development for PyCharm as development tooling around this repositor
 
 ## Run and Debug
 
-- Prefer the shared `Launch Blender` configuration for interactive extension behavior.
+- Use the Blender Development plugin launch workflow for interactive extension behavior.
 - Confirm the selected Blender installation meets `blender_version_min`.
 - Use reload-on-save for ordinary iteration, but restart Blender after changes to manifest identity, permissions, package structure, or stubborn registration state.
 - For a reload failure, distinguish:
@@ -42,7 +42,7 @@ Use Blender Development for PyCharm as development tooling around this repositor
 
 ## Validate at the Right Layer
 
-- Run `python -m compileall extension` for Python syntax and import compilation.
+- Run `python -m compileall -q __init__.py modules.py prefs.py sacr_core sedaia_ui` for Python syntax and import compilation.
 - Run repository unit tests for logic isolated from Blender.
 - Inspect TOML structure and permissions after manifest edits.
 - Exercise registration, panels, context-sensitive operators, and reload behavior inside Blender.

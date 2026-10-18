@@ -44,14 +44,14 @@ Explain concepts where they affect the active task:
 - test seams for code that normally depends on `bpy`;
 - network and file failure handling without noisy debug output.
 
-Prefer examples from `extension/` and the active diff. Distinguish Blender API contracts from repository conventions and inferences.
+Prefer examples from the repository root and the active diff. Distinguish Blender API contracts from repository conventions and inferences.
 
 ## Use the Companion PyCharm Plugin Intentionally
 
 Treat Blender Development for PyCharm as IDE assistance, not as part of the extension runtime. Use its project configuration and run/debug workflow when relevant, but keep production extension code independent of the plugin.
 
-- Keep active code and `blender_manifest.toml` under `extension/`.
-- Keep the configured source folder aligned with `extension/`.
+- Keep active code and `blender_manifest.toml` under the repository root.
+- Keep the configured source folder aligned with the repository root.
 - Use version-matched Blender stubs for editing and linting; remember that stubs do not prove runtime behavior.
 - Validate context-sensitive APIs and registration behavior inside Blender when practical.
 

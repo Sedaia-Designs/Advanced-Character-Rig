@@ -9,7 +9,7 @@ Produce a human-readable account of notable net changes between the previous rel
 
 ## Establish the Release Baseline
 
-1. Read `CHANGELOG.md`, `extension/blender_manifest.toml`, `pyproject.toml`, and repository release conventions.
+1. Read `CHANGELOG.md`, `blender_manifest.toml`, `pyproject.toml`, and repository release conventions.
 2. Identify the target release and predecessor from explicit metadata, changelog headings, and matching tags.
 3. Inspect the full predecessor-to-`HEAD` range plus relevant staged and unstaged work when updating `Unreleased`.
 4. Compare final behavior with the predecessor. Record only the resulting delta.
