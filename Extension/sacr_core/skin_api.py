@@ -13,6 +13,7 @@
 
 # region Imports and Common Variables
 from .. import prefs
+from .lib import ID
 from pathlib import Path
 from shutil import rmtree
 import json
@@ -74,31 +75,31 @@ config: dict = {
 }
 # endregion
 # region Object IDs
-op_id: str = "sedaia_utils_ot"
+id_group = "UTIL"
 ops: dict = {
     # File Operations
-    "file_open": f"{op_id}.file_open",
-    "file_delete": f"{op_id}.file_delete",
+    "file_open": ID("file_open").operator_for(id_group),
+    "file_delete": ID("file_delete").operator_for(id_group),
 
     # Image Operations
-    "image_pack": f"{op_id}.image_pack",
-    "image_reload": f"{op_id}.image_reload",
+    "image_pack": ID("image_pack").operator_for(id_group),
+    "image_reload": ID("image_reload").operator_for(id_group),
 
     # Rig Operations
-    "rig_rename": f"{op_id}.rig_rename",
+    "rig_rename": ID("rig_rename").operator_for(id_group),
 
     # Skin Operations
-    "skin_router": f"{op_id}.skin_router",
-    "skin_get": f"{op_id}.skin_get",
-    "skin_add": f"{op_id}.skin_add",
-    "skin_load": f"{op_id}.skin_load",
-    "skin_purge": f"{op_id}.skin_purge",
+    "skin_router": ID("skin_router").operator_for(id_group),
+    "skin_get": ID("skin_get").operator_for(id_group),
+    "skin_add": ID("skin_add").operator_for(id_group),
+    "skin_load": ID("skin_load").operator_for(id_group),
+    "skin_purge": ID("skin_purge").operator_for(id_group),
 }
 
-menu_id: str = "SEDAIA_UTIL_MT"
+menu_id = id_group
 menus: dict = {
-    "skin_regen": f"{menu_id}_skin_regen",
-    "skin_purge": f"{menu_id}_skin_purge",
+    "skin_regen": ID("skin_regen").menu_for(menu_id),
+    "skin_purge": ID("skin_purge").menu_for(menu_id),
 }
 
 
@@ -279,10 +280,10 @@ class SKIN_router(Operator):
             if (allow_online() and prefs.get_prefs().prompt_to_refresh_player_data) is True:
                 wm.call_menu(name=menus["skin_regen"])
             else:
-                O.sedaia_utils_ot.skin_load()
+                O.sedaia_rigs_util_ot.skin_load()
         else:
             if allow_online() is True:
-                O.sedaia_utils_ot.skin_get()
+                O.sedaia_rigs_util_ot.skin_get()
             else:
                 self.report(
                     {"ERROR"}, "Online Access Denied, please enable Online Access in Properties > System")
@@ -377,7 +378,7 @@ class SKIN_get(Operator):
             json.dump(PlayerData, j, ensure_ascii=True, indent=4)
 
         try:
-            O.sedaia_utils_ot.skin_load(index=0)
+            O.sedaia_rigs_util_ot.skin_load(index=0)
         except AttributeError:
             self.report({"ERROR"}, "Could not load skin")
 
@@ -417,7 +418,7 @@ class SKIN_add(Operator):
             self.report(
                 {"WARNING"}, "Skin has not been changed, Skipping Download")
 
-            O.sedaia_utils_ot.skin_load(index=-1)
+            O.sedaia_rigs_util_ot.skin_load(index=-1)
         else:
 
             PlayerPath: Path = f"{FilePath}/{Username}"
@@ -477,7 +478,7 @@ class SKIN_add(Operator):
             with open(PlayerFile, "w") as j:
                 json.dump(LocalPlayer, j, ensure_ascii=True, indent=4)
 
-            O.sedaia_utils_ot.skin_load(
+            O.sedaia_rigs_util_ot.skin_load(
                 index=-1)
         return {"FINISHED"}
 
@@ -540,7 +541,7 @@ class SKIN_load(Operator):
                     playerData["SKINS"][index]["model"])
 
         if SyncName:
-            ops['rig_rename'][1](rig_rename=f"{Username} - {RigName}")
+            O.sedaia_rigs_util_ot.rig_rename(name=f"{Username} - {RigName}")
             rig_data["Rig Name"] = f"{Username} - {RigName}"
 
         return {"FINISHED"}
@@ -590,7 +591,7 @@ class SKIN_purge(Operator):
 
                 Path(oldPath).rename(targetPath)
 
-                O.sedaia_utils_ot.skin_get()
+                O.sedaia_rigs_util_ot.skin_get()
 
             else:
                 if not Path(targetDir).exists():
@@ -600,11 +601,11 @@ class SKIN_purge(Operator):
                 targetPath = f"{targetPath}"
                 Path(oldPath).rename(targetPath)
 
-                O.sedaia_utils_ot.skin_get()
+                O.sedaia_rigs_util_ot.skin_get()
 
         if confirm is True:
             rmtree(PlayerPath)
-            O.sedaia_utils_ot.skin_get()
+            O.sedaia_rigs_util_ot.skin_get()
         else:
             return {"CANCELLED"}
 

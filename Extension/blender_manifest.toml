@@ -1,9 +1,9 @@
 schema_version = "1.0.0"
 
-id = "sacr_r7_4_1"
-version = "7.4.1"
-name = "SACR R7.4.1 Archive"
-tagline = "Controls and skin tools for SACR R7.4.1"
+id = "sacr_r7_5_0"
+version = "7.5.0"
+name = "SACR Rig Interface"
+tagline = "Controls and skin tools for SACR R7.5.0"
 maintainer = "Sakura Sedaia"
 type = "add-on"
 website = "https://www.sakura-sedaia.com/projects/sacr"

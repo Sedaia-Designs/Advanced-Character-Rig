@@ -1,0 +1,8 @@
+addon_symlink_name = "Sakura_Character_Rig"
+source_folder = "Extension/"
+run_arguments = ""
+blender_log_level = "INFO"
+reload_on_save = true
+just_my_code = true
+extensions_repository = "pycharm_blender"
+blend_file_to_open = "Character-Rig/SACR.R7.5.0.blend"

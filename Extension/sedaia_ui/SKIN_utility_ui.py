@@ -13,6 +13,7 @@
 
 # region Imports and Common Variables
 from .. import prefs
+from ..sacr_core.lib import ID
 from ..sacr_core import skin_api as sedaia_utils
 from bpy.utils import register_class, unregister_class
 from bpy.types import Panel
@@ -46,7 +47,7 @@ class SEDAIA_SKIN_PT:
 class SEDAIA_SKIN_PT_ui_skinUtility(SEDAIA_SKIN_PT, Panel):
     # Panel Info
     bl_label = "Skin Utility"
-    bl_idname = "SEDAIA_MAIN_PT_skin_utility_ui"
+    bl_idname = ID("skin_utility_ui").panel_for("MAIN")
     bl_order = 0
 
     utility_bone_name = "Sedaia.Skin_Utility_Config"

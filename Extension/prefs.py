@@ -20,6 +20,8 @@ from bpy.props import StringProperty, BoolProperty
 from bpy.types import AddonPreferences, Context, Preferences, Operator
 import bpy
 
+from .sacr_core.lib import ID
+
 bl_info = {
     "name": __package__,  # UI Name
     "id": "sedaia_prefs",  # UI ID
@@ -49,7 +51,7 @@ config: dict = {
 # =============
 # region Class Index
 ops = {
-    'file_open': "sedaia_prefs_ot.file_open"
+    'file_open': ID("file_open").operator_for("PREFS")
 }
 
 

@@ -3,6 +3,7 @@ import bpy
 from bpy.types import Panel, PoseBone
 from bpy.props import EnumProperty
 from ..sacr_core import skin_api as utils
+from ..sacr_core.lib import ID
 # endregion
 # region Manifest
 bl_info = {
@@ -39,21 +40,21 @@ config_objs = {
 }
 # endregion
 # region Object IDs
-panel_prefix = f"SEDAIA_SACR{rig_info['version'][0]}_UI{bl_info['version'][0]}_PT"
+rig_version = f"SACR{rig_info['version'][0]}_UI{bl_info['version'][0]}"
 panels = {
-    "global": f"{panel_prefix}_global",
-    "head": f"{panel_prefix}_sui_head",
-    "face": f"{panel_prefix}_sui_face",
-    "eyebrows": f"{panel_prefix}_sui_eyebrows",
-    "eyes" : f"{panel_prefix}_sui_eyes",
-    "iris": f"{panel_prefix}_sui_irises",
-    "pupil_ramp": f"{panel_prefix}_sui_pupil_ramp",
-    "sclera": f"{panel_prefix}_sui_sclera",
-    "mouth": f"{panel_prefix}_sui_mouth",
-    "arm": f"{panel_prefix}_sui_arm",
-    "torso": f"{panel_prefix}_sui_torso",
-    "quick_parent": f"{panel_prefix}_sui_quick_parent",
-    "armor": f"{panel_prefix}_sui_armor",
+    "global": ID("global").panel_for(rig_version),
+    "head": ID("sui_head").panel_for(rig_version),
+    "face": ID("sui_face").panel_for(rig_version),
+    "eyebrows": ID("sui_eyebrows").panel_for(rig_version),
+    "eyes" : ID("sui_eyes").panel_for(rig_version),
+    "iris": ID("sui_irises").panel_for(rig_version),
+    "pupil_ramp": ID("sui_pupil_ramp").panel_for(rig_version),
+    "sclera": ID("sui_sclera").panel_for(rig_version),
+    "mouth": ID("sui_mouth").panel_for(rig_version),
+    "arm": ID("sui_arm").panel_for(rig_version),
+    "torso": ID("sui_torso").panel_for(rig_version),
+    "quick_parent": ID("sui_quick_parent").panel_for(rig_version),
+    "armor": ID("sui_armor").panel_for(rig_version),
 }
 
 class SACR7_UI2_panel:

@@ -18,13 +18,19 @@ if "skin_api" in locals():
 else:
     from .sacr_core import skin_api
 
-if "rig_ui" in locals():
-    reload(rig_ui)
+if "sacr_r741" in locals():
+    reload(sacr_r741)
 else:
-    from .sedaia_ui import SACR_R7_UI2 as rig_ui
+    from .sedaia_ui import SACR_R7_UI2 as sacr_r741
 
 
-modules = (prefs, skin_ui, skin_api, rig_ui)
+if "sacr_r750" in locals():
+    reload(sacr_r750)
+else:
+    from .sedaia_ui import SACR_R7_UI3 as sacr_r750
+
+
+modules = (prefs, skin_ui, skin_api, sacr_r741, sacr_r750)
 
 
 def register():
