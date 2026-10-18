@@ -17,10 +17,12 @@ class OT_toggle_collection(T.Operator):
 
     @classmethod
     def poll(cls, context):
+        """Return whether the current Blender context supports this UI element."""
         obj = context.active_object
         return bool(obj and obj.type == "ARMATURE")
 
     def execute(self, context):
+        """Apply this operator to the current Blender context."""
         obj = context.active_object
         references = obj.pose.bones.get("PythonConfig.Objects")
         collection = bpy.data.collections.get(self.collection)
@@ -33,8 +35,10 @@ class OT_toggle_collection(T.Operator):
 
 
 def register():
+    """Register this module's Blender classes."""
     U.register_class(OT_toggle_collection)
 
 
 def unregister():
+    """Unregister this module's Blender classes."""
     U.unregister_class(OT_toggle_collection)

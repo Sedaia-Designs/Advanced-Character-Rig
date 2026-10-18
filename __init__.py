@@ -33,10 +33,12 @@ else:
     from . import modules
 
 def register():
+    """Register this module's Blender classes."""
     modules.register()
 
 
 def unregister():
+    """Unregister this module's Blender classes."""
     modules.unregister()
 
 

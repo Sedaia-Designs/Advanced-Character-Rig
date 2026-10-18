@@ -66,6 +66,7 @@ class SACR7_UI2_panel:
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         rig_id = f"{rig_info['id']}.Rev_{rig_info['version'][0]}.UI_{bl_info['version'][0]}"
         prop_name = "rigID"
 
@@ -86,6 +87,7 @@ class SACR7_UI2_face_panel:
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             face_on = obj.pose.bones["Rig_Properties"]["Face Toggle"]
@@ -129,6 +131,7 @@ class SACR7_UI2_ui_global(SACR7_UI2_panel, Panel):
     def draw(self, context):
 
         # Rig Data
+        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_col = rig.users_collection[0]
         rig_data = rig.data
@@ -205,6 +208,7 @@ class SACR7_UI2_sui_head(SACR7_UI2_panel, Panel):
 
     def draw(self, context):
         # Variables and Data
+        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
 
@@ -233,6 +237,7 @@ class SACR7_UI2_sui_face(SACR7_UI2_face_panel, Panel):
 
     def draw(self, context):
         # Variables and Data
+        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
         faceProp = rig_bones[config_objs["face"]]
@@ -260,6 +265,7 @@ class SACR7_UI2_sui_eyebrows(SACR7_UI2_face_panel, Panel):
 
     def draw(self, context):
         # Rig Data
+        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_data = rig.data
         rig_bones = rig.pose.bones
@@ -366,6 +372,7 @@ class SACR7_UI2_sui_eyes(SACR7_UI2_face_panel, Panel):
     bl_order = 1
 
     def draw(self, context):
+        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_data = rig.data
         rig_bc = rig_data.collections_all
@@ -418,6 +425,7 @@ class SACR7_UI2_sui_iris(SACR7_UI2_face_panel, Panel):
 
     def draw(self, context):
         # Rig Data
+        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
 
@@ -660,6 +668,7 @@ class SACR7_UI2_sui_sclera(SACR7_UI2_face_panel, Panel):
 
     def draw(self, context):
         # Rig Data
+        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
 
@@ -819,6 +828,7 @@ class SACR7_UI2_sui_mouth(SACR7_UI2_face_panel, Panel):
 
     def draw(self, context):
         # Rig Data
+        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_data = rig.data
         rig_bones = rig.pose.bones
@@ -898,6 +908,7 @@ class SACR7_UI2_sui_torso(SACR7_UI2_panel, Panel):
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         if context.active_object.data['lite'] is True:
             return False
         else:
@@ -905,6 +916,7 @@ class SACR7_UI2_sui_torso(SACR7_UI2_panel, Panel):
 
     def draw(self, context):
         # Variables and Data
+        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
 
@@ -935,6 +947,7 @@ class SACR7_UI2_sui_arm(SACR7_UI2_panel, Panel):
 
     def draw(self, context):
         # Variables and Data
+        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
 
@@ -981,6 +994,7 @@ class SACR7_UI2_sui_quick_parent(SACR7_UI2_panel, Panel):
 
 
     def draw(self, context):
+        """Draw this UI element for the current Blender context."""
         panel = self.layout
 
         rig = context.active_object
@@ -1082,6 +1096,7 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         if context.active_object.data['lite'] is True:
             return False
         else:
@@ -1090,6 +1105,7 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
     def draw(self, context):
 
         # Rig Data
+        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
 
@@ -1202,10 +1218,12 @@ classes = [
 
 
 def register():
+    """Register this module's Blender classes."""
     for cls in classes:
         bpy.utils.register_class(cls)
 
 def unregister():
+    """Unregister this module's Blender classes."""
     for cls in classes:
         bpy.utils.unregister_class(cls)
 

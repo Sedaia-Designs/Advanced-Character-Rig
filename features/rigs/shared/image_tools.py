@@ -22,6 +22,7 @@ from ....core.ids import ID
 
 
 def pack_img(name):
+    """Perform pack img."""
     image = get_img(name)
     if is_packed(image):
         if bpy.data.is_saved:
@@ -33,10 +34,12 @@ def pack_img(name):
 
 
 def get_img(path):
+    """Return img."""
     return bpy.data.images[path]
 
 
 def reload_img(name):
+    """Perform reload img."""
     get_img(name).reload()
 
 
@@ -50,6 +53,7 @@ class IMAGE_pack(Operator):
     path: StringProperty()
 
     def execute(self, context):
+        """Apply this operator to the current Blender context."""
         pack_img(self.path)
         return {"FINISHED"}
 
@@ -62,5 +66,6 @@ class IMAGE_reload(Operator):
     path: StringProperty()
 
     def execute(self, context):
+        """Apply this operator to the current Blender context."""
         reload_img(self.path)
         return {"FINISHED"}

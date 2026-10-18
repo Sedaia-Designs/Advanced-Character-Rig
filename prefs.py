@@ -67,6 +67,7 @@ class PREFS_user_preferences(AddonPreferences):
     )
 
     def draw(self, context):
+        """Draw this UI element for the current Blender context."""
         pref = self.layout
         pref.operator(ops['file_open'],
                       icon="FILEBROWSER").path = config['root_default_dir']
@@ -104,6 +105,7 @@ class PREFS_file_open(Operator):
     path: StringProperty()
 
     def execute(self, context):
+        """Apply this operator to the current Blender context."""
         wm.path_open(filepath=self.path)
         return {'FINISHED'}
 
@@ -118,11 +120,13 @@ classes = [
 
 
 def register():
+    """Register this module's Blender classes."""
     for cls in classes:
         bpy.utils.register_class(cls)
 
 
 def unregister():
+    """Unregister this module's Blender classes."""
     for cls in classes:
         bpy.utils.unregister_class(cls)
 # endregion

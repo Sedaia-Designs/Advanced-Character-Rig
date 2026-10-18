@@ -10,6 +10,7 @@ class SKIN_menu_purge(Menu):
     bl_label = "Confirm Purging of Player Data"
 
     def draw(self, context):
+        """Draw this UI element for the current Blender context."""
         layout = self.layout
         layout.operator(OPS["purge"], text="Backup and Purge").backup = True
         layout.operator(OPS["purge"], text="Purge", icon="ERROR").confirm = True
@@ -20,6 +21,7 @@ class SKIN_menu_regen(Menu):
     bl_label = "Regenerate Player Data?"
 
     def draw(self, context):
+        """Draw this UI element for the current Blender context."""
         layout = self.layout
         layout.operator(OPS["load"], text="Load Data").index = -1
         layout.operator(OPS["add"], text="Add Entry")

@@ -10,13 +10,17 @@ class PT_Collections(types.SACR_UI750_Panel):
 
     def draw(self, context):
 
+        """Draw this UI element for the current Blender context."""
         def collection(parent_ui, group: str, name: str, toggle=True):
+            """Perform collection."""
             parent_ui.prop(collections[group], "is_visible", text=name, toggle=toggle)
 
         def is_on(collection_name: str):
+            """Return whether on."""
             return collections[collection_name].is_visible
 
         def group_header(parent_ui, group: str, label: str):
+            """Perform group header."""
             header = parent_ui.row()
             header.prop(
                 collections[group],
@@ -130,8 +134,10 @@ class PT_Collections(types.SACR_UI750_Panel):
 
 
 def register():
+    """Register this module's Blender classes."""
     U.register_class(PT_Collections)
 
 
 def unregister():
+    """Unregister this module's Blender classes."""
     U.unregister_class(PT_Collections)

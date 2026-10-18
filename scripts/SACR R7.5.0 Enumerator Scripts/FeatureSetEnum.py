@@ -26,6 +26,7 @@ ENUM_ITEMS: list = [
 import bpy
 
 def change_prop(DATA):
+    """Update prop."""
     DATA.id_properties_ui(PROPERTY_NAME).update(
         min=0,
         max=len(ENUM_ITEMS)-1,
@@ -35,6 +36,7 @@ def change_prop(DATA):
     DATA.property_overridable_library_set(f'["{PROPERTY_NAME}"]', True)
 
 def create_property(DATA):
+    """Create property."""
     DATA[PROPERTY_NAME] = 0
     DATA.id_properties_ensure()
     DATA.id_properties_ui(PROPERTY_NAME).update(min=0)

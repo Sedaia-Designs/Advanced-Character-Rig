@@ -7,6 +7,7 @@ from ...shared import OPS as utility_ops
 
 def toggle_collection(parent_ui, context, prop, label="Collection"):
     # Panel Variables
+    """Perform toggle collection."""
     collection_inst = context.active_object.pose.bones["PythonConfig.Objects"].get(prop)
     inst_toggle = parent_ui.operator(
         ID("toggle_collection").operator_for(RIG_ID_GROUP),
@@ -20,6 +21,7 @@ def toggle_collection(parent_ui, context, prop, label="Collection"):
 
 
 def armor_material_panel(parent_ui, props, materials, section):
+    """Perform armor material panel."""
     armor_enum = {  # (Toggle Index, Material Index)
         "Helmet": (0, "armor_helmet"),
         "Chestplate": (1, "armor_chestplate"),
@@ -79,6 +81,7 @@ class PT_Main(types.SACR_UI750_Panel):
     def draw(self, context):
 
         # Panel Variables
+        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         pose = obj.pose.bones
         collections = obj.data.collections_all
@@ -226,6 +229,7 @@ class PT_Main(types.SACR_UI750_Panel):
 
 
 def panel_arms(parent_ui, panel_helper, props):
+    """Perform panel arms."""
     arms = global_ui.sub_panel(parent_ui, panel_helper, prop="ArmPanel", label="Arms")
     if arms:
         row = arms.row()
@@ -250,6 +254,7 @@ def panel_arms(parent_ui, panel_helper, props):
 
 
 def panel_legs(panel_ui, panel_helper, props):
+    """Perform panel legs."""
     legs = global_ui.sub_panel(panel_ui, panel_helper, prop="LegPanel", label="Legs")
     if legs:
         row = legs.row(align=True)
@@ -265,8 +270,10 @@ def panel_legs(panel_ui, panel_helper, props):
 
 
 def register():
+    """Register this module's Blender classes."""
     U.register_class(PT_Main)
 
 
 def unregister():
+    """Unregister this module's Blender classes."""
     U.unregister_class(PT_Main)

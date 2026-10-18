@@ -31,6 +31,7 @@ class SEDAIA_PT_sacr_7_uiGlobal(Panel):
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             if obj and obj.type == "ARMATURE" and obj.data:
@@ -43,6 +44,7 @@ class SEDAIA_PT_sacr_7_uiGlobal(Panel):
 
     def draw(self, context):
         # Variables and Data
+        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         armature = obj.data
         bone = obj.pose.bones
@@ -155,6 +157,7 @@ class SEDAIA_PT_sacr_7_suiBoneGroups(Panel):
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             if obj and obj.type == "ARMATURE" and obj.data:
@@ -166,6 +169,7 @@ class SEDAIA_PT_sacr_7_suiBoneGroups(Panel):
 
     def draw(self, context):
         # Define UI
+        """Draw this UI element for the current Blender context."""
         layout = self.layout
         row = layout.row()
         row.template_bone_collection_tree()
@@ -181,6 +185,7 @@ class SEDAIA_PT_sacr_7_suiArms(Panel):
 
     def draw(self, context):
         # Variables and Data
+        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         bone = obj.pose.bones
         main = bone["Rig_Properties"]
@@ -226,6 +231,7 @@ class SEDAIA_PT_sacr_7_suiLegs(Panel):
 
     def draw(self, context):
         # Variables and Data
+        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         bone = obj.pose.bones
         main = bone["Rig_Properties"]
@@ -256,6 +262,7 @@ class SEDAIA_PT_sacr_7_uiFace(T.Panel):
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             bone = obj.pose.bones
@@ -274,6 +281,7 @@ class SEDAIA_PT_sacr_7_uiFace(T.Panel):
 
     def draw(self, context):
         # Variables and Data
+        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         bone = obj.pose.bones
 
@@ -306,6 +314,7 @@ class SEDAIA_PT_sacr_7_suiEyebrows(T.Panel):
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             face_on = obj.pose.bones["Rig_Properties"]["Face Toggle"]
@@ -315,6 +324,7 @@ class SEDAIA_PT_sacr_7_suiEyebrows(T.Panel):
 
     def draw(self, context):
         # Variables and Data
+        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         bone = obj.pose.bones
 
@@ -394,6 +404,7 @@ class SEDAIA_PT_sacr_7_suiEyes(Panel):
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             face_on = obj.pose.bones["Rig_Properties"]["Face Toggle"]
@@ -403,6 +414,7 @@ class SEDAIA_PT_sacr_7_suiEyes(Panel):
 
     def draw(self, context):
         # Variables and Data
+        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         armature = obj.data
         bone = obj.pose.bones
@@ -485,6 +497,7 @@ class SEDAIA_PT_sacr_7_muiIrises(Panel):
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             if obj and obj.type == "ARMATURE" and obj.data:
@@ -496,6 +509,7 @@ class SEDAIA_PT_sacr_7_muiIrises(Panel):
             return False
 
     def draw(self, context):
+        """Draw this UI element for the current Blender context."""
         obj = context.active_object
 
         # Object Name: MaterialEditor
@@ -606,6 +620,7 @@ class SEDAIA_PT_sacr_7_muiPupil(Panel):
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             if obj and obj.type == "ARMATURE" and obj.data:
@@ -617,6 +632,7 @@ class SEDAIA_PT_sacr_7_muiPupil(Panel):
             return False
 
     def draw(self, context):
+        """Draw this UI element for the current Blender context."""
         obj = context.active_object
 
         rig_child = obj.children_recursive
@@ -686,6 +702,7 @@ class SEDAIA_PT_sacr_7_muiSclera(Panel):
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             if obj and obj.type == "ARMATURE" and obj.data:
@@ -697,6 +714,7 @@ class SEDAIA_PT_sacr_7_muiSclera(Panel):
             return False
 
     def draw(self, context):
+        """Draw this UI element for the current Blender context."""
         obj = context.active_object
 
         # Object Name: MaterialEditor
@@ -811,6 +829,7 @@ class SEDAIA_PT_sacr_7_suiMouth(T.Panel):
 
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             face_on = obj.pose.bones["Rig_Properties"]["Face Toggle"]
@@ -820,6 +839,7 @@ class SEDAIA_PT_sacr_7_suiMouth(T.Panel):
 
     def draw(self, context):
         # Variables and Data
+        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         bone = obj.pose.bones
         mouth = bone["Mouth_Properties"]
@@ -917,10 +937,12 @@ classes = [
 
 
 def register():
+    """Register this module's Blender classes."""
     for cls in classes:
         bpy.utils.register_class(cls)
 
 
 def unregister():
+    """Unregister this module's Blender classes."""
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

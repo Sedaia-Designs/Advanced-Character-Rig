@@ -15,12 +15,14 @@ from .context import has_skin_metadata, skin_metadata
 
 
 def _storage_root() -> Path:
+    """Return the extension-local directory used for player data."""
     return Path(prefs.config["player_default_dir"])
 
 
 class _SkinOperator(Operator):
     @classmethod
     def poll(cls, context):
+        """Return whether the current Blender context supports this UI element."""
         return has_skin_metadata(context)
 
 
@@ -30,6 +32,7 @@ class SKIN_router(_SkinOperator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
+        """Apply this operator to the current Blender context."""
         metadata = skin_metadata(context)
         username = metadata.get("Username", "").strip()
         if not username:
@@ -55,6 +58,7 @@ class SKIN_get(_SkinOperator):
     bl_options = {"REGISTER", "INTERNAL"}
 
     def execute(self, context):
+        """Apply this operator to the current Blender context."""
         username = skin_metadata(context)["Username"]
         try:
             player = service.fetch_player(username)
@@ -73,6 +77,7 @@ class SKIN_add(_SkinOperator):
     bl_options = {"REGISTER", "INTERNAL"}
 
     def execute(self, context):
+        """Apply this operator to the current Blender context."""
         username = skin_metadata(context)["Username"]
         try:
             stored = repository.load(_storage_root(), username)
@@ -103,6 +108,7 @@ class SKIN_load(_SkinOperator):
     index: IntProperty(default=-1, min=-1)
 
     def execute(self, context):
+        """Apply this operator to the current Blender context."""
         metadata = skin_metadata(context)
         username = metadata["Username"]
         try:
@@ -138,6 +144,7 @@ class SKIN_purge(_SkinOperator):
     confirm: BoolProperty(default=False)
 
     def execute(self, context):
+        """Apply this operator to the current Blender context."""
         source = repository.player_dir(_storage_root(), skin_metadata(context)["Username"])
         if self.backup:
             target_root = _storage_root().with_name(f"{_storage_root().name}_purge")

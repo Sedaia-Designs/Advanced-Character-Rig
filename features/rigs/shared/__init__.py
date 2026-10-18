@@ -17,10 +17,12 @@ classes = (FILE_open, IMAGE_pack, IMAGE_reload, RIGS_set_name)
 
 
 def register():
+    """Register this module's Blender classes."""
     for cls in classes:
         register_class(cls)
 
 
 def unregister():
+    """Unregister this module's Blender classes."""
     for cls in reversed(classes):
         unregister_class(cls)

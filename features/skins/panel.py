@@ -21,9 +21,11 @@ class SEDAIA_SKIN_PT_ui_skinUtility(SEDAIA_SKIN_PT, Panel):
 
     @classmethod
     def poll(cls, context):
+        """Return whether the current Blender context supports this UI element."""
         return has_skin_metadata(context)
 
     def draw(self, context):
+        """Draw this UI element for the current Blender context."""
         metadata = skin_metadata(context)
         layout = self.layout
         layout.label(text="Minecraft Username")

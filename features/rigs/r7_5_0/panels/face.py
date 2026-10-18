@@ -32,6 +32,7 @@ class PT_Face(types.SACR_UI750_Panel):
     def draw(self, context):
 
         # Panel Variables
+        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         pose = obj.pose.bones
         collections = obj.data.collections_all
@@ -90,6 +91,7 @@ class PT_Face(types.SACR_UI750_Panel):
 def panel_eyebrows(
     cls, parent_ui, pose, python, materials, collections, rig_feature_set
 ):
+    """Perform panel eyebrows."""
     props_eb = pose["Eyebrow_Properties"]
 
     panel = global_ui.sub_panel(
@@ -140,6 +142,7 @@ def panel_eyebrows(
 
 
 def panel_iris(parent_ui, pose, python, materials, collections, rig_feature_set):
+    """Perform panel iris."""
     eyes = pose["Eye_Properties"]
     panel = global_ui.sub_panel(parent_ui, python, prop="IrisPanel", label="Iris")
     if panel:
@@ -244,6 +247,7 @@ def panel_iris(parent_ui, pose, python, materials, collections, rig_feature_set)
 
 
 def panel_sclera(parent_ui, pose, python, materials, collections):
+    """Perform panel sclera."""
     eyes = pose["Eye_Properties"]
     panel = global_ui.sub_panel(parent_ui, python, prop="ScleraPanel", label="Scleras")
     if panel:
@@ -312,6 +316,7 @@ def panel_sclera(parent_ui, pose, python, materials, collections):
 
 
 def panel_mouth(parent_ui, pose, python, materials, collections):
+    """Perform panel mouth."""
     props = pose["Mouth_Properties"]
     panel = global_ui.sub_panel(parent_ui, python, prop="MouthPanel", label="Mouth")
     if panel:
@@ -345,8 +350,10 @@ def panel_mouth(parent_ui, pose, python, materials, collections):
 
 
 def register():
+    """Register this module's Blender classes."""
     U.register_class(PT_Face)
 
 
 def unregister():
+    """Unregister this module's Blender classes."""
     U.unregister_class(PT_Face)

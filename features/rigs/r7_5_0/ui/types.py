@@ -27,6 +27,7 @@ class SACR_UI750_Panel(T.Panel):
     # TODO: Test if rig_id can be extracted from the classmethod poll into being a class attribute. Complete this once the UI is stable and reorganized.
     @classmethod
     def poll(self, context):
+        """Return whether the current Blender context supports this UI element."""
         rig_id = "SACR.Rev_7.UI_3"
         prop_name = "rigID"
 

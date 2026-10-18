@@ -10,6 +10,7 @@ class NetworkError(RuntimeError):
 
 
 def get_json(url: str, *, timeout: int) -> dict:
+    """Fetch and decode a JSON object, raising NetworkError on transport or decode failure."""
     try:
         with request.urlopen(url, timeout=timeout) as response:
             return json.loads(response.read())
@@ -18,6 +19,7 @@ def get_json(url: str, *, timeout: int) -> dict:
 
 
 def download_file(url: str, destination: Path, *, timeout: int) -> None:
+    """Download response bytes to destination within the requested timeout."""
     try:
         with request.urlopen(url, timeout=timeout) as response:
             destination.write_bytes(response.read())

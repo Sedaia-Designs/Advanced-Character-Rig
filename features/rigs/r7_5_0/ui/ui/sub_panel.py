@@ -2,6 +2,7 @@
 
 
 def sub_panel(ui, helper_obj, prop, label):
+    """Perform sub panel."""
     column = ui.column(align=True)
     column.row().prop(
         helper_obj,

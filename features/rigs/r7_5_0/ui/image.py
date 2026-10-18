@@ -2,4 +2,5 @@
 
 
 def is_packed(image):
+    """Return whether packed."""
     return bool(image and image.packed_files)

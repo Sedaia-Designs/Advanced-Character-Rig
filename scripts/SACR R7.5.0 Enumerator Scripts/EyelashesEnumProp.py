@@ -34,6 +34,7 @@ pose_bones = obj.pose.bones
 
 
 def change_prop():
+    """Update prop."""
     BONE = pose_bones[BONE_NAME]
     BONE.id_properties_ui(PROPERTY_NAME).update(
         min=0, max=len(ENUM_ITEMS) - 1, items=ENUM_ITEMS, description=PROPERTY_DESC
@@ -42,6 +43,7 @@ def change_prop():
 
 
 def create_property():
+    """Create property."""
     BONE = pose_bones[BONE_NAME]
     BONE[PROPERTY_NAME] = 0
     BONE.id_properties_ensure()

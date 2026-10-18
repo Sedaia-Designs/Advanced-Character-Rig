@@ -29,6 +29,7 @@ class FILE_open(Operator):
     path: StringProperty(default=extension_path_user(prefs.bl_info["name"], create=True, path=""))
 
     def execute(self, context):
+        """Apply this operator to the current Blender context."""
         wm.path_open(filepath=self.path)
         return {"FINISHED"}
 
@@ -42,6 +43,7 @@ class RIGS_set_name(Operator):
     update_collection: BoolProperty()
 
     def execute(self, context):
+        """Apply this operator to the current Blender context."""
         obj = context.active_object
         obj.name = self.name
         obj.data.name = self.name

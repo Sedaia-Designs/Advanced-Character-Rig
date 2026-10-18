@@ -33,6 +33,7 @@ paths_exclude_pattern = [
   "/AGENTS.md",
   "/CONTRIBUTING.md",
   "/README.md",
+  "/docs/",
   "/scripts/",
   "/blender-workspace.toml",
   "/pyproject.toml",

@@ -12,4 +12,5 @@ def skin_metadata(context):
 
 
 def has_skin_metadata(context):
+    """Return whether skin metadata."""
     return skin_metadata(context) is not None
