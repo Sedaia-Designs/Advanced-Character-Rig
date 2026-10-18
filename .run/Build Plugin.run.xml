@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Build Plugin" type="BlenderConfigurationType" factoryName="BlenderExtensionBuildConfigurationFactory">
-    <option name="outputDirectory" value=".build" />
-    <option name="sourcePath" value="Extension/src/" />
-    <method v="2" />
-  </configuration>
-</component>
