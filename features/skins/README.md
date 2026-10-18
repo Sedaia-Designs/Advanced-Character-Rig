@@ -82,17 +82,17 @@ The skin feature deliberately stores configuration on the rig's
 `Sedaia.Skin_Utility_Config` pose bone. A compatible rig needs these ID
 properties:
 
-| Property | Used by | Meaning |
-| --- | --- | --- |
-| `Username` | router, get, add, load, purge, panel | Minecraft player name and local storage key |
-| `MatObj` | load | Substring used to find the child object holding the skin material |
-| `SkinImageNodeID` | load | Material node name whose image is replaced and packed |
-| `SyncArms` | load, panel | Enables arm model synchronization |
-| `ArmPropBone` | load when `SyncArms` | Pose bone with the arm-type control |
-| `ArmPropName` | load fallback | ID-property name for the arm-type control |
-| `SyncName` | load, panel | Renames the armature object and data after loading |
-| `RigName` | load when `SyncName` | Rig label appended to the player name |
-| `SyncCape` | panel only | Optional control shown when provided by the rig |
+| Property          | Used by                              | Meaning                                                           |
+|-------------------|--------------------------------------|-------------------------------------------------------------------|
+| `Username`        | router, get, add, load, purge, panel | Minecraft player name and local storage key                       |
+| `MatObj`          | load                                 | Substring used to find the child object holding the skin material |
+| `SkinImageNodeID` | load                                 | Material node name whose image is replaced and packed             |
+| `SyncArms`        | load, panel                          | Enables arm model synchronization                                 |
+| `ArmPropBone`     | load when `SyncArms`                 | Pose bone with the arm-type control                               |
+| `ArmPropName`     | load fallback                        | ID-property name for the arm-type control                         |
+| `SyncName`        | load, panel                          | Renames the armature object and data after loading                |
+| `RigName`         | load when `SyncName`                 | Rig label appended to the player name                             |
+| `SyncCape`        | panel only                           | Optional control shown when provided by the rig                   |
 
 `SKIN_load` first tries the arm bone's `ArmType` RNA property and falls back to
 the configured ID property. The remote model value is `"1"` for Minecraft's

@@ -23,7 +23,6 @@ Desktop.ini
 
 # Agent-local state
 .junie/
-/Blender-Docs/
 
 # Rig source working files
 /lib/*.psd

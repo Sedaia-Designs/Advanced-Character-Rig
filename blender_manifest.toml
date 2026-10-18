@@ -39,7 +39,7 @@ paths_exclude_pattern = [
   "/.idea/",
   "/blender-workspace.toml", # Blender Integration for Pycharm Configuration
 
-  "/.DS_Store", # MacOS Directory Metadata
+  "/.DS_Store", # macOS Directory Metadata
 
   # Git VCS Artifacts
   "/.gitignore",
