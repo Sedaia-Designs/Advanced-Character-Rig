@@ -1,5 +1,5 @@
 addon_symlink_name = "Sakura_Character_Rig"
-source_folder = "."
+source_folder = "./"
 run_arguments = ""
 blender_log_level = "INFO"
 reload_on_save = true
