@@ -2,11 +2,31 @@
 name = "Sakura_Rig_Utilities"
 version = "4.0.0"
 requires-python = ">=3.13"
-dependencies = [
-    "black==26.5.1",
-    "fake-bpy-module",
-    "pip==26.2.1",
-]
+dependencies = []
 
 [dependency-groups]
-dev = ["fake-bpy-module-5.1", "black[d]>=26.5.1", "numpy>=2.5.1", "typing-extensions>=4.16.0"]
+dev = [
+    "black==26.5.1",
+    "fake-bpy-module-5.2",
+    "pyright",
+]
+
+[tool.pyright]
+include = ["__init__.py", "modules.py", "prefs.py", "sacr_core", "sedaia_ui", "Extra-Scripts"]
+exclude = ["lib", ".venv", "**/__pycache__"]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.13"
+typeCheckingMode = "basic"
+reportMissingModuleSource = "none"
+reportOptionalMemberAccess = "none"
+reportOptionalSubscript = "none"
+reportOptionalCall = "none"
+reportAttributeAccessIssue = "none"
+reportArgumentType = "none"
+reportInvalidTypeForm = "none"
+reportUnboundVariable = "none"
+reportCallIssue = "none"
+reportAssignmentType = "none"
+reportSelfClsParameterName = "none"
+reportUnusedExpression = "none"
