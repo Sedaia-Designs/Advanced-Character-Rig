@@ -21,21 +21,34 @@ files = "Store downloaded Minecraft player skin data in extension storage"
 
 [build]
 paths_exclude_pattern = [
-  "__pycache__/",
-  "/.git/",
-  "/*.zip",
+  # Python & UV
+  "__pycache__/", # Python Compiler Cache Files
+  "/.venv/", # Python Virtual Environment
+  "/uv.lock",
+  "/pyproject.toml",
+  "/*.zip", # Previously packaged extension archives
+
+  # AI Integration
   "/.agents/",
-  "/.venv/",
+  "/AGENTS.md",
+
+  "/.run/", # Run configurations
+  "/.assets/", # Local Repository image artifacts, not to be built into the extension.
+
+  # IDE
   "/.idea/",
+  "/blender-workspace.toml", # Blender Integration for Pycharm Configuration
+
+  "/.DS_Store", # MacOS Directory Metadata
+
+  # Git VCS Artifacts
   "/.gitignore",
   "/.gitattributes",
-  "/.DS_Store",
-  "/AGENTS.md",
+  "/.git/", # Git Repository metadata
   "/CONTRIBUTING.md",
   "/README.md",
+
+  # Extras
   "/docs/",
   "/scripts/",
-  "/blender-workspace.toml",
-  "/pyproject.toml",
-  "/uv.lock",
 ]
