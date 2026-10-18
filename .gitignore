@@ -24,3 +24,10 @@ Desktop.ini
 # Agent-local state
 .junie/
 /Blender-Docs/
+
+# Rig source working files
+/lib/*.psd
+/lib/*.docs
+/lib/*.assets
+/lib/*.hidden
+/lib/textures/
