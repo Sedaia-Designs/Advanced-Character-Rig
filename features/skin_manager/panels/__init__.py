@@ -1,7 +1,7 @@
 """Registration layer for the Skin Manager panels.
 
-Empty for now. Import each module's `classes` here as panels are added, and
-give this package a `constants.py` for their idnames.
+Empty for now. Import each module's `classes` here as panels are added.
+Their idnames are declared in `constants.py`.
 """
 
 from bpy.utils import register_class, unregister_class

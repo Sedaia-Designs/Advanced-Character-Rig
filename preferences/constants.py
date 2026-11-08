@@ -19,6 +19,7 @@ class StorageDir(StrEnum):
     ROOT = ""
     RIGS = "rigs"
     PLAYER_DATA = "playerdata"
+    PLAYER_DATA_PURGED = "playerdata_purged"  # Backups made by the Skin Manager's purge.
 
 
 class StorageFile(StrEnum):
