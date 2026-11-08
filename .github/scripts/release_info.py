@@ -19,7 +19,7 @@ The manifest's custom `[release]` table configures the release:
 
 - `rig_version` (required): the rig version this release ships, as semver,
   for example `7.5.0-rc.4`.
-- `tag_prefix`: the tag is `<tag_prefix><rig_version>`. Default `v`.
+- `tag_prefix`: the tag is `<tag_prefix><rig_version>`. Default `r`.
 - `title`: the release title. `{rig_version}`, `{version}`, and `{name}` are
   replaced, with versions written for people (`7.5.0 RC4`, `4.0.0 Beta 1`).
   Default `{name} {version}`.
@@ -50,7 +50,7 @@ from pathlib import Path
 
 MANIFEST = "blender_manifest.toml"
 DEFAULT_CHANGELOG = "CHANGELOG.md"
-DEFAULT_TAG_PREFIX = "v"
+DEFAULT_TAG_PREFIX = "r"  # r for Revision, as SACR has used since R3
 DEFAULT_TITLE = "{name} {version}"
 RIG_HEADING = "## R{version}"
 EXTENSION_HEADING = "## [{version}]"
@@ -92,7 +92,7 @@ class ReleaseInfo:
 
     @property
     def tag(self) -> str:
-        """The git tag for this release, for example `v7.5.0-rc.4`."""
+        """The git tag for this release, for example `r7.5.0-rc.4`."""
         return f"{self.tag_prefix}{self.rig_version}"
 
     @property

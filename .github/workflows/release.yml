@@ -8,7 +8,7 @@
 #
 # - The rig and extension ship together under one release named by the rig:
 #   `release.rig_version` sets the tag, `<release.tag_prefix><rig_version>`
-#   (for example `v7.5.0-rc.4`), and `release.title` the title. `version` is the
+#   (for example `r7.5.0-rc.4`), and `release.title` the title. `version` is the
 #   extension's own version. A pre-release part in either version, such as
 #   `-rc.4` or `-beta.1`, makes a pre-release.
 # - The rig's `## R<rig_version>` and the extension's `## [<version>]` sections

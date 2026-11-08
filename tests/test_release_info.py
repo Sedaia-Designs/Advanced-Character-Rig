@@ -77,7 +77,7 @@ class RepoTestCase(unittest.TestCase):
 class CollectTests(RepoTestCase):
     def test_tag_follows_rig_version_and_package_follows_extension(self):
         info = release_info.collect(self.root)
-        self.assertEqual(info.tag, "v7.5.0")
+        self.assertEqual(info.tag, "r7.5.0")
         self.assertEqual(info.package, "My_Addon-1.2.0.zip")
         self.assertFalse(info.prerelease)
 
@@ -89,7 +89,7 @@ class CollectTests(RepoTestCase):
         self.write_manifest(manifest(release='rig_version = "7.5.0-rc.4"\n' + BUILD))
         info = release_info.collect(self.root)
         self.assertTrue(info.prerelease)
-        self.assertEqual(info.tag, "v7.5.0-rc.4")
+        self.assertEqual(info.tag, "r7.5.0-rc.4")
 
     def test_extension_prerelease_marks_prerelease(self):
         self.write_manifest(manifest(version="1.2.0-beta.1", release=RIG + BUILD))
@@ -281,7 +281,7 @@ class MainTests(RepoTestCase):
         self.assertIn("- New thing.", (out / "notes.md").read_text(encoding="utf-8"))
         self.assertEqual((out / "assets.txt").read_text(encoding="utf-8").splitlines(), [str((self.root / "lib" / "rig.blend").resolve())])
         outputs = dict(line.split("=", 1) for line in (self.root / "github_output").read_text(encoding="utf-8").splitlines())
-        self.assertEqual(outputs["tag"], "v7.5.0")
+        self.assertEqual(outputs["tag"], "r7.5.0")
         self.assertEqual(outputs["rig_version"], "7.5.0")
         self.assertEqual(outputs["title"], "My Addon 1.2.0")
         self.assertEqual(outputs["package"], "My_Addon-1.2.0.zip")

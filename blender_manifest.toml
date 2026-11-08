@@ -67,10 +67,10 @@ paths_exclude_pattern = [
 
 # The rig and this extension keep separate version numbers but ship in one
 # release. The rig version names the release: it is tagged
-# <tag_prefix><rig_version>, for example v7.5.0-rc.4. The release is a
+# <tag_prefix><rig_version>, for example r7.5.0-rc.4 (r for Revision). The release is a
 # pre-release when either version has a pre-release part.
 rig_version = "7.5.0-rc.4"
-tag_prefix = "v"
+tag_prefix = "r"
 
 # Release title. {rig_version}, {version} (this extension), and {name} are
 # replaced; versions are written for people, such as "7.5.0 RC4" or "4.0.0 Beta 1".
