@@ -1,6 +1,7 @@
 from ..ui import ui, enums, types
 from ..ui import ui as global_ui
 from .constants import PanelID
+from ..constants import RigBone
 
 
 class PT_Face(types.SACR_UI750_Panel):
@@ -35,15 +36,15 @@ class PT_Face(types.SACR_UI750_Panel):
         obj = context.active_object
         pose = obj.pose.bones
         collections = obj.data.collections_all
-        main = pose["Rig_Properties"]
-        face = pose["Face_Properties"]
-        eyes = pose["Eye_Properties"]
-        python = pose["PythonConfig.Objects"]
+        main = pose[RigBone.RIG_PROPERTIES]
+        face = pose[RigBone.FACE_PROPERTIES]
+        eyes = pose[RigBone.EYE_PROPERTIES]
+        python = pose[RigBone.PY_OBJECTS]
 
         rig_feature_set = enums.feature_set[obj.data["feature_set"]]
 
-        py_materials = pose["PythonConfig.Materials"]
-        py_panel_helper = pose["PythonConfig.PanelHelper"]
+        py_materials = pose[RigBone.PY_MATERIALS]
+        py_panel_helper = pose[RigBone.PY_PANEL_HELPER]
 
         # Panel Layout
         layout = self.layout
@@ -91,7 +92,7 @@ def panel_eyebrows(
     cls, parent_ui, pose, python, materials, collections, rig_feature_set
 ):
     """Perform panel eyebrows."""
-    props_eb = pose["Eyebrow_Properties"]
+    props_eb = pose[RigBone.EYEBROW_PROPERTIES]
 
     panel = global_ui.sub_panel(
         parent_ui, python, prop="EyebrowPanel", label="Eyebrows"
@@ -142,7 +143,7 @@ def panel_eyebrows(
 
 def panel_iris(parent_ui, pose, python, materials, collections, rig_feature_set):
     """Perform panel iris."""
-    eyes = pose["Eye_Properties"]
+    eyes = pose[RigBone.EYE_PROPERTIES]
     panel = global_ui.sub_panel(parent_ui, python, prop="IrisPanel", label="Iris")
     if panel:
         panel.label(text="Settings", icon="PREFERENCES")
@@ -247,7 +248,7 @@ def panel_iris(parent_ui, pose, python, materials, collections, rig_feature_set)
 
 def panel_sclera(parent_ui, pose, python, materials, collections):
     """Perform panel sclera."""
-    eyes = pose["Eye_Properties"]
+    eyes = pose[RigBone.EYE_PROPERTIES]
     panel = global_ui.sub_panel(parent_ui, python, prop="ScleraPanel", label="Scleras")
     if panel:
         panel.label(text="Settings", icon="PREFERENCES")
@@ -316,7 +317,7 @@ def panel_sclera(parent_ui, pose, python, materials, collections):
 
 def panel_mouth(parent_ui, pose, python, materials, collections):
     """Perform panel mouth."""
-    props = pose["Mouth_Properties"]
+    props = pose[RigBone.MOUTH_PROPERTIES]
     panel = global_ui.sub_panel(parent_ui, python, prop="MouthPanel", label="Mouth")
     if panel:
         panel.prop(props, '["Classic Mouth"]', text="Shallow Mouth", toggle=True)

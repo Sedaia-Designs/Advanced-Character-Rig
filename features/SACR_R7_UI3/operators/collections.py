@@ -5,6 +5,7 @@ import bpy.props as P
 import bpy.types as T
 
 from .constants import OperatorID
+from ..constants import RigBone
 
 
 class OT_toggle_collection(T.Operator):
@@ -23,7 +24,7 @@ class OT_toggle_collection(T.Operator):
     def execute(self, context):
         """Apply this operator to the current Blender context."""
         obj = context.active_object
-        references = obj.pose.bones.get("PythonConfig.Objects")
+        references = obj.pose.bones.get(RigBone.PY_OBJECTS)
         collection = bpy.data.collections.get(self.collection)
         if references is None or collection is None or collection not in references.values():
             self.report({"ERROR"}, "Rig collection is unavailable")

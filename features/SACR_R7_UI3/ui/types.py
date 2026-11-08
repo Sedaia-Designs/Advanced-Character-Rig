@@ -1,6 +1,7 @@
 import bpy.types as T
 
 from ....core.rigs import matches_rig_id
+from ..constants import RigID
 
 
 # Naming Convension: SACR_UI<Rig Major Ver><UI Major Ver>_Panel
@@ -30,4 +31,4 @@ class SACR_UI750_Panel(T.Panel):
     @classmethod
     def poll(self, context):
         """Return whether the current Blender context supports this UI element."""
-        return matches_rig_id(context.active_object, "rigID", ("SACR.Rev_7.UI_3",))
+        return matches_rig_id(context.active_object, RigID.PROPERTY, (RigID.SACR_R7_5,))

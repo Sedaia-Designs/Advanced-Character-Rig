@@ -1,6 +1,7 @@
 from ..ui import types
 from ..ui import ui as global_ui
 from .constants import PanelID
+from ..constants import RigBone
 
 
 class PT_Collections(types.SACR_UI750_Panel):
@@ -33,8 +34,8 @@ class PT_Collections(types.SACR_UI750_Panel):
         obj = context.active_object
         pose = obj.pose.bones
         collections = obj.data.collections_all
-        python = pose["PythonConfig.Objects"]
-        py_panel_helper = pose["PythonConfig.PanelHelper"]
+        python = pose[RigBone.PY_OBJECTS]
+        py_panel_helper = pose[RigBone.PY_PANEL_HELPER]
 
         layout = self.layout
 

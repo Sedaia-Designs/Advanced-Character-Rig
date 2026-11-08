@@ -3,12 +3,13 @@ from ..ui import ui as global_ui
 from ..operators.constants import OperatorID as FeatureOperatorID
 from ....panels.widgets import texture_row
 from .constants import PanelID
+from ..constants import MaterialKey, RigBone, SkinNode
 
 
 def toggle_collection(parent_ui, context, prop, label="Collection"):
     # Panel Variables
     """Perform toggle collection."""
-    collection_inst = context.active_object.pose.bones["PythonConfig.Objects"].get(prop)
+    collection_inst = context.active_object.pose.bones[RigBone.PY_OBJECTS].get(prop)
     inst_toggle = parent_ui.operator(
         FeatureOperatorID.TOGGLE_COLLECTION,
         text=label,
@@ -86,15 +87,15 @@ class PT_Main(types.SACR_UI750_Panel):
         pose = obj.pose.bones
         collections = obj.data.collections_all
 
-        main = pose["Rig_Properties"]
-        py_panel_helper = pose["PythonConfig.PanelHelper"]
-        root = pose["SACR_Root"]
+        main = pose[RigBone.RIG_PROPERTIES]
+        py_panel_helper = pose[RigBone.PY_PANEL_HELPER]
+        root = pose[RigBone.ROOT]
 
         rig_feature_set = enums.feature_set[obj.data["feature_set"]]
 
-        py_materials = pose["PythonConfig.Materials"]
+        py_materials = pose[RigBone.PY_MATERIALS]
 
-        skin = py_materials.get("skin").node_tree.nodes["Skin_Texture"].image
+        skin = py_materials.get(MaterialKey.SKIN).node_tree.nodes[SkinNode.TEXTURE].image
 
         # Panel Layout
         ui = self.layout
