@@ -13,7 +13,7 @@
 
 # region Imports and Common Variables
 from .. import prefs
-from ..utils import sedaia_utils
+from utils import sedaia_utils
 from bpy.utils import register_class, unregister_class
 from bpy.types import Panel
 
