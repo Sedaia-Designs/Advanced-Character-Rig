@@ -10,7 +10,7 @@ Use Python 3.13 or newer and [uv](https://docs.astral.sh/uv/) from the repositor
 
 ```sh
 uv sync --group dev
-uv run python -m compileall -q __init__.py modules.py prefs.py sacr_core sedaia_ui Extra-Scripts
+uv run python -m compileall -q __init__.py modules.py prefs.py core operators panels features scripts tests
 uv run pyright
 ```
 

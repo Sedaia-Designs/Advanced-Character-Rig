@@ -42,7 +42,7 @@ Use Blender Development for PyCharm as development tooling around this repositor
 
 ## Validate at the Right Layer
 
-- Run `python -m compileall -q __init__.py modules.py prefs.py sacr_core sedaia_ui` for Python syntax and import compilation.
+- Run `python -m compileall -q __init__.py modules.py prefs.py core operators panels features` for Python syntax and import compilation.
 - Run repository unit tests for logic isolated from Blender.
 - Inspect TOML structure and permissions after manifest edits.
 - Exercise registration, panels, context-sensitive operators, and reload behavior inside Blender.
