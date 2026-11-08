@@ -6,10 +6,10 @@ from pathlib import Path
 
 
 # region Core UI
-if "prefs" in locals():
-    reload(prefs)
+if "preferences" in locals():
+    reload(preferences)
 else:
-    from . import prefs
+    from . import preferences
 # endregion
 
 
@@ -60,7 +60,7 @@ def iter_submodule_names(path, root="rig_ui."):
 # region Registering
 modules = (
     # Core UI
-    prefs,
+    preferences,
 
     # Utilities
     operators,
