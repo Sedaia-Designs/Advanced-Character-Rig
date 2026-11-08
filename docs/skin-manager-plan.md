@@ -16,10 +16,29 @@ Written 2026-11-07.
 | Constants (IDs, rig names, enums) | see [Constants](#constants) | Done |
 | Rig targets (rig-agnostic Skin Manager) | `core/skin_targets.py`, `features/SACR_R7_UI3/constants.py` | Done, tested |
 | Mojang adapter | `core/mojang.py` | Done, tested (`tests/test_mojang.py`) |
-| Skin Manager service | `core/skin_manager.py` | Phase 2. Only `Route` exists |
+| Skin Manager service | `core/skin_manager.py` | Done, tested (`tests/test_skin_manager.py`) |
 | Operators | `features/skin_manager/operators/` | Phase 3. `SkinRouter` has a target-based `poll` and reads the username, then stops; `SkinAdd` is a stub |
 | Menus and panel | `features/skin_manager/menus/`, `panels/` | Phase 4. Empty |
 | Changelog and public docs | `CHANGELOG.md`, docs site | Phase 5 |
+
+## Finishing a phase
+
+A phase is not done until all of these steps are complete. Do them in this
+order, after the phase's checks (compileall, Pyright, and its tests) pass:
+
+1. **Record completion here.** Mark the phase done in the
+   [Status](#status) table, update the [Constants](#constants) table if the
+   phase added public names, and add a dated "Done" note under the phase
+   listing anything that differs from its spec.
+2. **Update the documentation site.** Add or update the pages on
+   `docs.sakura-sedaia.com` (SACR 7.5.0 section) that cover the code the phase
+   added or changed, for example `skin-system/` for the Mojang adapter and the
+   service, or `development/blender-ids.md` for new operators.
+3. **Commit.** Commit the phase's code, tests, and this plan's updates
+   together, with a message naming the phase. Commit the docs site changes in
+   the docs site repository.
+
+Phase 5 still does the final changelog and docs pass for the whole feature.
 
 ## R7.5 rig data contract
 
@@ -64,7 +83,7 @@ changes a public idname or a stored value.
 | Module | Members |
 |---|---|
 | `core/mojang.py` | `TEXTURE_HOST`, `MojangURL` (`PROFILES`, `SESSION`, `TEXTURES`). Moved here from the feature so the core adapter can use it. Phase 1 added `TextureRef`, `Profile`, `MojangClient`, `MojangFormatError`, and `PlayerNotFoundError` |
-| `core/skin_manager.py` | `Route` (`LOAD`, `PROMPT`, `DOWNLOAD`, `OFFLINE_ERROR`) |
+| `core/skin_manager.py` | `Route` (`LOAD`, `PROMPT`, `DOWNLOAD`, `OFFLINE_ERROR`). Phase 2 added `SyncStage`, `SkinManager`, `SyncResult`, `Selection`, `ImportReport`, `SkinManagerError` (`DefaultSkinError`, `SkinNotStoredError`, `MissingTextureError`), `route`, `texture_filename`, and `LEGACY_GLOB` |
 | `core/skin_targets.py` | `BoneProp`, `TextureSlot`, `ArmTypeSync`, `SkinTarget`, `SkinTargetRegistry`, `registry` |
 | `features/SACR_R7_UI3/constants.py` | `RigID`, `RigBone`, `SkinProp`, `MaterialKey`, `SkinNode`, `RigProp`, `ArmType` (`DEFAULT=0`, `SLIM=1`, `SUPER_SLIM=2`), `SKIN_TARGET` |
 | `features/skin_manager/constants.py` | `NAMESPACE` only |
@@ -125,6 +144,39 @@ Pattern: Adapter + Facade, with `HTTPClient` injected as the Strategy.
 
 ## Phase 2: Skin Manager service (`core/skin_manager.py`)
 
+**Done 2026-11-08.** Built as specified, with these differences that Phase 3
+relies on:
+
+- `route(has_local, online, prompt)` takes no name; the decision does not use
+  it. `SkinManager.find_local(name)` supplies `has_local`: the stored player
+  with that name, if they have at least one skin.
+- `SkinManager(session, mojang, player_data_dir, purged_dir)` takes the
+  session factory (`preferences.access.db_session`) and both folders as
+  arguments. Each method opens its own short sessions and creates the schema
+  if needed.
+- Dedupe is by hash and model: the same texture with a new arm model gets a
+  new row pointing at the same file. A row whose file was deleted is repaired
+  by the next `sync`, which downloads to the same path.
+- Downloads run one after another, not with `asyncio.gather`, so files from a
+  failed sync can be removed safely. If any download fails, no rows are written
+  and files downloaded by that call are deleted.
+- New errors for operators to report: `DefaultSkinError` (player has a default
+  skin), `SkinNotStoredError`, and `MissingTextureError`, all subclasses of
+  `SkinManagerError`. **Phase 3 must add `SkinManagerError` to its catch list.**
+- `purge` also moves or deletes legacy username folders that the player's
+  stored paths point into, but never a folder outside the player data folder.
+  Backups are `<folder>_<n>` from 1. It returns whether the player was stored.
+- `import_legacy_dir` returns `ImportReport(imported: tuple[Player, ...],
+  failed: tuple[(Path, reason), ...])`.
+- Known gap: `SkinDatabase.import_legacy` replaces a player's existing rows, so
+  importing a legacy file after syncing that player drops the synced rows (the
+  files stay). Phase 4 should warn about this next to the import button, or the
+  import should skip players who are already stored.
+- Observer stages are `SyncStage`: `LOOKUP`, `PROFILE`, `DOWNLOAD_SKIN`,
+  `DOWNLOAD_CAPE`, `SAVE`, `DONE`.
+
+Original spec:
+
 Pattern: Facade over `SkinDatabase`, `MojangClient`, and the player data folder.
 Progress is published through Observer callbacks.
 
@@ -168,8 +220,8 @@ Rules shared by every operator:
   `execute` looks the target up again and reports an error if a bone it names
   is missing.
 - Check `bpy.app.online_access` before any network call.
-- Catch only `NetworkError`, `MojangFormatError`, `SchemaVersionError`, and
-  `OSError`. Report with `self.report({"ERROR"}, ...)` and return `{"CANCELLED"}`.
+- Catch only `NetworkError`, `MojangFormatError`, `SkinManagerError`,
+  `SchemaVersionError`, and `OSError`. Report with `self.report({"ERROR"}, ...)` and return `{"CANCELLED"}`.
 
 Applying a skin (`LOAD`; `ADD` calls it):
 
