@@ -13,7 +13,7 @@ dev = [
 ]
 
 [tool.pyright]
-include = ["__init__.py", "modules.py", "preferences", "core", "operators", "features", "scripts", "tests"]
+include = ["__init__.py", "modules.py", "preferences", "core", "operators", "panels", "features", ".scripts", "tests"]
 exclude = ["lib", ".venv", "**/__pycache__"]
 venvPath = "."
 venv = ".venv"
