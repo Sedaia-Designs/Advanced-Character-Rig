@@ -23,7 +23,7 @@ There is no need to write a custom logger. Use `logging`.
 ## Design
 
 - **One logger per module:** `log = logging.getLogger(__name__)`. The extension
-  loads as `bl_ext.<repo>.Sakura_Character_Rig`, so every module's logger sits
+  loads as `bl_ext.<repo>.Sakura_Rig_GUI`, so every module's logger sits
   under the package logger named `ADDON_PACKAGE`. Setting that one logger's
   level controls the whole extension.
 - **`core/` may log.** `logging` is standard library, so the no-`bpy` rule

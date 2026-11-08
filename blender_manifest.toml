@@ -1,9 +1,9 @@
 schema_version = "1.0.0"
 
-id = "Sakura_Character_Rig"
-version = "7.5.0"
+id = "Sakura_Rig_GUI"
+version = "4.0.0"
 name = "Sakura Character Rig Interface"
-tagline = "Controls and skin tools for SACR R7.5.0"
+tagline = "Controls and skin tools for SACR R7.5.0 and newer"
 maintainer = "Sakura Sedaia"
 type = "add-on"
 website = "https://www.sedaia-designs.org/products/assets/sakura-character-rig"
@@ -27,6 +27,7 @@ paths_exclude_pattern = [
   "/uv.lock",
   "/pyproject.toml",
   "/*.zip", # Previously packaged extension archives
+  "/.ruff_cache/", # Ruff Cache
 
   # AI Integration
   "/.agents/",
@@ -40,7 +41,8 @@ paths_exclude_pattern = [
   "/.idea/",
   "/blender-workspace.toml", # Blender Integration for Pycharm Configuration
 
-  "/.DS_Store", # macOS Directory Metadata
+  ".DS_Store", # macOS Directory Metadata
+  "*.blend[0-9]*", # Blender backup files, such as lib/SACR.R7.5.0_RC4.blend1
 
   # Git VCS Artifacts
   "/.gitignore",
