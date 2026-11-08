@@ -5,4 +5,4 @@ blender_log_level = "INFO"
 reload_on_save = true
 just_my_code = true
 extensions_repository = "pycharm_blender"
-blend_file_to_open = "lib/SACR.R7.5.0_RC4.blend"
+blend_file_to_open = "lib/SACR.B7.5.0_RC4.blend"
