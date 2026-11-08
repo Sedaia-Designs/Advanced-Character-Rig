@@ -22,6 +22,7 @@ This repository contains the Sakura character rig and its companion Blender exte
 - `.scripts/` contains standalone Blender helpers (the enumerator scripts) and `generate_api_docs.py`. Do not fold them into extension runtime without an explicit request.
 - `docs/` contains internal planning documents, such as `docs/skin-manager-plan.md`. It is excluded from the extension build; public documentation lives on the docs site.
 - `CHANGELOG.md` records rig and extension release notes together. Preserve their separate version numbers.
+- Releases are made only by the manual `.github/workflows/release.yml` from `main`, configured in the `[release]` table of `blender_manifest.toml`. One release ships the rig and the extension together: it is tagged `v<rig version>` (for example `v7.5.0-rc.4`), and the manifest `version` stays the extension's own. Its notes come from the changelog's `## R<rig version>` and `## [<extension version>]` sections. `.github/scripts/release_info.py` reads the configuration and is tested in `tests/test_release_info.py`.
 - `.hidden/` and `Blender-Docs/` are local only when present; do not modify them unless requested.
 
 ## Organization rules

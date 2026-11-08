@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "Sakura_Rig_GUI"
-version = "4.0.0"
+version = "4.0.0-beta.1"
 name = "Sakura Character Rig Interface"
 tagline = "Controls and skin tools for SACR R7.5.0 and newer"
 maintainer = "Sakura Sedaia"
@@ -45,6 +45,7 @@ paths_exclude_pattern = [
   "*.blend[0-9]*", # Blender backup files, such as lib/SACR.R7.5.0_RC4.blend1
 
   # Git VCS Artifacts
+  "/.github/", # GitHub workflows and release tooling
   "/.gitignore",
   "/.gitattributes",
   "/.git/", # Git Repository metadata
@@ -58,4 +59,36 @@ paths_exclude_pattern = [
 
   # Legacy skin tools, kept only as reference for the skin rewrite
   "/.legacy/",
+]
+
+[release]
+# Settings for the manual release workflow, .github/workflows/release.yml.
+# Blender ignores this table; .github/scripts/release_info.py reads and checks it.
+
+# The rig and this extension keep separate version numbers but ship in one
+# release. The rig version names the release: it is tagged
+# <tag_prefix><rig_version>, for example v7.5.0-rc.4. The release is a
+# pre-release when either version has a pre-release part.
+rig_version = "7.5.0-rc.4"
+tag_prefix = "v"
+
+# Release title. {rig_version}, {version} (this extension), and {name} are
+# replaced; versions are written for people, such as "7.5.0 RC4" or "4.0.0 Beta 1".
+title = "SACR {rig_version} + Interface {version}"
+
+# The release notes are this changelog's "## R<rig_version>" section followed by
+# its "## [<version>]" section. Pre-releases fall back to the final version's
+# section, such as "## R7.5.0" or "## [4.0.0]".
+changelog = "CHANGELOG.md"
+
+# Blender release that builds the package. It must satisfy blender_version_min
+# (and blender_version_max, if set). When changing it, copy the linux-x64 line
+# from https://download.blender.org/release/Blender<X.Y>/blender-<version>.sha256
+build_blender_version = "5.2.2"
+build_blender_sha256 = "84098912789dc450e95697c4184fb8a90acbe5111c2ba4aede3fecb57806a168"
+
+# Extra files attached to the release next to the packaged extension.
+# Paths are relative to the repository root, and file names must be unique.
+artifacts = [
+  "/lib/SACR.R7.5.0_RC4.blend"
 ]

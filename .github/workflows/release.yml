@@ -1,0 +1,185 @@
+# Build the extension, tag the commit, and publish a GitHub release.
+#
+# Run it by hand from Actions > Release extension > Run workflow. Releases are
+# made only from `main`: whatever is on `main` is what ships, so a run started
+# from any other branch or tag fails before doing anything. The release tags
+# the commit at the tip of `main` when the run starts. The version, tag, and
+# notes all come from the repository, configured in blender_manifest.toml:
+#
+# - The rig and extension ship together under one release named by the rig:
+#   `release.rig_version` sets the tag, `<release.tag_prefix><rig_version>`
+#   (for example `v7.5.0-rc.4`), and `release.title` the title. `version` is the
+#   extension's own version. A pre-release part in either version, such as
+#   `-rc.4` or `-beta.1`, makes a pre-release.
+# - The rig's `## R<rig_version>` and the extension's `## [<version>]` sections
+#   of `release.changelog` become the notes.
+# - `release.build_blender_version` and `release.build_blender_sha256` pick
+#   the Blender release that builds the package.
+# - `release.artifacts` lists the extra files attached next to the package.
+#
+# The run stops before tagging if the checks fail, the tag already exists, the
+# changelog has no section for the version, or an artifact is missing. If the
+# release cannot be created after the tag is pushed, the tag is deleted again.
+
+name: Release extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      draft:
+        description: "Create the release as a draft"
+        type: boolean
+        default: false
+      prerelease:
+        description: "Mark as a pre-release (pre-release versions always are)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-extension
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build and release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Check that the run is on main
+        if: github.ref != 'refs/heads/main'
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          echo "::error::Releases are made only from main, but this run is on $REF. Choose main under 'Use workflow from'."
+          exit 1
+
+      - name: Check out the repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+
+      - name: Read release information
+        id: info
+        run: >-
+          uv run --no-project python .github/scripts/release_info.py
+          --notes-out "$RUNNER_TEMP/release/notes.md"
+          --assets-out "$RUNNER_TEMP/release/assets.txt"
+          --github-output "$GITHUB_OUTPUT"
+
+      - name: Check that the tag is free
+        env:
+          TAG: ${{ steps.info.outputs.tag }}
+        run: |
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null \
+            || git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null; then
+            echo "::error::Tag $TAG already exists. Raise release.rig_version in blender_manifest.toml."
+            exit 1
+          fi
+
+      - name: Install the development environment
+        run: uv sync --group dev --locked
+
+      - name: Compile
+        run: uv run python -m compileall -q __init__.py modules.py preferences core operators panels features tests
+
+      - name: Type check
+        run: uv run pyright
+
+      - name: Run the tests
+        run: uv run python -m unittest discover -s tests
+
+      - name: Install Blender's system libraries
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q --no-install-recommends \
+            libegl1 libgl1 libsm6 libx11-6 libxext6 libxfixes3 libxi6 \
+            libxkbcommon0 libxrender1 libxxf86vm1
+
+      - name: Restore Blender from the cache
+        id: blender-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/blender
+          key: blender-${{ steps.info.outputs.blender_version }}-linux-x64
+
+      - name: Download Blender
+        if: steps.blender-cache.outputs.cache-hit != 'true'
+        env:
+          BLENDER_VERSION: ${{ steps.info.outputs.blender_version }}
+          BLENDER_SERIES: ${{ steps.info.outputs.blender_series }}
+          BLENDER_SHA256: ${{ steps.info.outputs.blender_sha256 }}
+        run: |
+          archive="blender-${BLENDER_VERSION}-linux-x64.tar.xz"
+          curl -fsSL --retry 3 -o "$RUNNER_TEMP/$archive" \
+            "https://download.blender.org/release/Blender${BLENDER_SERIES}/${archive}"
+          echo "${BLENDER_SHA256}  $RUNNER_TEMP/$archive" | sha256sum --check
+          mkdir -p ~/blender
+          tar -xJf "$RUNNER_TEMP/$archive" -C ~/blender --strip-components=1
+
+      - name: Validate the manifest
+        run: ~/blender/blender --version && ~/blender/blender --factory-startup --command extension validate .
+
+      - name: Build the extension
+        env:
+          PACKAGE: ${{ steps.info.outputs.package }}
+        run: |
+          # Blender does not create the output folder itself.
+          mkdir -p "$RUNNER_TEMP/dist"
+          ~/blender/blender --factory-startup --command extension build --output-dir "$RUNNER_TEMP/dist"
+          test -f "$RUNNER_TEMP/dist/$PACKAGE" || { echo "::error::Blender did not create $PACKAGE"; exit 1; }
+          unzip -l "$RUNNER_TEMP/dist/$PACKAGE"
+
+      - name: Create and push the tag
+        id: tag
+        env:
+          TAG: ${{ steps.info.outputs.tag }}
+          TITLE: ${{ steps.info.outputs.title }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" "$GITHUB_SHA" -m "$TITLE"
+          git push origin "refs/tags/$TAG"
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.info.outputs.tag }}
+          TITLE: ${{ steps.info.outputs.title }}
+          PACKAGE: ${{ steps.info.outputs.package }}
+          PRERELEASE: ${{ steps.info.outputs.prerelease == 'true' || inputs.prerelease }}
+          DRAFT: ${{ inputs.draft }}
+        run: |
+          mapfile -t artifacts < "$RUNNER_TEMP/release/assets.txt"
+          flags=()
+          [[ "$PRERELEASE" == "true" ]] && flags+=(--prerelease)
+          [[ "$DRAFT" == "true" ]] && flags+=(--draft)
+          gh release create "$TAG" \
+            --verify-tag \
+            --title "$TITLE" \
+            --notes-file "$RUNNER_TEMP/release/notes.md" \
+            "${flags[@]}" \
+            "$RUNNER_TEMP/dist/$PACKAGE" \
+            "${artifacts[@]}"
+
+      # gh uploads assets to a draft first, so a failed upload can leave a
+      # half-made release behind. Remove it and the tag so the run can be retried.
+      - name: Remove the tag and release after a failure
+        if: failure() && steps.tag.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.info.outputs.tag }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release delete "$TAG" --yes
+          fi
+          git push --delete origin "refs/tags/$TAG"
