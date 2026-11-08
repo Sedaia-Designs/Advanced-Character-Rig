@@ -90,7 +90,7 @@ jobs:
         run: uv sync --group dev --locked
 
       - name: Compile
-        run: uv run python -m compileall -q __init__.py modules.py preferences core operators panels features tests
+        run: uv run python -m compileall -q __init__.py modules.py constants.py preferences core operators panels features tests
 
       - name: Type check
         run: uv run pyright

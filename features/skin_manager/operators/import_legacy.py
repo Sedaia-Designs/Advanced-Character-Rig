@@ -5,9 +5,9 @@ from pathlib import Path
 import bpy.props as P
 import bpy.types as T
 
+from ....constants import StorageDir
 from ....core.skin_manager import LEGACY_GLOB
 from ....preferences.access import storage_dir
-from ....preferences.constants import StorageDir
 from .base import REPORTED_ERRORS, build_manager
 from .constants import OperatorID
 

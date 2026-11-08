@@ -13,19 +13,21 @@ things, not to save a few lines:
 Skin application stays in `load.py`, the only operator that applies a skin.
 """
 
+import sys
 from pathlib import Path
 
+import addon_utils
 import bpy
 import bpy.types as T
 
 from ....core.databases.schema import SchemaVersionError
 from ....core.mojang import MojangClient, MojangFormatError
-from ....core.network import HTTPClient, NetworkError
+from ....constants import ADDON_PACKAGE, StorageDir
+from ....core.network import DEFAULT_USER_AGENT, HTTPClient, NetworkError
 from ....core.skin_manager import SkinManager, SkinManagerError, sync_progress
 from ....core.skin_targets import SkinTarget
 from ....core.skin_targets import registry as skin_targets
 from ....preferences.access import database, storage_dir
-from ....preferences.constants import MANIFEST, StorageDir
 
 # The only errors an operator reports to the user. Anything else is a
 # programming error and should surface as a traceback.
@@ -34,13 +36,25 @@ REPORTED_ERRORS = (NetworkError, MojangFormatError, SkinManagerError, SchemaVers
 OFFLINE_MESSAGE = "Online Access is off. Enable it in Preferences > System to download skins"
 
 
+def user_agent() -> str:
+    """Return the HTTP user agent, for example ``SakuraCharacterRig/4.0.0``.
+
+    The version comes from the manifest Blender parsed when it loaded the
+    extension, so the extension never reads the manifest itself.
+    """
+    version = addon_utils.module_bl_info(sys.modules[ADDON_PACKAGE]).get("version")
+    if not version:
+        return DEFAULT_USER_AGENT
+    return f"{DEFAULT_USER_AGENT}/{'.'.join(str(part) for part in version)}"
+
+
 def build_manager() -> SkinManager:
     """Return a `SkinManager` on the extension's database and player data folders.
 
     Call this on the main thread. Every path is resolved here with `bpy`, so
     the manager can then run on a worker thread without touching `bpy`.
     """
-    http = HTTPClient().set_user_agent(f"SakuraCharacterRig/{MANIFEST.version}")
+    http = HTTPClient().set_user_agent(user_agent())
     return SkinManager(
         database().session,
         MojangClient(http),

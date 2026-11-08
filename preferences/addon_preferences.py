@@ -3,9 +3,9 @@
 import bpy.props as P
 import bpy.types as T
 
+from ..constants import ADDON_PACKAGE
 from ..operators.constants import OperatorID
 from .access import storage_dir
-from .constants import ADDON_PACKAGE
 
 
 class PREFS_user_preferences(T.AddonPreferences):

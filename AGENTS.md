@@ -4,7 +4,7 @@ This repository contains the Sakura character rig and its companion Blender exte
 
 ## Layout
 
-- The Blender extension package is at the repository root. `__init__.py` registers it, `modules.py` loads its packages in dependency order, `preferences/` contains the add-on preferences and reads the extension ID from the manifest through `core/manifest.py`, and `blender_manifest.toml` is its canonical identity and build metadata.
+- The Blender extension package is at the repository root. `__init__.py` registers it, `modules.py` loads its packages in dependency order, `constants.py` holds the constants several packages share (such as `ADDON_PACKAGE` and the storage folders), `preferences/` contains the add-on preferences, and `blender_manifest.toml` is its canonical identity and build metadata. The extension never reads the manifest at runtime: `ADDON_PACKAGE` is the root package's own name, and Blender supplies the version through `addon_utils.module_bl_info`.
 - `core/` contains Blender-agnostic Python. It must never import `bpy`.
 - One package per Blender type, each built on top of `core/`:
   - `operators/` for operators
@@ -60,6 +60,7 @@ Follow the convention in `operators/`:
 
 ### Every type package has a constants module
 
+- Constants used by more than one package go in the root `constants.py`, as plain Python rather than manifest settings. `core/` cannot import it (its tests import `core` as a top-level package), so core keeps its own constants such as `core.ids.ID_PREFIX`.
 - Each package has a `constants.py` that declares the ID name of every class it registers. Examples: `OperatorID` and `MenuID` in `operators/constants.py`.
 - IDs are `StrEnum` members with explicit values built from `core.ids.ID`, for example `SKIN_LOAD = ID("skin_load").operator_for(NAMESPACE)`. Never use `auto()`: renaming a member must not change a public idname.
 - Classes take their `bl_idname` from the enum, and UI code references members, never literal ID strings.
@@ -96,7 +97,7 @@ The uv project and extension package are both rooted here. Use Python 3.13 or ne
 
 ```sh
 uv sync --group dev
-uv run python -m compileall -q __init__.py modules.py preferences core operators panels features tests
+uv run python -m compileall -q __init__.py modules.py constants.py preferences core operators panels features tests
 uv run pyright
 ```
 

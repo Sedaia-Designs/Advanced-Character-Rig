@@ -3,8 +3,8 @@
 Operators, panels, and `AddonPreferences.draw()` all need these, so they live
 in one shared module instead of being repeated in each.
 
-This module must stay a leaf: it may import only `bpy`, `core/`, and
-`.constants`. `preferences/addon_preferences.py` imports `operators.constants`,
+This module must stay a leaf: it may import only `bpy`, `core/`, and the root
+`constants`. `preferences/addon_preferences.py` imports `operators.constants`,
 which loads the whole `operators` package. Any operator can import from here
 safely, because nothing here imports back into `operators/`.
 """
@@ -19,7 +19,7 @@ import bpy
 from bpy.utils import extension_path_user
 
 from ..core.sql import SQLite
-from .constants import ADDON_PACKAGE, StorageDir, StorageFile
+from ..constants import ADDON_PACKAGE, StorageDir, StorageFile
 
 if TYPE_CHECKING:
     from .addon_preferences import PREFS_user_preferences

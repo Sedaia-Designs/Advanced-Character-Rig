@@ -92,7 +92,7 @@ changes a public idname or a stored value.
 | `features/skin_manager/operators/constants.py` | `OperatorID`: `ROUTER`, `ADD`, `LOAD`, `PURGE`, `IMPORT_LEGACY` |
 | `features/skin_manager/menus/constants.py` | `MenuID.EXISTING` |
 | `features/skin_manager/panels/constants.py` | `PanelID.MAIN`, `PanelID.HISTORY` (Phase 4), `CATEGORY = "Skins"` |
-| `preferences/constants.py` | `StorageDir.PLAYER_DATA_PURGED` |
+| `constants.py` | `StorageDir.PLAYER_DATA_PURGED` |
 
 ## Legacy behaviour to carry over
 

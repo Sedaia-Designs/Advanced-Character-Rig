@@ -1,5 +1,6 @@
 import bpy.types as T
 
+from ....constants import Sidebar
 from ....core.rigs import matches_rig_id
 from ..constants import RigID
 
@@ -24,8 +25,8 @@ class SACR_UI750_Panel(T.Panel):
     """
 
     bl_category = "SACR Config"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
+    bl_space_type = Sidebar.SPACE
+    bl_region_type = Sidebar.REGION
 
     # TODO: Test if rig_id can be extracted from the classmethod poll into being a class attribute. Complete this once the UI is stable and reorganized.
     @classmethod

@@ -12,6 +12,7 @@ import asyncio
 import bpy
 import bpy.types as T
 
+from ....constants import Sidebar
 from ....core.background import BackgroundTask
 from ....core.skin_manager import SyncCancelledError, SyncResult, sync_progress
 from ....core.skin_targets import registry as skin_targets
@@ -26,7 +27,7 @@ def redraw_skin_ui(context) -> None:
     """Redraw the 3D Viewports, whose sidebar holds the Skin Manager panel."""
     for window in context.window_manager.windows:
         for area in window.screen.areas:
-            if area.type == "VIEW_3D":
+            if area.type == Sidebar.SPACE:
                 area.tag_redraw()
 
 

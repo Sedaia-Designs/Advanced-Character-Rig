@@ -10,11 +10,11 @@ import sqlite3
 
 import bpy.types as T
 
+from ....constants import Sidebar, StorageDir
 from ....core.skin_manager import sync_progress
 from ....core.skin_targets import registry as skin_targets
 from ....operators.constants import OperatorID as SharedOperatorID
 from ....preferences.access import database_path, storage_dir
-from ....preferences.constants import StorageDir
 from ..operators.base import REPORTED_ERRORS, build_manager
 from ..operators.constants import OperatorID
 from .constants import CATEGORY, PanelID
@@ -23,8 +23,8 @@ from .constants import CATEGORY, PanelID
 class SkinPanel:
     """Placement and `poll` shared by the Skin Manager panels."""
 
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
+    bl_space_type = Sidebar.SPACE
+    bl_region_type = Sidebar.REGION
     bl_category = CATEGORY
 
     @classmethod
