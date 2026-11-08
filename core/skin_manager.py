@@ -22,17 +22,19 @@ Patterns:
 
 - Facade: `SkinManager` gives operators task-shaped calls (`sync`,
   `selection`, `purge`, `import_legacy_dir`) and hides SQL, HTTP, and files.
-- Strategy: the database session factory and the `MojangClient` are injected,
-  so tests use in-memory SQLite and a fake client.
+- Strategy: the database session factory, the `MojangClient`, and `sync`'s
+  `should_cancel` check are injected, so tests use in-memory SQLite, a fake
+  client, and a scripted cancel.
 - Observer: `subscribe` registers callbacks that `sync` notifies at each
   `SyncStage`, so the Blender layer can report progress without core
   importing it.
+- Singleton: `sync_progress` records the one background sync allowed at a time.
 """
 
 import json
 import shutil
 import sqlite3
-from collections.abc import Callable, Generator
+from collections.abc import Callable, Generator, Iterable
 from contextlib import AbstractContextManager, contextmanager
 from dataclasses import dataclass
 from enum import StrEnum
@@ -47,6 +49,7 @@ from .databases.skins import (
     SkinModel,
     normalize_uuid,
 )
+from .background import BackgroundTask
 from .mojang import MojangClient, TextureRef
 
 # Glob, relative to a legacy player data folder, that finds legacy player files.
@@ -58,6 +61,10 @@ SessionFactory = Callable[[], AbstractContextManager[sqlite3.Connection]]
 
 # Observer callback: receives the stage and the player name being synced.
 SyncListener = Callable[["SyncStage", str], None]
+
+# Strategy that `sync` asks at each checkpoint whether to stop, such as
+# `BackgroundTask.cancelled`.
+CancelCheck = Callable[[], bool]
 
 
 class Route(StrEnum):
@@ -90,6 +97,10 @@ class DefaultSkinError(SkinManagerError):
 
 class SkinNotStoredError(SkinManagerError):
     """Raised when the requested player or skin index is not stored."""
+
+
+class SyncCancelledError(SkinManagerError):
+    """Raised when a sync stops because its cancel check returned true."""
 
 
 class MissingTextureError(SkinManagerError):
@@ -137,6 +148,29 @@ def route(has_local: bool, online: bool, prompt: bool) -> Route:
 def texture_filename(kind: str, texture_hash: str) -> str:
     """Return the file name of a texture, such as ``skin_<hash>.png``."""
     return f"{kind}_{texture_hash}.png"
+
+
+def stage_progress(stage: SyncStage) -> float:
+    """Return how far a sync is at `stage`, from above 0 to 1 at `SyncStage.DONE`."""
+    stages = list(SyncStage)
+    return (stages.index(stage) + 1) / len(stages)
+
+
+def stage_text(stage: SyncStage, name: str) -> str:
+    """Return a short status message for `stage`, naming the player."""
+    match stage:
+        case SyncStage.LOOKUP:
+            return f"Looking up {name}"
+        case SyncStage.PROFILE:
+            return f"Fetching {name}'s profile"
+        case SyncStage.DOWNLOAD_SKIN:
+            return f"Downloading {name}'s skin"
+        case SyncStage.DOWNLOAD_CAPE:
+            return f"Downloading {name}'s cape"
+        case SyncStage.SAVE:
+            return f"Saving {name}'s skin"
+        case SyncStage.DONE:
+            return f"Got {name}'s skin"
 
 
 class SkinManager:
@@ -202,19 +236,31 @@ class SkinManager:
                 return None
             return player
 
-    async def sync(self, name: str) -> SyncResult:
+    async def sync(self, name: str, should_cancel: CancelCheck | None = None) -> SyncResult:
         """Fetch a player's current skin and cape, downloading only textures not stored yet.
 
         Replaces the legacy "get" and "add" operators. A skin already stored
         with the same hash and model is reused. If a download fails, no rows
         are written and files downloaded by this call are removed.
 
+        `should_cancel` is checked before each stage and before the database
+        write. Once it returns true, the sync stops with `SyncCancelledError`,
+        with the same cleanup as a failed download.
+
         Raises `PlayerNotFoundError` for an unknown name, `DefaultSkinError`
-        if the player has no custom skin, and `NetworkError`,
-        `MojangFormatError`, `SchemaVersionError`, or `OSError` otherwise.
+        if the player has no custom skin, `SyncCancelledError` when cancelled,
+        and `NetworkError`, `MojangFormatError`, `SchemaVersionError`, or
+        `OSError` otherwise.
         """
+
+        def checkpoint() -> None:
+            if should_cancel is not None and should_cancel():
+                raise SyncCancelledError("Skin download cancelled")
+
+        checkpoint()
         self._notify(SyncStage.LOOKUP, name)
         uuid, canonical = await self.mojang.lookup(name)
+        checkpoint()
         self._notify(SyncStage.PROFILE, canonical)
         profile = await self.mojang.profile(uuid)
         if profile.skin is None:
@@ -232,10 +278,13 @@ class SkinManager:
 
         new_files: list[Path] = []
         try:
+            checkpoint()
             await self._fetch(profile.skin, skin_path, SyncStage.DOWNLOAD_SKIN, canonical, new_files)
             if profile.cape is not None and cape_path is not None:
+                checkpoint()
                 await self._fetch(profile.cape, cape_path, SyncStage.DOWNLOAD_CAPE, canonical, new_files)
 
+            checkpoint()
             self._notify(SyncStage.SAVE, canonical)
             with self._db() as db:
                 player = db.upsert_player(uuid, profile.name)
@@ -348,3 +397,67 @@ class SkinManager:
             except (LegacyFormatError, sqlite3.IntegrityError) as error:
                 failed.append((file, str(error)))
         return ImportReport(tuple(imported), tuple(failed))
+
+
+class SyncProgress:
+    """The one background sync that may run at a time, and how far it has got.
+
+    Pattern: Singleton. Operators, the panel, and the file-load handler all
+    read the module-level `sync_progress`, so there is exactly one place that
+    knows whether a sync is running. Tests build their own instance, and
+    `reset()` clears it on unregister.
+    """
+
+    def __init__(self):
+        self.task: BackgroundTask[SyncResult] | None = None
+        self.name = ""
+        self.stage: SyncStage | None = None
+        self.cancelling = False
+
+    @property
+    def running(self) -> bool:
+        """Whether a sync has started and not been finished or reset."""
+        return self.task is not None
+
+    def start(self, name: str, task: BackgroundTask[SyncResult]) -> None:
+        """Record that `task` is syncing `name`. Raises `RuntimeError` if one is already running."""
+        if self.running:
+            raise RuntimeError("A skin sync is already running")
+        self.reset()
+        self.task, self.name = task, name
+
+    def update(self, events: Iterable[tuple[SyncStage, str]]) -> None:
+        """Apply `(stage, name)` events drained from the task, oldest first."""
+        for stage, name in events:
+            self.stage, self.name = stage, name
+
+    def cancel(self) -> None:
+        """Ask the running sync, if any, to stop at its next checkpoint."""
+        if self.task is not None:
+            self.task.cancel()
+            self.cancelling = True
+
+    def reset(self) -> None:
+        """Forget the current sync. Does not cancel it; call `cancel()` first for that."""
+        self.task = None
+        self.name = ""
+        self.stage = None
+        self.cancelling = False
+
+    @property
+    def fraction(self) -> float:
+        """Progress from 0 to 1, for a progress bar."""
+        return stage_progress(self.stage) if self.stage is not None else 0.0
+
+    @property
+    def text(self) -> str:
+        """A short status message for the current stage."""
+        if self.cancelling:
+            return f"Cancelling {self.name}'s download"
+        if self.stage is None:
+            return f"Starting {self.name}'s download"
+        return stage_text(self.stage, self.name)
+
+
+# The process-wide sync state. See `SyncProgress`.
+sync_progress = SyncProgress()

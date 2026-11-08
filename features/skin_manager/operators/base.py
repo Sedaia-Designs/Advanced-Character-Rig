@@ -1,6 +1,6 @@
 """Blender glue shared by every Skin Manager operator.
 
-This is factored out because all five operators truly need the same three
+This is factored out because all five operators truly need the same
 things, not to save a few lines:
 
 - the same `poll`, so they appear only on rigs with a registered skin target
@@ -8,6 +8,7 @@ things, not to save a few lines:
   same error reports when a bone is missing
 - the same `SkinManager`, built from the extension's database and storage
   folders
+- the same refusal to start a second sync while a background one runs
 
 Skin application stays in `load.py`, the only operator that applies a skin.
 """
@@ -20,10 +21,10 @@ import bpy.types as T
 from ....core.databases.schema import SchemaVersionError
 from ....core.mojang import MojangClient, MojangFormatError
 from ....core.network import HTTPClient, NetworkError
-from ....core.skin_manager import SkinManager, SkinManagerError
+from ....core.skin_manager import SkinManager, SkinManagerError, sync_progress
 from ....core.skin_targets import SkinTarget
 from ....core.skin_targets import registry as skin_targets
-from ....preferences.access import db_session, storage_dir
+from ....preferences.access import database, storage_dir
 from ....preferences.constants import MANIFEST, StorageDir
 
 # The only errors an operator reports to the user. Anything else is a
@@ -34,10 +35,14 @@ OFFLINE_MESSAGE = "Online Access is off. Enable it in Preferences > System to do
 
 
 def build_manager() -> SkinManager:
-    """Return a `SkinManager` on the extension's database and player data folders."""
+    """Return a `SkinManager` on the extension's database and player data folders.
+
+    Call this on the main thread. Every path is resolved here with `bpy`, so
+    the manager can then run on a worker thread without touching `bpy`.
+    """
     http = HTTPClient().set_user_agent(f"SakuraCharacterRig/{MANIFEST.version}")
     return SkinManager(
-        db_session,
+        database().session,
         MojangClient(http),
         Path(storage_dir(StorageDir.PLAYER_DATA)),
         # Not created until a purge with backup needs it.
@@ -45,8 +50,11 @@ def build_manager() -> SkinManager:
     )
 
 
-def call_operator(caller: T.Operator, idname: str, **properties) -> bool:
-    """Run another operator by its full idname and return whether it finished.
+def call_operator(caller: T.Operator, idname: str, exec_context: str = "EXEC_DEFAULT", **properties) -> bool:
+    """Run another operator by its full idname and return whether it finished or started.
+
+    Pass ``exec_context="INVOKE_DEFAULT"`` to start a modal operator, which
+    counts as success once it is running.
 
     When an operator reports an error, ``bpy.ops`` raises `RuntimeError` in the
     caller instead of returning ``{"CANCELLED"}``. That message is reported
@@ -54,23 +62,29 @@ def call_operator(caller: T.Operator, idname: str, **properties) -> bool:
     """
     module, name = idname.split(".")
     try:
-        result = getattr(getattr(bpy.ops, module), name)(**properties)
+        result = getattr(getattr(bpy.ops, module), name)(exec_context, **properties)
     except RuntimeError as error:
         caller.report({"ERROR"}, str(error).removeprefix("Error: ").strip())
         return False
-    return "FINISHED" in result
+    return bool(result & {"FINISHED", "RUNNING_MODAL"})
 
 
 class SkinOperator:
     """Mixin for operators that work on the active rig's skin target.
 
     List it before `bpy.types.Operator`. It calls `self.report`, which the
-    operator provides.
+    operator provides. Operators that start a download set
+    `blocked_while_syncing`, so they are disabled while a background sync runs.
     """
+
+    blocked_while_syncing = False
 
     @classmethod
     def poll(cls, context):
         """Only run on a rig whose feature registered a Skin Manager target."""
+        if cls.blocked_while_syncing and sync_progress.running:
+            cls.poll_message_set(f"Wait for the current download to finish: {sync_progress.text}")
+            return False
         return skin_targets.for_rig(context.active_object) is not None
 
     def rig_target(self, context) -> tuple[T.Object, SkinTarget] | None:

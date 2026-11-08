@@ -18,6 +18,7 @@ Written 2026-11-07.
 | Mojang adapter | `core/mojang.py` | Done, tested (`tests/test_mojang.py`) |
 | Skin Manager service | `core/skin_manager.py` | Done, tested (`tests/test_skin_manager.py`) |
 | Operators | `features/skin_manager/operators/` | Done, validated in Blender 5.2.2 |
+| Background sync with progress | `core/background.py`, `core/skin_manager.py`, `features/skin_manager/operators/` | Done, tested, validated in the Blender 5.2.2 UI |
 | Menus and panel | `features/skin_manager/menus/`, `panels/` | Phase 4. Empty |
 | Changelog and public docs | `CHANGELOG.md`, docs site | Phase 5 |
 
@@ -226,11 +227,11 @@ spec, and decisions Phase 4 relies on:
   anything, and refuses an image linked from a library. It drops the packed
   copy with `unpack(method="REMOVE")`, which writes nothing to disk, then sets
   `filepath`, reloads, and packs.
-- Open decision 2, provisional: `SyncName` calls `RIG_RENAME` with
+- Open decision 2, decided 2026-11-08: `SyncName` calls `RIG_RENAME` with
   `"<player> - <target.label>"` (`Notch - SACR R7.5.0`). The collection is
   renamed only if it already ends in `" - <target.label>"`, like the default
   `Default - SACR R7.5.0`.
-- Open decision 5, provisional: `ADD` blocks with `asyncio.run`.
+- Open decision 5: `ADD` blocks with `asyncio.run`. Replaced by Phase 3b.
 - Labels: *Change Skin* (`ROUTER`), *Check for New Skin* (`ADD`), *Load Saved
   Skin* (`LOAD`), *Purge Player Data* (`PURGE`), *Import Legacy Player Data*
   (`IMPORT_LEGACY`).
@@ -278,6 +279,177 @@ request has a 10 s timeout, and two small PNGs usually take about a second. A
 modal or timer version with progress reporting can come later; the Phase 2
 Observer callbacks already support it.
 
+## Phase 3b: Background sync with progress
+
+**Done 2026-11-08.** Built as planned, with Esc cancelling (Open Decision 6,
+taken at its default). Differences and details Phase 4 relies on:
+
+- `SyncProgress` and its `sync_progress` instance live in
+  `core/skin_manager.py`, not the Blender layer, because they need no `bpy`
+  and can be tested. The panel reads `sync_progress.running`, `.fraction`,
+  and `.text`. `stage_text(stage, name)` gives the per-stage messages.
+- `BackgroundTask()` is created first, so the manager's events can be
+  subscribed to `task.publish` before `task.start(make_coro)` runs the work.
+- `SkinOperator.blocked_while_syncing` marks `ADD`, `PURGE`, and `ROUTER`.
+  `LOAD` stays available during a sync.
+- `ROUTER` and `PURGE` get a hidden, unsaved `use_modal` property, set in
+  `invoke`, that chooses `INVOKE_DEFAULT` or `EXEC_DEFAULT` for `ADD`.
+  `PURGE`'s confirmation keeps the property.
+- `ADD` applies the result to the rig the sync started on, using
+  `temp_override(active_object=rig)`, so a change of selection during the wait
+  does not matter. If the rig's username changed during the wait, it saves the
+  skin but does not apply it.
+- `ADD.cancel()` (Blender ending the modal operator) and the `load_pre`
+  handler both cancel the task and clear `sync_progress`.
+
+Validated:
+
+- Unit tests: 137 pass (`tests/test_background.py`, plus cancellation and
+  progress tests in `tests/test_skin_manager.py`).
+- Background Blender: the Phase 3 script through `execute`, 16/16 offline and
+  26/26 online, including `poll` refusing a second sync while one runs.
+- Blender UI with event simulation:
+  - `INVOKE_DEFAULT` returns `RUNNING_MODAL`
+  - Esc cancels, leaving no files and an unchanged image
+  - the router starts the modal sync, and the progress stages advance
+  - the skin is applied and Arm Type synced
+  - deleting the rig mid-sync leaves no stuck state
+  - loading another file mid-sync cancels the worker
+    (`SyncCancelledError`) and clears the state
+
+Not validated: how the status bar text looks (Blender has no API to read it
+back), and the panel progress bar, which arrives in Phase 4.
+
+Original plan:
+
+Decided 2026-11-08: `ADD` must not freeze Blender while it downloads, and it
+should show progress. Do this before Phase 4, because the panel draws the
+progress state this phase adds.
+
+### Approach: a modal operator on Blender's event loop
+
+The download runs on a worker thread. A modal operator keeps Blender's own
+event loop in charge, so the UI stays responsive. The operator wakes on a
+window manager timer (`event_timer_add`, every 0.1 s), reads progress, updates
+the UI, and applies the skin on the main thread when the work is finished.
+
+`bpy` is not thread-safe, so the worker thread never touches it. It only runs
+`SkinManager.sync`, which is already free of `bpy`.
+
+Rejected alternative: `bpy.app.timers`. A timer callback has no operator, so it
+cannot use `self.report`, catch Esc, or push an undo step, and it outlives a
+file load.
+
+### Core (`core/`, tested without Blender)
+
+1. **`core/background.py`: `BackgroundTask`.** Pattern: Facade over
+   `threading`, `asyncio`, and `queue`, with Observer events.
+   - `BackgroundTask.start(make_coro)` starts a daemon thread that runs
+     `asyncio.run(make_coro(task))`, so the coroutine gets its own event loop.
+   - `publish(event)` may be called from the worker. It puts the event on a
+     `queue.SimpleQueue`, and `drain()` returns the queued events on the main
+     thread.
+   - `done()`, plus `result()`, which returns the value or re-raises the
+     worker's exception on the main thread.
+   - `cancel()` sets a `threading.Event`, and `cancelled()` reads it.
+   - The thread cannot be killed while it waits on a socket, so cancelling
+     only stops the work at the next checkpoint. The `HTTPClient` timeout
+     limits how long that takes.
+2. **Cancellation in `SkinManager.sync(name, should_cancel=None)`.**
+   `should_cancel` is a `Callable[[], bool]` Strategy, checked before each
+   stage and before the database write. It raises `SyncCancelledError`, a
+   subclass of `SkinManagerError`. The existing cleanup already removes files
+   downloaded by that call and writes no rows.
+3. **`stage_progress(stage) -> float`**, a pure function that maps each
+   `SyncStage` to a value from 0 to 1 for progress bars. `DONE` is 1.
+4. **No `bpy` calls from the worker.** `build_manager()` currently passes
+   `preferences.access.db_session`, which calls `extension_path_user` and so
+   would run `bpy` on the worker thread. Instead, resolve the database path on
+   the main thread and pass `SQLite(path).session`. Each session opens and
+   closes its own connection on the worker thread, which `sqlite3` allows.
+
+### Blender layer (`features/skin_manager/operators/`)
+
+1. **`ADD` gets `invoke` and `modal`, and keeps `execute`.**
+   - `invoke` checks Online Access, the rig, and the username. It stores the
+     rig's name, not the object, because an undo or rename during the wait
+     makes an object reference invalid. It then builds the manager on the
+     main thread, starts the `BackgroundTask` with
+     `manager.sync(name, should_cancel=task.cancelled)`, and subscribes
+     `task.publish` to the manager's `SyncStage` events. Finally it adds the
+     timer and the modal handler, and returns `{"RUNNING_MODAL"}`.
+   - `modal` on `TIMER` drains the events and updates the progress state. Once
+     the task is done, it removes the timer, clears the status text, and calls
+     `result()`. It reports errors from `REPORTED_ERRORS`, or looks the rig up
+     again by name and runs `LOAD` with the synced index. If the rig no longer
+     exists, it reports that the skin was saved and can be applied with *Load
+     Saved Skin*.
+   - `modal` on `ESC` calls `task.cancel()` and keeps running until the task
+     ends, then reports "Cancelled". It returns `{"PASS_THROUGH"}` for every
+     other event, so the user can keep working.
+   - `execute` stays blocking. Scripts call operators with `EXEC_DEFAULT`, and
+     background mode (`blender -b`) has no window event loop to drive a modal
+     operator.
+   - A cleanup step on every exit path removes the timer, clears the status
+     text, and resets the progress state.
+2. **One sync at a time.** A module-level `SyncProgress` state (Singleton, with
+   `reset()` for unregister) records whether a sync is running. While one is
+   running, `poll` on `ADD`, `PURGE`, and `ROUTER` returns `False`, with a
+   `poll_message_set` explaining why.
+3. **Callers start the modal version.** `ROUTER` and `PURGE` call `ADD` with
+   `"INVOKE_DEFAULT"` when they were invoked themselves, and with
+   `"EXEC_DEFAULT"` from scripts. `call_operator` must accept an execution
+   context and count `{"RUNNING_MODAL"}` as success. `PURGE` still purges
+   before it starts the download. It is already refused offline.
+4. **File loads.** Loading a new file removes modal handlers, but the worker
+   keeps running. A `load_pre` handler calls `cancel()` on the running task and
+   resets `SyncProgress`. Rows written before then are still valid; nothing is
+   applied to the new file.
+5. **Unregister** cancels a running task and resets `SyncProgress`, so
+   disabling the extension mid-sync leaves nothing behind.
+
+### UI feedback
+
+Each of these reads the same `SyncProgress` (stage, fraction, player name) that
+`modal` updates:
+
+- **Status bar:** `context.workspace.status_text_set("Skin Manager: downloading
+  Notch's skin… (Esc to cancel)")` during the sync, and
+  `status_text_set(None)` when it ends.
+- **Panel (Phase 4):** while a sync runs, the panel draws
+  `layout.progress(factor=..., type="BAR", text=...)` in place of the *Change
+  Skin* button. `modal` calls `tag_redraw()` on 3D Viewport areas after each
+  update so the bar moves.
+- **Reports:** an INFO report when the skin is applied, or "Skin unchanged",
+  and an ERROR report for failures, as now.
+
+`wm.progress_begin` was considered and left out: it replaces the mouse cursor
+with a number, which is less clear than the status bar and the panel bar.
+
+### Tests and validation
+
+- `tests/test_background.py`:
+  - the result is returned
+  - an exception is re-raised on the main thread
+  - events arrive in order through `drain()`
+  - `cancel()` is visible to the coroutine
+  - several tasks run independently
+- `tests/test_skin_manager.py`:
+  - cancelling at each stage raises `SyncCancelledError` and leaves no rows and
+    no new files
+  - `stage_progress` increases and ends at 1
+- Background Blender: the existing validation script still passes through
+  `execute`. Add one check that `poll` refuses a second sync while
+  `SyncProgress` reports one running.
+- Manual checks in the Blender 5.2 UI (a modal operator needs a window):
+  - Change Skin keeps the viewport responsive
+  - the status bar text and the panel bar advance and then clear
+  - Esc cancels, and nothing is written
+  - a second Change Skin is disabled while one runs
+  - deleting the rig mid-sync gives the "skin saved" report
+  - opening another file mid-sync leaves no stuck status text
+  - Purge and Router run the modal version
+
 ## Phase 4: Menus and panel
 
 - `MenuID.EXISTING`, replacing the legacy "regen" menu: *Load saved skin*,
@@ -286,7 +458,8 @@ Observer callbacks already support it.
 - `PanelID.MAIN`, the *Skin Manager* panel, with the same `poll` as the
   operators. It contains:
   - the `Username` field
-  - a *Change Skin* button for `ROUTER`
+  - a *Change Skin* button for `ROUTER`, replaced by the Phase 3b progress
+    bar while a sync runs
   - an *Open player data* button for `FILE_OPEN` on `StorageDir.PLAYER_DATA`
   - the `SyncArms` and `SyncName` toggles
   - optionally, a read-only history list from `SkinDatabase.skins()` that calls
@@ -318,12 +491,15 @@ Observer callbacks already support it.
 1. **Panel location:** a sub-panel of the **SACR Config** sidebar (recommended,
    since the rig check is already there), or its own sidebar tab like the legacy
    "Download Skins"? `PanelID.MAIN` works either way.
-2. **What `SyncName` renames:** R7.5 has no `"Rig Name"` property. Should it
-   rename the object, the armature data, and the collection to
-   `"<Username> - SACR R7.5"`?
+2. ~~**What `SyncName` renames.**~~ Decided 2026-11-08: the object and
+   armature data become `"<player> - <target.label>"`, and the collection is
+   renamed only if it already ends in `" - <target.label>"`. See Phase 3.
 3. **Legacy import:** a manual button (recommended) or automatic on first run?
 4. **Purge backup:** keep it (a folder move is cheap) or drop it, since
    hash-named history makes purging rare? `StorageDir.PLAYER_DATA_PURGED` is
    in place in case it stays.
-5. **Blocking `asyncio.run` for 4.0.0:** acceptable, or should the modal
-   version be in scope now?
+5. ~~**Blocking `asyncio.run` for 4.0.0.**~~ Decided 2026-11-08: fix it in
+   4.0.0 with a background sync and progress feedback. See Phase 3b.
+6. **Cancelling a download:** should Esc cancel a running sync? Implemented
+   at the default (yes) in Phase 3b. Removing it means dropping the `ESC`
+   branch in `SkinAdd.modal`.

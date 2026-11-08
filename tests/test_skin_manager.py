@@ -17,14 +17,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from core.databases.skins import SkinDatabase, SkinModel  # noqa: E402
 from core.mojang import MojangURL, PlayerNotFoundError, Profile, TextureRef  # noqa: E402
 from core.network import NetworkError  # noqa: E402
+from core.background import BackgroundTask  # noqa: E402
 from core.skin_manager import (  # noqa: E402
     DefaultSkinError,
     MissingTextureError,
     Route,
     SkinManager,
+    SkinManagerError,
     SkinNotStoredError,
+    SyncCancelledError,
+    SyncProgress,
     SyncStage,
     route,
+    stage_progress,
+    stage_text,
 )
 
 UUID = "069a79f444e94726a5befca90e38aaf5"
@@ -213,6 +219,86 @@ class SyncTests(ManagerTestCase):
         unsubscribe()
         self.sync()
         self.assertEqual(len(stages), len(SyncStage))
+
+
+class CancelTests(ManagerTestCase):
+    def cancel_at(self, stage: SyncStage):
+        """Sync with a cancel check that turns true once `stage` has been published."""
+        seen: list[SyncStage] = []
+        self.manager.subscribe(lambda s, _name: seen.append(s))
+        return asyncio.run(self.manager.sync("Notch", should_cancel=lambda: stage in seen))
+
+    def test_cancelling_at_each_stage_writes_nothing(self):
+        stages = (SyncStage.LOOKUP, SyncStage.PROFILE, SyncStage.DOWNLOAD_SKIN, SyncStage.DOWNLOAD_CAPE)
+        for stage in stages:
+            with self.subTest(stage=stage):
+                self.set_profile(texture(SKIN_A, SkinModel.CLASSIC), texture(CAPE_A))
+                with self.assertRaises(SyncCancelledError) as caught:
+                    self.cancel_at(stage)
+                self.assertIsInstance(caught.exception, SkinManagerError)
+                self.assertIsNone(self.db.player(UUID))
+                self.assertEqual(list(self.player_data.glob("*/*.png")), [])
+                self.manager._listeners.clear()
+
+    def test_cancel_before_start_makes_no_request(self):
+        self.set_profile(texture(SKIN_A, SkinModel.CLASSIC))
+        with self.assertRaises(SyncCancelledError):
+            asyncio.run(self.manager.sync("Notch", should_cancel=lambda: True))
+        self.assertEqual(self.mojang.http.downloads, [])
+
+    def test_sync_in_a_background_task(self):
+        self.conn.close()  # The worker thread needs its own connections.
+        database = Path(self.temp.name) / "skins.sqlite3"
+
+        from core.sql import SQLite
+
+        manager = SkinManager(SQLite(database).session, self.mojang, self.player_data, self.purged)  # pyright: ignore[reportArgumentType]
+        self.set_profile(texture(SKIN_A, SkinModel.SLIM))
+        task = BackgroundTask()
+        manager.subscribe(lambda stage, name: task.publish((stage, name)))
+        task.start(lambda: manager.sync("Notch", should_cancel=task.cancelled))
+        self.assertTrue(task.wait(5))
+
+        progress = SyncProgress()
+        progress.start("Notch", task)
+        progress.update(task.drain())
+        self.assertEqual(task.result().skin.model, SkinModel.SLIM)
+        self.assertEqual(progress.stage, SyncStage.DONE)
+        self.assertEqual(progress.fraction, 1.0)
+
+
+class ProgressTests(unittest.TestCase):
+    def test_stage_progress_increases_to_one(self):
+        values = [stage_progress(stage) for stage in SyncStage]
+        self.assertEqual(values, sorted(values))
+        self.assertGreater(values[0], 0)
+        self.assertEqual(values[-1], 1.0)
+
+    def test_every_stage_has_text(self):
+        for stage in SyncStage:
+            self.assertIn("Notch", stage_text(stage, "Notch"))
+
+    def test_sync_progress_lifecycle(self):
+        progress = SyncProgress()
+        task = BackgroundTask()
+        self.assertFalse(progress.running)
+        progress.start("notch", task)
+        self.assertTrue(progress.running)
+        self.assertEqual(progress.fraction, 0.0)
+        self.assertIn("notch", progress.text)
+        with self.assertRaises(RuntimeError):
+            progress.start("jeb", BackgroundTask())
+
+        progress.update([(SyncStage.LOOKUP, "notch"), (SyncStage.PROFILE, "Notch")])
+        self.assertEqual((progress.stage, progress.name), (SyncStage.PROFILE, "Notch"))
+        self.assertEqual(progress.text, stage_text(SyncStage.PROFILE, "Notch"))
+
+        progress.cancel()
+        self.assertTrue(task.cancelled())
+        self.assertIn("Cancelling", progress.text)
+        progress.reset()
+        self.assertFalse(progress.running)
+        progress.cancel()  # No task: nothing to cancel, and no error.
 
 
 class SelectionTests(ManagerTestCase):

@@ -15,6 +15,15 @@ class SkinPurge(SkinOperator, T.Operator):
     bl_label = "Purge Player Data"
     bl_options = {"REGISTER", "UNDO"}
 
+    blocked_while_syncing = True
+
+    use_modal: P.BoolProperty(
+        name="Run in Background",
+        description="Download without blocking Blender. Set when run from the UI",
+        default=False,
+        options={"HIDDEN", "SKIP_SAVE"},
+    )
+
     backup: P.BoolProperty(
         name="Back Up",
         description="Move the player's files to the purged player data folder instead of deleting them",
@@ -22,6 +31,7 @@ class SkinPurge(SkinOperator, T.Operator):
     )
 
     def invoke(self, context, event):
+        self.use_modal = True
         message = "Their files will be moved to a backup folder." if self.backup else "Their files will be deleted."
         return context.window_manager.invoke_confirm(
             self, event, title="Purge Player Data?", message=message, confirm_text="Purge", icon="WARNING"
@@ -52,7 +62,8 @@ class SkinPurge(SkinOperator, T.Operator):
         if player is not None:
             action = "Backed up" if self.backup else "Deleted"
             self.report({"INFO"}, f"{action} the stored data for {player.name}")
-        if not call_operator(self, OperatorID.ADD):
+        add_context = "INVOKE_DEFAULT" if self.use_modal else "EXEC_DEFAULT"
+        if not call_operator(self, OperatorID.ADD, add_context):
             return {"CANCELLED"}
         return {"FINISHED"}
 
