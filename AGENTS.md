@@ -20,6 +20,7 @@ This repository contains the Sakura character rig and its companion Blender exte
   - Delete both, and the `.legacy/` folder, once the rewrite replaces them.
 - `lib/` contains the current rig `.blend` file and source assets. Binary changes require Blender validation; text diffs cannot prove them correct.
 - `.scripts/` contains standalone Blender helpers (the enumerator scripts) and `generate_api_docs.py`. Do not fold them into extension runtime without an explicit request.
+- `docs/` contains internal planning documents, such as `docs/skin-manager-plan.md`. It is excluded from the extension build; public documentation lives on the docs site.
 - `CHANGELOG.md` records rig and extension release notes together. Preserve their separate version numbers.
 - `.hidden/` and `Blender-Docs/` are local only when present; do not modify them unless requested.
 
