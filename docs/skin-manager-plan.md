@@ -44,7 +44,7 @@ Phase 5 still does the final changelog and docs pass for the whole feature.
 
 ## R7.5 rig data contract
 
-Checked read-only against `lib/SACR.R7.5.0.blend` in Blender 5.2.
+Checked read-only against `../lib/SACR.R7.5.0_RC4.blend` in Blender 5.2.
 
 - Armature data `rigID` is `"SACR.Rev_7.UI_3"`.
 - The `PythonConfig.Skin` bone holds `Username` (str), `SyncArms` (bool), and
@@ -237,7 +237,7 @@ spec, and decisions Phase 4 relies on:
   Skin* (`LOAD`), *Purge Player Data* (`PURGE`), *Import Legacy Player Data*
   (`IMPORT_LEGACY`).
 
-Validated in Blender 5.2.2 in the background against `lib/SACR.R7.5.0.blend`,
+Validated in Blender 5.2.2 in the background against `../lib/SACR.R7.5.0_RC4.blend`,
 with isolated user resources: registration and unregistration, `poll`, an
 empty username, offline refusals, a new player, the same skin again, a stored
 player through the router, loading by index and a bad index, Arm Type set to 0
