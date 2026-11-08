@@ -15,7 +15,6 @@ class OperatorID(StrEnum):
 
     # File Operations
     FILE_OPEN = ID("file_open").operator_for(NAMESPACE)
-    FILE_DELETE = ID("file_delete").operator_for(NAMESPACE)
 
     # Image Operations
     IMAGE_PACK = ID("image_pack").operator_for(NAMESPACE)

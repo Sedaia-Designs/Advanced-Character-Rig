@@ -14,7 +14,10 @@ class IMAGE_pack(T.Operator):
     path: P.StringProperty()
 
     def execute(self, context):
-        image = bpy.data.images[self.path]
+        image = bpy.data.images.get(self.path)
+        if image is None:
+            self.report({"ERROR"}, f"No image named '{self.path}'")
+            return {"CANCELLED"}
         if is_packed(image):
             if bpy.data.is_saved:
                 image.unpack()
@@ -33,7 +36,11 @@ class IMAGE_reload(T.Operator):
     path: P.StringProperty()
 
     def execute(self, context):
-        bpy.data.images[self.path].reload()
+        image = bpy.data.images.get(self.path)
+        if image is None:
+            self.report({"ERROR"}, f"No image named '{self.path}'")
+            return {"CANCELLED"}
+        image.reload()
         return {"FINISHED"}
 
 classes = (
