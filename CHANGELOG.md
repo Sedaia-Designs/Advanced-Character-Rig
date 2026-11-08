@@ -61,7 +61,7 @@ Blender: 5.2.2
 
 ## Blender extension
 
-## [4.0.0] - 2026-10-18
+## [4.0.0]
 
 ### Added
 
@@ -74,7 +74,7 @@ Blender: 5.2.2
   - A skin that is already saved is never downloaded again. When a saved player is entered, a menu offers **Load Saved Skin**, **Check for New Skin**, **Back Up and Purge**, and **Purge**.
   - Saved skins load without Online Access.
   - **Saved Skins** lists every skin saved for a player, and loads any of them.
-  - **Sync Arm Type** sets the rig's Arm Type from the skin's model, and **Set Rig Name to Username** renames the rig, and its default collection, to `<username> - SACR R7.5.0`.
+  - **Sync Arm Type** sets the rig's Arm Type from the skin's model, and **Set Rig Name to Username** renames the rig, and its default collection, to `<username> - <rig label>`, such as `<username> - SACR B7.5.0 RC4`.
   - The applied skin is packed into the `.blend` file.
 - Added **Import Legacy Player Data** to the preferences, which imports player files saved by the legacy SR GUI skin utility.
 - Added **Copy Debug Info** to the preferences. It copies the extension, rig, Blender, render engine, database, Python, and system versions to the clipboard as a JSON block, ready to paste into a bug report. It includes no file paths or personal data.
