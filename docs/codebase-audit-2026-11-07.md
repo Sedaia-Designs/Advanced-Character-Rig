@@ -36,7 +36,7 @@ foundations are solid; the main gap is the Skin Manager itself.
 - [ ] **Untested in Blender.** The full extension was not loaded in Blender
   during this work. Registration, panel drawing, and the router's `poll` on a
   real rig still need checking. (Enum-key lookups and `SKIN_TARGET.matches`
-  were checked against `../lib/SACR.R7.5.0_RC4.blend` in Blender 5.2.)
+  were checked against `../lib/SACR.B7.5.0_RC4.blend` in Blender 5.2.)
 
 ## Cleanup
 

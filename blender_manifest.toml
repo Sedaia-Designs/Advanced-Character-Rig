@@ -42,7 +42,7 @@ paths_exclude_pattern = [
   "/blender-workspace.toml", # Blender Integration for Pycharm Configuration
 
   ".DS_Store", # macOS Directory Metadata
-  "*.blend[0-9]*", # Blender backup files, such as lib/SACR.R7.5.0_RC4.blend1
+  "*.blend[0-9]*", # Blender backup files, such as lib/SACR.B7.5.0_RC4.blend1
 
   # Git VCS Artifacts
   "/.github/", # GitHub workflows and release tooling
@@ -90,5 +90,5 @@ build_blender_sha256 = "84098912789dc450e95697c4184fb8a90acbe5111c2ba4aede3fecb5
 # Extra files attached to the release next to the packaged extension.
 # Paths are relative to the repository root, and file names must be unique.
 artifacts = [
-  "/lib/SACR.R7.5.0_RC4.blend"
+  "/lib/SACR.B7.5.0_RC4.blend"
 ]

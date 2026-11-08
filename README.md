@@ -12,7 +12,7 @@ This repository contains the SACR Blender rig and its companion Blender extensio
 | `docs/wiki/`                                                  | Generated GitHub Wiki pages for the extension API                         |
 | `CHANGELOG.md`                                                | Rig and extension release notes                                           |
 
-The manifest currently requires Blender 5.2 or newer. Install a packaged extension through **Edit > Preferences > Get Extensions > Install from Disk**, or use the repository's Blender Development for PyCharm workflow. Open `lib/SACR.R7.5.0_RC4.blend` to work on the current rig. See [SACR documentation](https://docs.sakura-sedaia.com) for usage and compatibility guidance.
+The manifest currently requires Blender 5.2 or newer. Install a packaged extension through **Edit > Preferences > Get Extensions > Install from Disk**, or use the repository's Blender Development for PyCharm workflow. Open `lib/SACR.B7.5.0_RC4.blend` to work on the current rig. See [SACR documentation](https://docs.sakura-sedaia.com) for usage and compatibility guidance.
 
 ## Development
 

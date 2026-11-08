@@ -1,6 +1,6 @@
 """Names in the SACR R7.5.0 rig that this feature reads or writes.
 
-Every name below was checked against ``lib/SACR.R7.5.0_RC4.blend``. Renaming one in
+Every name below was checked against ``lib/SACR.B7.5.0_RC4.blend``. Renaming one in
 the rig breaks the code that uses it, so change both together.
 
 `SKIN_TARGET` tells the Skin Manager where R7.5 keeps its skin data. The
@@ -75,7 +75,7 @@ class ArmType(IntEnum):
 
 
 SKIN_TARGET = SkinTarget(
-    label="SACR R7.5.0",
+    label="SACR B7.5.0 RC4",
     rig_id_property=RigID.PROPERTY,
     rig_ids=frozenset({RigID.SACR_R7_5}),
     username=BoneProp(RigBone.PY_SKIN, SkinProp.USERNAME),
