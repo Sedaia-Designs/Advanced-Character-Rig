@@ -1,6 +1,6 @@
 # Contributing to SACR
 
-The extension package lives at the repository root. Keep reusable Python logic in `sacr_core/` or the appropriate feature package, and keep Blender UI and operator code focused on interaction. `lib/` owns the current rig and source assets. Keep `Extra-Scripts/` helpers standalone for interactive enum-property updates.
+The extension package lives at the repository root. Keep reusable, Blender-free Python logic in `core/` and complete features in `features/`, and keep Blender UI and operator code focused on interaction. `lib/` owns the current rig and source assets. Keep `.scripts/` helpers standalone for interactive enum-property updates.
 
 Rig `.blend` contributions are not accepted through merge requests because binary changes cannot be reliably reviewed or merged. Report rig defects through the [issue tracker](https://gitlab.com/sedaia-designs/advanced-character-rig/-/issues), with the rig and Blender versions and clear reproduction steps.
 
@@ -10,8 +10,9 @@ Use Python 3.13 or newer and [uv](https://docs.astral.sh/uv/) from the repositor
 
 ```sh
 uv sync --group dev
-uv run python -m compileall -q __init__.py modules.py prefs.py core operators panels features scripts tests
+uv run python -m compileall -q __init__.py modules.py preferences core operators panels features tests
 uv run pyright
+uv run python -m unittest discover -s tests
 ```
 
 Pyright uses the version-matched `fake-bpy-module-5.2` stubs from the project environment. The stubs support static inspection only. For changes to registration, properties, operators, panels, or rig data, also load the extension in Blender 5.2 or newer and exercise the affected flow. Test standalone scripts on a disposable rig copy when practical. Include the checks performed in the merge request.
