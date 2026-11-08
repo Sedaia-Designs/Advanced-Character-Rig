@@ -63,10 +63,15 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v10
+      # The organization only allows actions made by GitHub or Sedaia-Designs,
+      # so uv comes from PyPI instead of astral-sh/setup-uv.
+      - name: Set up Python
+        uses: actions/setup-python@v7
         with:
-          enable-cache: true
+          python-version: "3.13"
+
+      - name: Install uv
+        run: python -m pip install --disable-pip-version-check "uv==0.11.7"
 
       - name: Read release information
         id: info
