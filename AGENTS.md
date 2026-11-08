@@ -4,7 +4,7 @@ This repository contains the Sakura character rig and its companion Blender exte
 
 ## Layout
 
-- The Blender extension package is at the repository root. `__init__.py` registers it, `modules.py` loads its packages in dependency order, `prefs.py` contains preferences, and `blender_manifest.toml` is its canonical identity and build metadata.
+- The Blender extension package is at the repository root. `__init__.py` registers it, `modules.py` loads its packages in dependency order, `preferences/` contains the add-on preferences and reads the extension ID from the manifest through `core/manifest.py`, and `blender_manifest.toml` is its canonical identity and build metadata.
 - `core/` contains Blender-agnostic Python. It must never import `bpy`.
 - One package per Blender type, each built on top of `core/`:
   - `operators/` for operators
@@ -13,13 +13,13 @@ This repository contains the Sakura character rig and its companion Blender exte
   - and likewise for other types, such as UI lists or property groups, when they are added.
 - `features/` contains complete features, one subpackage each. Examples: a full rig UI, skin management, and rig management. See "Feature packages" below.
 - The only supported rig UI is SACR R7.5 (`features/SACR_R7_UI3/`). Older SACR releases use the legacy SR GUI download; do not reintroduce their UIs.
-- `utils/sedaia_utils.py` and `sedaia_ui/SKIN_utility_ui.py` are legacy code. They are kept as working reference for the skin tool rewrite, which gets a new backend in `core/` and `features/`.
+- `.legacy/sedaia_utils.py` and `.legacy/SKIN_utility_ui.py` are legacy code. They are kept as working reference for the skin tool rewrite, which gets a new backend in `core/` and `features/`.
   - They are orphaned: not registered, not imported, excluded from the extension build, and skipped by Pyright and the compile check.
   - Do not edit, refactor, fix, or migrate them. Read them for behaviour, and implement the rewrite fresh.
-  - Do not import from them or add code to `utils/` or `sedaia_ui/`.
-  - Delete both once the rewrite replaces them.
+  - Do not import from them or add code to `.legacy/`.
+  - Delete both, and the `.legacy/` folder, once the rewrite replaces them.
 - `lib/` contains the current rig `.blend` file and source assets. Binary changes require Blender validation; text diffs cannot prove them correct.
-- `scripts/` contains standalone Blender helpers (the enumerator scripts) and `generate_api_docs.py`. Do not fold them into extension runtime without an explicit request.
+- `.scripts/` contains standalone Blender helpers (the enumerator scripts) and `generate_api_docs.py`. Do not fold them into extension runtime without an explicit request.
 - `CHANGELOG.md` records rig and extension release notes together. Preserve their separate version numbers.
 - `.hidden/` and `Blender-Docs/` are local only when present; do not modify them unless requested.
 
@@ -76,7 +76,7 @@ The uv project and extension package are both rooted here. Use Python 3.13 or ne
 
 ```sh
 uv sync --group dev
-uv run python -m compileall -q __init__.py modules.py prefs.py core operators panels features scripts tests
+uv run python -m compileall -q __init__.py modules.py preferences core operators panels features tests
 uv run pyright
 ```
 

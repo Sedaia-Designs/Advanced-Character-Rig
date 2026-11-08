@@ -81,3 +81,4 @@ Blender: 5.2.2
 
 - Removed the SACR R7 UI1 and SACR R7.4.1 (UI2) interfaces. To use SACR R7.4.1 or earlier, download the legacy SR GUI extension.
 - Removed the `ArmType` and `Eyelashes` properties that the R7.4.1 interface added to every pose bone.
+- Removed the `sedaia_prefs_ot.file_open` operator. Use `bpy.ops.sedaia_rigs_utils_ot.file_open()` instead.
