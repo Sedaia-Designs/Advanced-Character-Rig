@@ -12,3 +12,4 @@ class PanelID(StrEnum):
     MAIN = ID("main").panel_for(NAMESPACE)
     FACE = ID("face").panel_for(NAMESPACE)
     COLLECTIONS = ID("collections").panel_for(NAMESPACE)
+    ADD_RIG = ID("add_rig").panel_for(NAMESPACE)  # Shown with or without a rig selected.

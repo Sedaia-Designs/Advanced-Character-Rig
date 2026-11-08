@@ -14,6 +14,7 @@ constants, such as `core.ids.ID_PREFIX`.
 """
 
 from enum import StrEnum
+from pathlib import Path
 
 # Full module name Blender registered the extension under, for example
 # `bl_ext.user_default.Sakura_Rig_GUI`. `AddonPreferences.bl_idname`,
@@ -21,6 +22,11 @@ from enum import StrEnum
 # `addon_utils.module_bl_info` all expect this name. It is this module's own
 # package, so it is always the name Blender actually loaded.
 ADDON_PACKAGE = __name__.rpartition(".")[0]
+
+# The installed extension's folder, which holds `blender_manifest.toml`, and its
+# `lib/` folder of bundled rig files.
+EXTENSION_DIR = Path(__file__).resolve().parent
+LIB_DIR = EXTENSION_DIR / "lib"
 
 
 class StorageDir(StrEnum):

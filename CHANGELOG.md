@@ -66,6 +66,7 @@ Blender: 5.2.2
 ### Added
 
 - Added controls for SACR R7.5 rigs in the **SACR Config** sidebar, including main body, face, material, skin texture, and control-group options.
+- Added **Add SACR Rig** to a new **Add Rig** panel in the **SACR Config** sidebar. It adds a new copy of the bundled SACR R7.5 rig to the active collection at the 3D Cursor, and selects it. The panel shows even when no rig is selected.
 - Added R7.5 face controls for eyebrows, irises, scleras, and mouth settings.
 - Added R7.5 control-group visibility controls for face and body rig collections.
 - Added the **Skin Manager** in a new **Skins** tab of the 3D Viewport sidebar. Enter a Minecraft Java Edition username and click **Change Skin** to download and apply that player's skin.

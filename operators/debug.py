@@ -15,14 +15,14 @@ import addon_utils
 import bpy
 import bpy.types as T
 
-from ..constants import ADDON_PACKAGE
+from ..constants import ADDON_PACKAGE, EXTENSION_DIR
 from ..core.databases.schema import schema_versions
 from ..core.debug_info import UNKNOWN, format_report, manifest_version, text, version_text
 from ..core.skin_targets import registry as skin_targets
 from ..preferences.access import database_path
 from .constants import OperatorID
 
-MANIFEST_FILE = Path(__file__).resolve().parents[1] / "blender_manifest.toml"
+MANIFEST_FILE = EXTENSION_DIR / "blender_manifest.toml"
 
 # Armature data property that holds the rig's own version, such as "7.5.0".
 RIG_VERSION_PROPERTY = "rig_version"

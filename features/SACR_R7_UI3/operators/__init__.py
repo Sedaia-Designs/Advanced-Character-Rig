@@ -2,10 +2,12 @@
 
 from bpy.utils import register_class, unregister_class
 
+from .add_rig import classes as add_rig_classes
 from .collections import classes as collection_classes
 
 classes = (
     *collection_classes,
+    *add_rig_classes,
 )
 
 

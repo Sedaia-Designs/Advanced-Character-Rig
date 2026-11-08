@@ -16,6 +16,14 @@ from ...core.databases.skins import SkinModel
 from ...core.skin_targets import ArmTypeSync, BoneProp, SkinTarget, TextureSlot
 
 
+class RigAsset(StrEnum):
+    """The R7.5 rig bundled in the extension's `lib/` folder, which *Add SACR Rig* appends."""
+
+    FILE = "SACR.B7.5.0_RC4.blend"
+    COLLECTION = "Default - SACR B7.5.0 RC4"  # Holds the whole rig; marked as an asset in the file.
+    HIDDEN = "Hidden Objects"  # Bone shapes and booleans, excluded from the view layer.
+
+
 class RigID(StrEnum):
     """Armature data property that identifies the rig, and R7.5's value for it."""
 
