@@ -68,6 +68,24 @@ Follow the convention in `operators/`:
 - Use `StrEnum` (or `IntEnum`) with explicit, hardcoded values for fixed configuration such as IDs, URLs, bone names, and property keys.
 - Use dictionaries only for data that is genuinely dynamic, such as parsed JSON or user data.
 
+### Structure non-Blender code with design patterns
+
+All code that does not import `bpy` (everything in `core/`) is built from these seven patterns. Name the pattern in the class or module docstring so reviewers can check the code against it.
+
+- **Builder**: for objects with many options. Every option starts at a working default and has a `set_*` method that validates it and returns `self`, so calls chain. Examples: `core.network.HTTPClient`, `core.sql.SQLite`.
+- **Factory**: one place creates configured objects, connections, or IDs, so callers never repeat construction details. Examples: `SQLite.connect()` and `SQLite.session()`, and `core.ids.ID` for every idname.
+- **Facade**: one class gives a subsystem a small, task-shaped API and hides its SQL, HTTP, or file format. Example: `core.databases.skins.SkinDatabase`.
+- **Adapter**: converts outside data shapes and errors into project types at the boundary, such as Mojang JSON, legacy files, and library exceptions. Code past the adapter never sees the raw shape. Examples: `core.databases.skins.parse_legacy`, and `core.network._request_error`, which turns `urllib` errors into `NetworkError`.
+- **Strategy**: inject interchangeable behaviour as a callable or `typing.Protocol` instead of branching on a type flag. Tests swap strategies to avoid I/O. Example: `HTTPClient.set_opener`.
+- **Observer**: producers notify subscribers through plain callbacks instead of calling the consumer directly, for example download progress or a "skin changed" event. Core publishes; the Blender layer subscribes to redraw or report. Core never imports its subscribers.
+- **Singleton**: only for state that must exist once per process, such as a shared cache. Use a module-level instance or function, not a metaclass or `__new__` override, and give tests a way to reset or replace it. Pass objects in as arguments when that works; a singleton is global state.
+
+Rules:
+
+- Pick the pattern that matches the problem. Do not add classes, layers, or combined patterns just to satisfy this rule.
+- Exceptions are allowed for code that genuinely fits no pattern. Pure functions (such as `normalize_uuid`), constants, enums, and dataclasses need no justification. For anything else that skips the patterns, say why in its docstring.
+- Blender code (operators, panels, menus, and the `preferences/` Blender layer) is outside this rule. Blender's own class structure governs it.
+
 ## Development
 
 Use the `python-blender-mentoring` skill for Python, Blender API, implementation, testing, and review work. Use `blender-pycharm-workflow` for IDE setup, `edit-changelog` for release notes, and `git-commit` only when asked to commit. Teach meaningful design choices briefly while completing routine edits and checks.
