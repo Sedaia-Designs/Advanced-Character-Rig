@@ -1,9 +1,10 @@
 """Registration layer for complete features (rig UIs, skin management, rig management)."""
 
-from . import SACR_R7_UI3
+from . import SACR_R7_UI3, skin_manager
 
 modules = (
     SACR_R7_UI3,
+    skin_manager,
 )
 
 
