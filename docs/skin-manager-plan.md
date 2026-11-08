@@ -17,7 +17,7 @@ Written 2026-11-07.
 | Rig targets (rig-agnostic Skin Manager) | `core/skin_targets.py`, `features/SACR_R7_UI3/constants.py` | Done, tested |
 | Mojang adapter | `core/mojang.py` | Done, tested (`tests/test_mojang.py`) |
 | Skin Manager service | `core/skin_manager.py` | Done, tested (`tests/test_skin_manager.py`) |
-| Operators | `features/skin_manager/operators/` | Phase 3. `SkinRouter` has a target-based `poll` and reads the username, then stops; `SkinAdd` is a stub |
+| Operators | `features/skin_manager/operators/` | Done, validated in Blender 5.2.2 |
 | Menus and panel | `features/skin_manager/menus/`, `panels/` | Phase 4. Empty |
 | Changelog and public docs | `CHANGELOG.md`, docs site | Phase 5 |
 
@@ -205,6 +205,47 @@ Progress is published through Observer callbacks.
   backup, and a folder with both good and bad legacy files.
 
 ## Phase 3: Operators (`features/skin_manager/operators/`)
+
+**Done 2026-11-08.** All five operators are registered. Differences from the
+spec, and decisions Phase 4 relies on:
+
+- `operators/base.py` holds the shared Blender glue: the `SkinOperator` mixin
+  (`poll`, target, bone, and username lookups with their error reports),
+  `build_manager()`, `REPORTED_ERRORS`, and `call_operator()`. Its docstring
+  says why it is shared. Skin application lives only in `load.py`.
+- `call_operator(caller, idname, **props) -> bool` catches the `RuntimeError`
+  that `bpy.ops` raises when a nested operator reports an error, and reports
+  the message again through the caller, so users see the message instead of a
+  traceback.
+- `IMPORT_LEGACY` has no rig `poll`, because Phase 4 runs it from the
+  preferences. It takes a `directory` (file browser on invoke), defaulting to
+  `StorageDir.PLAYER_DATA`.
+- `ROUTER` on `Route.PROMPT` opens `MenuID.EXISTING` if it is registered, and
+  otherwise runs `ADD`. Phase 4 only has to register the menu.
+- `LOAD` checks every bone, the material, and the image before changing
+  anything, and refuses an image linked from a library. It drops the packed
+  copy with `unpack(method="REMOVE")`, which writes nothing to disk, then sets
+  `filepath`, reloads, and packs.
+- Open decision 2, provisional: `SyncName` calls `RIG_RENAME` with
+  `"<player> - <target.label>"` (`Notch - SACR R7.5.0`). The collection is
+  renamed only if it already ends in `" - <target.label>"`, like the default
+  `Default - SACR R7.5.0`.
+- Open decision 5, provisional: `ADD` blocks with `asyncio.run`.
+- Labels: *Change Skin* (`ROUTER`), *Check for New Skin* (`ADD`), *Load Saved
+  Skin* (`LOAD`), *Purge Player Data* (`PURGE`), *Import Legacy Player Data*
+  (`IMPORT_LEGACY`).
+
+Validated in Blender 5.2.2 in the background against `lib/SACR.R7.5.0.blend`,
+with isolated user resources: registration and unregistration, `poll`, an
+empty username, offline refusals, a new player, the same skin again, a stored
+player through the router, loading by index and a bad index, Arm Type set to 0
+for a classic skin, rig and collection rename, purge with and without backup,
+an unknown player, legacy import with one bad file, and the skin still packed
+after save and reopen. Not validated: a slim skin setting Arm Type to 1, the
+purge confirmation dialog and the import file browser (both need the UI), and a
+rig linked from a library.
+
+Original spec:
 
 | `OperatorID` | idname | Role |
 |---|---|---|
