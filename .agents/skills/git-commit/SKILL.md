@@ -62,7 +62,7 @@ Run validation proportional to the staged change. For Python, prefer `python -m 
 Commit using the required author unless the user specifies another:
 
 ```bash
-git commit --author="SakuraSedaia <sakusedaia@outlook.com>" -m "[Type -> module] Description"
+git commit --author="SakuraSedaia <email@sakura-sedaia.com>" -m "[Type -> module] Description"
 ```
 
 Do not add Junie or another co-author unless the user explicitly requests it.
