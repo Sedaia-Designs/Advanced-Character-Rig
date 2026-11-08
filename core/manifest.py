@@ -1,4 +1,8 @@
-"""Read the extension's `blender_manifest.toml` without Blender."""
+"""Read the extension's `blender_manifest.toml` without Blender.
+
+Pattern: Adapter. `read_manifest` converts the raw TOML table into a typed
+`Manifest`, so no other code reads manifest keys by string.
+"""
 
 import tomllib
 from dataclasses import dataclass

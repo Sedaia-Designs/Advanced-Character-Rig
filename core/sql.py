@@ -1,3 +1,12 @@
+"""SQLite connection factory used by every table set in `core.databases`.
+
+Patterns:
+
+- Builder: `SQLite` collects ``sqlite3.connect`` options through chained setters.
+- Factory: `SQLite.connect()` and `SQLite.session()` create connections with
+  those options, so callers never repeat them.
+"""
+
 import os
 import sqlite3
 from collections.abc import Iterator
@@ -7,7 +16,7 @@ from typing import Self
 
 class SQLite:
     """
-    Factory for SQLite connections that share one set of connection options.
+    Builder and Factory for SQLite connections that share one set of connection options.
 
     Every option mirrors a parameter of ``sqlite3.connect`` and starts at the
     same default, so ``SQLite(path).connect()`` behaves exactly like
