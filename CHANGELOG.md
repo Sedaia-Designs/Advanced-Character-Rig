@@ -68,6 +68,8 @@ Blender: 5.2.2
 - Added R7.5 face controls for eyebrows, irises, scleras, and mouth settings.
 - Added R7.5 control-group visibility controls for face and body rig collections.
 - Added a SQLite database, `sakura.sqlite3`, in the extension's storage folder for the new skin manager. Blender creates the file the first time the extension opens it.
+- The skin manager stores each player's skins and capes in `sakura.sqlite3` instead of one `<name>_Data.json` file per player, and can import those legacy player files.
+- Added the skin manager operators under a new `sedaia_rigs_skins_ot.*` namespace: `skin_router` and `skin_add`.
 
 ### Changed
 
