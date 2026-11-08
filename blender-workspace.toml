@@ -1,4 +1,4 @@
-addon_symlink_name = "Sakura_Character_Rig"
+addon_symlink_name = "Sakura_Rig_GUI"
 source_folder = "./"
 run_arguments = ""
 blender_log_level = "INFO"
