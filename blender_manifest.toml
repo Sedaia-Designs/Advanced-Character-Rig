@@ -51,4 +51,8 @@ paths_exclude_pattern = [
   # Extras
   "/docs/",
   "/scripts/",
+
+  # Legacy skin tools, kept only as reference for the skin rewrite
+  "/utils/",
+  "/sedaia_ui/",
 ]

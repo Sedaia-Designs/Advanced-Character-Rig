@@ -10,20 +10,10 @@ if "prefs" in locals():
     reload(prefs)
 else:
     from . import prefs
-
-if "SKIN_utility_ui" in locals():
-    reload(SKIN_utility_ui)
-else:
-    from .sedaia_ui import SKIN_utility_ui
 # endregion
 
 
 # region Utilities
-if "sedaia_utils" in locals():
-    reload(sedaia_utils)
-else:
-    from .utils import sedaia_utils
-
 if "operators" in locals():
     reload(operators)
 else:
@@ -71,10 +61,8 @@ def iter_submodule_names(path, root="rig_ui."):
 modules = (
     # Core UI
     prefs,
-    SKIN_utility_ui,
 
     # Utilities
-    sedaia_utils,
     operators,
     panels,
 
