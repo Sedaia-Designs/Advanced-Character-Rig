@@ -1,11 +1,11 @@
 from ..ui import types
-from ..ui import ID, RIG_ID_GROUP, ui as global_ui
-import bpy.utils as U
+from ..ui import ui as global_ui
+from .constants import PanelID
 
 
 class PT_Collections(types.SACR_UI750_Panel):
     bl_label = "Control Groups"
-    bl_idname = ID("collections").panel_for(RIG_ID_GROUP)
+    bl_idname = PanelID.COLLECTIONS
     bl_order = 2
 
     def draw(self, context):
@@ -133,11 +133,6 @@ class PT_Collections(types.SACR_UI750_Panel):
             collection(row_l, "Leg_Right", "Right Leg")
 
 
-def register():
-    """Register this module's Blender classes."""
-    U.register_class(PT_Collections)
-
-
-def unregister():
-    """Unregister this module's Blender classes."""
-    U.unregister_class(PT_Collections)
+classes = (
+    PT_Collections,
+)

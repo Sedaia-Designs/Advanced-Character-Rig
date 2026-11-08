@@ -1,4 +1,4 @@
-"""Registration for SACR R7.5.0 panels and operators."""
+"""Registration layer for the SACR R7.5.0 rig UI feature."""
 
 from . import operators, panels
 

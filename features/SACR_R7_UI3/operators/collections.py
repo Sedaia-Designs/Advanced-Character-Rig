@@ -3,13 +3,12 @@
 import bpy
 import bpy.props as P
 import bpy.types as T
-import bpy.utils as U
 
-from ..ui import ID, RIG_ID_GROUP
+from .constants import OperatorID
 
 
 class OT_toggle_collection(T.Operator):
-    bl_idname = ID("toggle_collection").operator_for(RIG_ID_GROUP)
+    bl_idname = OperatorID.TOGGLE_COLLECTION
     bl_label = "Toggle Collection"
     bl_options = {"REGISTER", "UNDO"}
 
@@ -34,11 +33,6 @@ class OT_toggle_collection(T.Operator):
         return {"FINISHED"}
 
 
-def register():
-    """Register this module's Blender classes."""
-    U.register_class(OT_toggle_collection)
-
-
-def unregister():
-    """Unregister this module's Blender classes."""
-    U.unregister_class(OT_toggle_collection)
+classes = (
+    OT_toggle_collection,
+)

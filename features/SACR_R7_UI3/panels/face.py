@@ -1,7 +1,6 @@
-import bpy.utils as U
-
 from ..ui import ui, enums, types
-from ..ui import ID, RIG_ID_GROUP, ui as global_ui
+from ..ui import ui as global_ui
+from .constants import PanelID
 
 
 class PT_Face(types.SACR_UI750_Panel):
@@ -25,7 +24,7 @@ class PT_Face(types.SACR_UI750_Panel):
         the current context.
     """
 
-    bl_idname = ID("face").panel_for(RIG_ID_GROUP)
+    bl_idname = PanelID.FACE
     bl_label = "Face Options"
     bl_order = 1
 
@@ -349,11 +348,6 @@ def panel_mouth(parent_ui, pose, python, materials, collections):
             pass
 
 
-def register():
-    """Register this module's Blender classes."""
-    U.register_class(PT_Face)
-
-
-def unregister():
-    """Unregister this module's Blender classes."""
-    U.unregister_class(PT_Face)
+classes = (
+    PT_Face,
+)

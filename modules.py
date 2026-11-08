@@ -46,11 +46,14 @@ if "SACR_R7_UI2" in locals():
     reload(SACR_R7_UI2)
 else:
     from .sedaia_ui import SACR_R7_UI2
+# endregion
 
-if "SACR_R7_UI3" in locals():
-    reload(SACR_R7_UI3)
+
+# region Features
+if "features" in locals():
+    reload(features)
 else:
-    from .sedaia_ui import SACR_R7_UI3
+    from . import features
 # endregion
 
 
@@ -91,7 +94,9 @@ modules = (
     # SACR GUI's
     SACR_R7_UI1,
     SACR_R7_UI2,
-    SACR_R7_UI3,
+
+    # Features
+    features,
 )
 rig_modules = get_all_submodules(f"{Path(__file__).parent}/rig_ui/")
 

@@ -1,8 +1,8 @@
-import bpy.utils as U
-
 from ..ui import enums, types
-from ..ui import ID, RIG_ID_GROUP, ui as global_ui, image
-from ....utils.sedaia_utils import ops as utility_ops
+from ..ui import ui as global_ui
+from ..operators.constants import OperatorID as FeatureOperatorID
+from ....panels.widgets import texture_row
+from .constants import PanelID
 
 
 def toggle_collection(parent_ui, context, prop, label="Collection"):
@@ -10,7 +10,7 @@ def toggle_collection(parent_ui, context, prop, label="Collection"):
     """Perform toggle collection."""
     collection_inst = context.active_object.pose.bones["PythonConfig.Objects"].get(prop)
     inst_toggle = parent_ui.operator(
-        ID("toggle_collection").operator_for(RIG_ID_GROUP),
+        FeatureOperatorID.TOGGLE_COLLECTION,
         text=label,
         depress=not collection_inst.hide_viewport,
         icon=(
@@ -76,7 +76,7 @@ def armor_material_panel(parent_ui, props, materials, section):
 class PT_Main(types.SACR_UI750_Panel):
     bl_label = "Main Panel"
     bl_order = 0
-    bl_idname = ID("main").panel_for(RIG_ID_GROUP)
+    bl_idname = PanelID.MAIN
 
     def draw(self, context):
 
@@ -118,19 +118,7 @@ class PT_Main(types.SACR_UI750_Panel):
         )
 
         ui.label(text="Skin Texture")
-        row = ui.row(align=True)
-        row.operator(
-            utility_ops["image_pack"],
-            icon="PACKAGE" if image.is_packed(skin) else "UGLYPACKAGE",
-            text="",
-        ).path = skin.name
-
-        filepath_ui = row.row(align=True)
-        filepath_ui.enabled = not image.is_packed(skin)
-        filepath_ui.prop(skin, "filepath", text="")
-        filepath_ui.operator(
-            utility_ops["image_reload"], icon="FILE_REFRESH", text=""
-        ).path = skin.name
+        texture_row(ui, skin)
 
         row = ui.row(align=True)
         toggle_collection(row, context, prop="HatLayer", label="Show Jacket Layer")
@@ -269,11 +257,6 @@ def panel_legs(panel_ui, panel_helper, props):
         col.prop(props, '["Leg Stretch"]', index=1, text="Stretch")
 
 
-def register():
-    """Register this module's Blender classes."""
-    U.register_class(PT_Main)
-
-
-def unregister():
-    """Unregister this module's Blender classes."""
-    U.unregister_class(PT_Main)
+classes = (
+    PT_Main,
+)

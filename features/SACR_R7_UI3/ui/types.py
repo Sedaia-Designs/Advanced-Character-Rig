@@ -1,5 +1,7 @@
 import bpy.types as T
 
+from ....core.rigs import matches_rig_id
+
 
 # Naming Convension: SACR_UI<Rig Major Ver><UI Major Ver>_Panel
 class SACR_UI750_Panel(T.Panel):
@@ -28,15 +30,4 @@ class SACR_UI750_Panel(T.Panel):
     @classmethod
     def poll(self, context):
         """Return whether the current Blender context supports this UI element."""
-        rig_id = "SACR.Rev_7.UI_3"
-        prop_name = "rigID"
-
-        try:
-            r = context.active_object
-            if r and r.type == "ARMATURE" and r.data:
-                rData = r.data
-                return rData[prop_name] == rig_id
-            else:
-                return False
-        except (AttributeError, KeyError, TypeError):
-            return False
+        return matches_rig_id(context.active_object, "rigID", ("SACR.Rev_7.UI_3",))
