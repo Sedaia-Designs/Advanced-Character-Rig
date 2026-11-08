@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
-id = "Sakura_Rig_GUI"
-version = "4.0.0"
+id = "Sakura_Character_Rig"
+version = "7.5.0"
 name = "Sakura Character Rig Interface"
 tagline = "Controls and skin tools for SACR R7.5.0"
 maintainer = "Sakura Sedaia"
@@ -51,10 +51,9 @@ paths_exclude_pattern = [
 
   # Extras
   "/docs/",
-  "/scripts/",
+  "/.scripts/", # Standalone Blender helper scripts
   "/tests/", # Blender-free core tests
 
   # Legacy skin tools, kept only as reference for the skin rewrite
-  "/utils/",
-  "/sedaia_ui/",
+  "/.legacy/",
 ]
