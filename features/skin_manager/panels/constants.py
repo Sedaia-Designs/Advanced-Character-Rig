@@ -13,3 +13,9 @@ class PanelID(StrEnum):
     """
 
     MAIN = ID("skin_manager").panel_for(NAMESPACE)
+    HISTORY = ID("skin_history").panel_for(NAMESPACE)  # Saved Skins, a sub-panel of MAIN.
+
+
+# Sidebar tab the Skin Manager panels appear in. It names no rig, because the
+# Skin Manager works on every rig that registers a skin target.
+CATEGORY = "Skins"

@@ -1,12 +1,12 @@
-"""Registration layer for the Skin Manager panels.
-
-Empty for now. Import each module's `classes` here as panels are added.
-Their idnames are declared in `constants.py`.
-"""
+"""Registration layer for the Skin Manager panels. Their idnames are declared in `constants.py`."""
 
 from bpy.utils import register_class, unregister_class
 
-classes = ()
+from .main import classes as main_classes
+from .main import clear_history_cache
+
+# MAIN before HISTORY: a sub-panel's parent must be registered first.
+classes = (*main_classes,)
 
 
 def register():
@@ -16,6 +16,7 @@ def register():
 
 
 def unregister():
-    """Unregister this module's Blender classes."""
+    """Unregister this module's Blender classes and forget the cached history."""
     for cls in reversed(classes):
         unregister_class(cls)
+    clear_history_cache()

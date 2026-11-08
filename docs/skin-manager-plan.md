@@ -19,7 +19,7 @@ Written 2026-11-07.
 | Skin Manager service | `core/skin_manager.py` | Done, tested (`tests/test_skin_manager.py`) |
 | Operators | `features/skin_manager/operators/` | Done, validated in Blender 5.2.2 |
 | Background sync with progress | `core/background.py`, `core/skin_manager.py`, `features/skin_manager/operators/` | Done, tested, validated in the Blender 5.2.2 UI |
-| Menus and panel | `features/skin_manager/menus/`, `panels/` | Phase 4. Empty |
+| Menus and panel | `features/skin_manager/menus/`, `panels/`, `preferences/` | Done, validated in the Blender 5.2.2 UI |
 | Changelog and public docs | `CHANGELOG.md`, docs site | Phase 5 |
 
 ## Finishing a phase
@@ -90,7 +90,7 @@ changes a public idname or a stored value.
 | `features/skin_manager/constants.py` | `NAMESPACE` only |
 | `features/skin_manager/operators/constants.py` | `OperatorID`: `ROUTER`, `ADD`, `LOAD`, `PURGE`, `IMPORT_LEGACY` |
 | `features/skin_manager/menus/constants.py` | `MenuID.EXISTING` |
-| `features/skin_manager/panels/constants.py` | `PanelID.MAIN` |
+| `features/skin_manager/panels/constants.py` | `PanelID.MAIN`, `PanelID.HISTORY` (Phase 4), `CATEGORY = "Skins"` |
 | `preferences/constants.py` | `StorageDir.PLAYER_DATA_PURGED` |
 
 ## Legacy behaviour to carry over
@@ -452,6 +452,57 @@ with a number, which is less clear than the status bar and the panel bar.
 
 ## Phase 4: Menus and panel
 
+**Done 2026-11-08.** Laid out after the legacy `SKIN_utility_ui.py` panel
+and the legacy "regen" and "purge" menus. Decisions and differences:
+
+- Open Decision 1, decided 2026-11-08: the panels get their own sidebar tab,
+  `CATEGORY = "Skins"`, like the legacy "Download Skins" tab, and not a
+  sub-panel of SACR Config, because the Skin Manager names no rig.
+- History, decided 2026-11-08: included as `PanelID.HISTORY` (*Saved Skins*), a
+  sub-panel of `MAIN` that is closed by default. Rows are shown newest first, as
+  `#index  date  Model`, each with a *Load* button. A row whose file is missing
+  has a warning icon and a disabled *Load*.
+- Core addition: `SkinManager.saved_skins(name)` (newest first) and
+  `skin_path(skin)`. The panel caches the rows by username and the database
+  file's modification time, so it does not query SQLite on every redraw.
+- `MenuID.EXISTING` (*Player Already Saved*): *Load Saved Skin*, *Check for
+  New Skin*, then *Back Up and Purge* and *Purge*. These are the legacy menu's
+  three choices plus the legacy purge menu's backup option. Both purge items
+  use `PURGE`'s own confirmation dialog.
+- `ROUTER` opens the menu only when invoked from the UI (`use_modal`). From a
+  script, `Route.PROMPT` runs `ADD`, because a script cannot answer a menu.
+- Main panel: *Minecraft Username*, then *Change Skin* (`ROUTER`) and *Player
+  Data* (`FILE_OPEN`), then *Options*: *Sync Arm Type* and *Set Rig Name to
+  Username* (the legacy labels), shown only when the target has that feature.
+  While a background sync runs, a `layout.progress` bar showing
+  `sync_progress.text` replaces the buttons. A missing bone shows an error label
+  instead of raising.
+- Preferences: a *Skin Manager* box with `prompt_to_refresh_player_data` and
+  *Import Legacy Player Data* (Open Decision 3: a manual button). The operator
+  ID is imported inside `draw()`, because importing `features` while
+  `preferences` loads would be circular.
+
+Validated in Blender 5.2.2: the Phase 3 background script, 16/16 offline and
+26/26 online. In the UI, with screenshots:
+
+- the menu and both panels are registered, and the sidebar switches to the
+  *Skins* tab
+- the main panel draws
+- the history lists two rows, newest first, marks the missing file, and reuses
+  its cache
+- `ROUTER` from the UI with a stored player opens the menu
+- the progress bar replaces the buttons in the real sidebar during a sync
+- the preferences box draws with the import button
+
+Not validated: clicking each menu item and the history *Load* button by hand
+(the operators behind them are covered by the Phase 3 and 3b checks), the
+import file browser, and a rig with a missing bone.
+
+Still open from Phase 2: importing a legacy file for a player who has already
+synced replaces their synced rows. The import button has no warning yet.
+
+Original spec:
+
 - `MenuID.EXISTING`, replacing the legacy "regen" menu: *Load saved skin*,
   *Check for new skin*, *Purge...*. The purge confirmation is `invoke_confirm`
   on `PURGE` rather than a separate menu.
@@ -488,13 +539,14 @@ with a number, which is less clear than the status bar and the panel bar.
 
 ## Open decisions
 
-1. **Panel location:** a sub-panel of the **SACR Config** sidebar (recommended,
-   since the rig check is already there), or its own sidebar tab like the legacy
-   "Download Skins"? `PanelID.MAIN` works either way.
+1. ~~**Panel location.**~~ Decided 2026-11-08: its own *Skins* sidebar tab.
+   See Phase 4.
 2. ~~**What `SyncName` renames.**~~ Decided 2026-11-08: the object and
    armature data become `"<player> - <target.label>"`, and the collection is
    renamed only if it already ends in `" - <target.label>"`. See Phase 3.
-3. **Legacy import:** a manual button (recommended) or automatic on first run?
+3. **Legacy import:** implemented as a manual button in the preferences
+   (Phase 4). Automatic import on first run is not built. Related: whether an
+   import should skip players who are already stored (see Phase 2).
 4. **Purge backup:** keep it (a folder move is cheap) or drop it, since
    hash-named history makes purging rare? `StorageDir.PLAYER_DATA_PURGED` is
    in place in case it stays.

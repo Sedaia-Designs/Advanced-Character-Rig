@@ -313,6 +313,16 @@ class SelectionTests(ManagerTestCase):
         self.assertEqual(newest.model, SkinModel.SLIM)
         self.assertEqual(self.manager.selection(UUID, 0).model, SkinModel.CLASSIC)
 
+    def test_saved_skins_newest_first(self):
+        self.assertEqual(self.manager.saved_skins("Notch"), [])
+        self.set_profile(texture(SKIN_A, SkinModel.CLASSIC))
+        self.sync()
+        self.set_profile(texture(SKIN_B, SkinModel.SLIM))
+        self.sync()
+        skins = self.manager.saved_skins(" notch ")
+        self.assertEqual([s.index for s in skins], [1, 0])
+        self.assertEqual(self.manager.skin_path(skins[0]), self.player_data / UUID / f"skin_{SKIN_B}.png")
+
     def test_missing_skin_and_missing_file(self):
         with self.assertRaises(SkinNotStoredError):
             self.manager.selection(UUID)

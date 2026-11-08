@@ -17,11 +17,19 @@ class PREFS_user_preferences(T.AddonPreferences):
     )
 
     def draw(self, context):
+        # Imported here, not at module level: importing `features` while this
+        # package loads would run the Skin Manager operators, which import
+        # `preferences.access` from this half-loaded package.
+        from ..features.skin_manager.operators.constants import OperatorID as SkinOperatorID
+
         layout = self.layout
         layout.operator(OperatorID.FILE_OPEN, icon="FILEBROWSER").path = storage_dir()
 
-        col = layout.row().column()
+        box = layout.box()
+        box.label(text="Skin Manager")
+        col = box.column()
         col.prop(self, "prompt_to_refresh_player_data", toggle=True)
+        col.operator(SkinOperatorID.IMPORT_LEGACY, text="Import Legacy Player Data", icon="IMPORT")
 
 
 classes = (

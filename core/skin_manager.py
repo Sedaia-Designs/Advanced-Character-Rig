@@ -236,6 +236,19 @@ class SkinManager:
                 return None
             return player
 
+    def saved_skins(self, name: str) -> list[Skin]:
+        """Return the stored skins of the player named `name`, newest first. Empty if none.
+
+        The name is matched as last synced, like `find_local`.
+        """
+        with self._db() as db:
+            player = db.find_player(name.strip())
+            return list(reversed(db.skins(player.uuid))) if player is not None else []
+
+    def skin_path(self, skin: Skin) -> Path:
+        """Return the absolute path of a stored skin's file."""
+        return self.player_data_dir / skin.path
+
     async def sync(self, name: str, should_cancel: CancelCheck | None = None) -> SyncResult:
         """Fetch a player's current skin and cape, downloading only textures not stored yet.
 
@@ -329,7 +342,7 @@ class SkinManager:
             skin = db.skin(uuid, index)
         if skin is None:
             raise SkinNotStoredError(f"No stored skin at index {index}")
-        path = self.player_data_dir / skin.path
+        path = self.skin_path(skin)
         if not path.is_file():
             raise MissingTextureError(f"The skin file {path.name} is missing; sync the player again")
         return Selection(path, skin.model)

@@ -1,12 +1,10 @@
-"""Registration layer for the Skin Manager menus.
-
-Empty for now. Import each module's `classes` here as menus are added.
-Their idnames are declared in `constants.py`.
-"""
+"""Registration layer for the Skin Manager menus. Their idnames are declared in `constants.py`."""
 
 from bpy.utils import register_class, unregister_class
 
-classes = ()
+from .existing import classes as existing_classes
+
+classes = (*existing_classes,)
 
 
 def register():

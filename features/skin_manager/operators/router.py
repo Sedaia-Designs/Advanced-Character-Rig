@@ -53,12 +53,12 @@ class SkinRouter(SkinOperator, T.Operator):
                 result = call_operator(self, OperatorID.LOAD, index=-1)
             case Route.DOWNLOAD:
                 result = call_operator(self, OperatorID.ADD, add_context)
+            case Route.PROMPT if self.use_modal:
+                bpy.ops.wm.call_menu(name=MenuID.EXISTING)
+                return {"FINISHED"}
             case Route.PROMPT:
-                # The menu arrives in Phase 4. Until it is registered, check
-                # for a new skin, which downloads only if the skin changed.
-                if hasattr(bpy.types, MenuID.EXISTING):
-                    bpy.ops.wm.call_menu(name=MenuID.EXISTING)
-                    return {"FINISHED"}
+                # A script cannot answer a menu, so check for a new skin, which
+                # downloads only if the skin changed.
                 result = call_operator(self, OperatorID.ADD, add_context)
             case Route.OFFLINE_ERROR:
                 self.report({"ERROR"}, f"{username} is not stored yet. {OFFLINE_MESSAGE}")
