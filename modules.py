@@ -36,19 +36,6 @@ else:
 # endregion
 
 
-# region Import SACR Rigs
-if "SACR_R7_UI1" in locals():
-    reload(SACR_R7_UI1)
-else:
-    from .sedaia_ui import SACR_R7_UI1
-
-if "SACR_R7_UI2" in locals():
-    reload(SACR_R7_UI2)
-else:
-    from .sedaia_ui import SACR_R7_UI2
-# endregion
-
-
 # region Features
 if "features" in locals():
     reload(features)
@@ -90,10 +77,6 @@ modules = (
     sedaia_utils,
     operators,
     panels,
-
-    # SACR GUI's
-    SACR_R7_UI1,
-    SACR_R7_UI2,
 
     # Features
     features,
