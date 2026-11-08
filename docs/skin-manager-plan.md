@@ -15,7 +15,7 @@ Written 2026-11-07.
 | HTTPS client | `core/network.py` | Done, tested |
 | Constants (IDs, rig names, enums) | see [Constants](#constants) | Done |
 | Rig targets (rig-agnostic Skin Manager) | `core/skin_targets.py`, `features/SACR_R7_UI3/constants.py` | Done, tested |
-| Mojang adapter | `core/mojang.py` | Phase 1. Only `MojangURL` and `TEXTURE_HOST` exist |
+| Mojang adapter | `core/mojang.py` | Done, tested (`tests/test_mojang.py`) |
 | Skin Manager service | `core/skin_manager.py` | Phase 2. Only `Route` exists |
 | Operators | `features/skin_manager/operators/` | Phase 3. `SkinRouter` has a target-based `poll` and reads the username, then stops; `SkinAdd` is a stub |
 | Menus and panel | `features/skin_manager/menus/`, `panels/` | Phase 4. Empty |
@@ -63,7 +63,7 @@ changes a public idname or a stored value.
 
 | Module | Members |
 |---|---|
-| `core/mojang.py` | `TEXTURE_HOST`, `MojangURL` (`PROFILES`, `SESSION`, `TEXTURES`). Moved here from the feature so the core adapter can use it |
+| `core/mojang.py` | `TEXTURE_HOST`, `MojangURL` (`PROFILES`, `SESSION`, `TEXTURES`). Moved here from the feature so the core adapter can use it. Phase 1 added `TextureRef`, `Profile`, `MojangClient`, `MojangFormatError`, and `PlayerNotFoundError` |
 | `core/skin_manager.py` | `Route` (`LOAD`, `PROMPT`, `DOWNLOAD`, `OFFLINE_ERROR`) |
 | `core/skin_targets.py` | `BoneProp`, `TextureSlot`, `ArmTypeSync`, `SkinTarget`, `SkinTargetRegistry`, `registry` |
 | `features/SACR_R7_UI3/constants.py` | `RigID`, `RigBone`, `SkinProp`, `MaterialKey`, `SkinNode`, `RigProp`, `ArmType` (`DEFAULT=0`, `SLIM=1`, `SUPER_SLIM=2`), `SKIN_TARGET` |
@@ -87,6 +87,25 @@ fix these legacy bugs instead of porting them:
 - No request timeouts, and bare `except` blocks.
 
 ## Phase 1: Mojang adapter (`core/mojang.py`)
+
+**Done 2026-11-08.** Built as specified, with these additions that Phase 2
+relies on:
+
+- Mojang sends texture URLs as plain `http://`, which `HTTPClient` refuses. An
+  accepted URL is rebuilt from its hash as `MojangURL.TEXTURES + hash`, so
+  `TextureRef.url` is always HTTPS.
+- `TextureRef.hash` is checked to be lowercase hex, so Phase 2 can put it in
+  file names (`skin_<hash>.png`) without further checks.
+- The `textures` property is found by name, not taken from `properties[0]`.
+- `lookup` URL-encodes the name as one path segment and raises
+  `PlayerNotFoundError` for an empty name without sending a request.
+- `profile` also raises `PlayerNotFoundError` for an unknown UUID (HTTP 404 or
+  204), and `ValueError` for a malformed UUID argument.
+- `MojangFormatError` subclasses `ValueError`. The parsers `parse_lookup`,
+  `parse_profile`, and `parse_texture` are public, so they can be tested
+  without a client.
+
+Original spec:
 
 Pattern: Adapter + Facade, with `HTTPClient` injected as the Strategy.
 
