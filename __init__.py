@@ -14,10 +14,10 @@
 from importlib import reload
 
 bl_info = {
-    "name": "SACR R7.4.1 Archive",
+    "name": "Sakuras Rig Interfaces",
     "category": "Interface",
     "author": "Sakura Sedaia <sakusedaia@outlook.com>",
-    "version": (7, 4, 1),
+    "version": (3, 1, 0),
     "blender": (5, 0, 0),
     "location": "",
     "description": "",
@@ -33,12 +33,10 @@ else:
     from . import modules
 
 def register():
-    """Register this module's Blender classes."""
     modules.register()
 
 
 def unregister():
-    """Unregister this module's Blender classes."""
     modules.unregister()
 
 

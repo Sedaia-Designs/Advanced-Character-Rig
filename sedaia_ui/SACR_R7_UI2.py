@@ -2,9 +2,7 @@
 import bpy
 from bpy.types import Panel, PoseBone
 from bpy.props import EnumProperty
-from ....core.blender import find_named, is_packed
-from ....core.ids import ID
-from ..shared import OPS as utility_ops
+from ..utils import sedaia_utils as utils
 # endregion
 # region Manifest
 bl_info = {
@@ -41,21 +39,21 @@ config_objs = {
 }
 # endregion
 # region Object IDs
-rig_version = f"SACR{rig_info['version'][0]}_UI{bl_info['version'][0]}"
+panel_prefix = f"SEDAIA_SACR{rig_info['version'][0]}_UI{bl_info['version'][0]}_PT"
 panels = {
-    "global": ID("global").panel_for(rig_version),
-    "head": ID("sui_head").panel_for(rig_version),
-    "face": ID("sui_face").panel_for(rig_version),
-    "eyebrows": ID("sui_eyebrows").panel_for(rig_version),
-    "eyes" : ID("sui_eyes").panel_for(rig_version),
-    "iris": ID("sui_irises").panel_for(rig_version),
-    "pupil_ramp": ID("sui_pupil_ramp").panel_for(rig_version),
-    "sclera": ID("sui_sclera").panel_for(rig_version),
-    "mouth": ID("sui_mouth").panel_for(rig_version),
-    "arm": ID("sui_arm").panel_for(rig_version),
-    "torso": ID("sui_torso").panel_for(rig_version),
-    "quick_parent": ID("sui_quick_parent").panel_for(rig_version),
-    "armor": ID("sui_armor").panel_for(rig_version),
+    "global": f"{panel_prefix}_global",
+    "head": f"{panel_prefix}_sui_head",
+    "face": f"{panel_prefix}_sui_face",
+    "eyebrows": f"{panel_prefix}_sui_eyebrows",
+    "eyes" : f"{panel_prefix}_sui_eyes",
+    "iris": f"{panel_prefix}_sui_irises",
+    "pupil_ramp": f"{panel_prefix}_sui_pupil_ramp",
+    "sclera": f"{panel_prefix}_sui_sclera",
+    "mouth": f"{panel_prefix}_sui_mouth",
+    "arm": f"{panel_prefix}_sui_arm",
+    "torso": f"{panel_prefix}_sui_torso",
+    "quick_parent": f"{panel_prefix}_sui_quick_parent",
+    "armor": f"{panel_prefix}_sui_armor",
 }
 
 class SACR7_UI2_panel:
@@ -66,7 +64,6 @@ class SACR7_UI2_panel:
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         rig_id = f"{rig_info['id']}.Rev_{rig_info['version'][0]}.UI_{bl_info['version'][0]}"
         prop_name = "rigID"
 
@@ -87,7 +84,6 @@ class SACR7_UI2_face_panel:
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             face_on = obj.pose.bones["Rig_Properties"]["Face Toggle"]
@@ -131,7 +127,6 @@ class SACR7_UI2_ui_global(SACR7_UI2_panel, Panel):
     def draw(self, context):
 
         # Rig Data
-        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_col = rig.users_collection[0]
         rig_data = rig.data
@@ -139,10 +134,10 @@ class SACR7_UI2_ui_global(SACR7_UI2_panel, Panel):
         rig_bc = rig_data.collections_all
         rig_child = rig.children_recursive
 
-        mat_obj = find_named(
+        mat_obj = utils.lookup_name(
             bl_list=rig_child, query=config_objs['materials'])
 
-        meshCol = find_named(
+        meshCol = utils.lookup_name(
             bl_list=rig_col.children, query="Mesh")
 
         lite = rig_data['lite']
@@ -160,19 +155,19 @@ class SACR7_UI2_ui_global(SACR7_UI2_panel, Panel):
         row.prop(rig_data, '["Rig Name"]', text="Rig Name")
 
         rename = row.operator(
-            utility_ops["rig_rename"], icon="FILE_REFRESH", text="")
+            utils.ops["rig_rename"], icon="FILE_REFRESH", text="")
         rename.name = rig_data['Rig Name']
         rename.update_collection = True
 
         row = panel.row()
         row.label(text="Skin Texture")
         row = panel.row(align=True)
-        row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
+        row.operator(utils.ops['image_pack'], icon="PACKAGE" if utils.is_packed(
             skinTex) else "UGLYPACKAGE", text="").path = skinTex.name
         row = row.row(align=True)
-        row.enabled = not is_packed(skinTex)
+        row.enabled = not utils.is_packed(skinTex)
         row.prop(skinTex, "filepath", text="")
-        row.operator(utility_ops['image_reload'], icon="FILE_REFRESH",
+        row.operator(utils.ops['image_reload'], icon="FILE_REFRESH",
                      text="").path = skinTex.name
 
         row = panel.row()
@@ -208,7 +203,6 @@ class SACR7_UI2_sui_head(SACR7_UI2_panel, Panel):
 
     def draw(self, context):
         # Variables and Data
-        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
 
@@ -237,7 +231,6 @@ class SACR7_UI2_sui_face(SACR7_UI2_face_panel, Panel):
 
     def draw(self, context):
         # Variables and Data
-        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
         faceProp = rig_bones[config_objs["face"]]
@@ -265,7 +258,6 @@ class SACR7_UI2_sui_eyebrows(SACR7_UI2_face_panel, Panel):
 
     def draw(self, context):
         # Rig Data
-        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_data = rig.data
         rig_bones = rig.pose.bones
@@ -275,7 +267,7 @@ class SACR7_UI2_sui_eyebrows(SACR7_UI2_face_panel, Panel):
 
         rig_child = rig.children_recursive
 
-        mat_obj = find_named(
+        mat_obj = utils.lookup_name(
             bl_list=rig_child, query=config_objs['materials'])
 
 
@@ -372,7 +364,6 @@ class SACR7_UI2_sui_eyes(SACR7_UI2_face_panel, Panel):
     bl_order = 1
 
     def draw(self, context):
-        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_data = rig.data
         rig_bc = rig_data.collections_all
@@ -425,7 +416,6 @@ class SACR7_UI2_sui_iris(SACR7_UI2_face_panel, Panel):
 
     def draw(self, context):
         # Rig Data
-        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
 
@@ -435,7 +425,7 @@ class SACR7_UI2_sui_iris(SACR7_UI2_face_panel, Panel):
         # set Child Object Indices
         rig_child = rig.children_recursive
 
-        mat_obj = find_named(
+        mat_obj = utils.lookup_name(
             bl_list=rig_child, query=config_objs['materials'])
 
         iris_mat = mat_obj.material_slots[1].material.node_tree
@@ -637,12 +627,12 @@ class SACR7_UI2_sui_iris(SACR7_UI2_face_panel, Panel):
                 row = panel_ui.row(align=True)
                 row.enabled = iris_shad.inputs[43].default_value > 0
                 row = row.row(align=True)
-                row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
+                row.operator(utils.ops['image_pack'], icon="PACKAGE" if utils.is_packed(
                     pupil_tex) else "UGLYPACKAGE", text="").path = pupil_tex.name
                 row = row.row(align=True)
-                row.enabled = not is_packed(pupil_tex)
+                row.enabled = not utils.is_packed(pupil_tex)
                 row.prop(pupil_tex, "filepath", text="")
-                row.operator(utility_ops['image_reload'], icon="FILE_REFRESH",
+                row.operator(utils.ops['image_reload'], icon="FILE_REFRESH",
                              text="").path = pupil_tex.name
 
 
@@ -668,7 +658,6 @@ class SACR7_UI2_sui_sclera(SACR7_UI2_face_panel, Panel):
 
     def draw(self, context):
         # Rig Data
-        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
 
@@ -677,7 +666,7 @@ class SACR7_UI2_sui_sclera(SACR7_UI2_face_panel, Panel):
         # set Child Object Indices
         rig_child = rig.children_recursive
 
-        mat_obj = find_named(
+        mat_obj = utils.lookup_name(
             bl_list=rig_child, query=config_objs['materials'])
 
         iris_mat = mat_obj.material_slots[2].material.node_tree
@@ -828,7 +817,6 @@ class SACR7_UI2_sui_mouth(SACR7_UI2_face_panel, Panel):
 
     def draw(self, context):
         # Rig Data
-        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_data = rig.data
         rig_bones = rig.pose.bones
@@ -839,7 +827,7 @@ class SACR7_UI2_sui_mouth(SACR7_UI2_face_panel, Panel):
         # set Child Object Indices
         rig_child = rig.children_recursive
 
-        mat_obj = find_named(
+        mat_obj = utils.lookup_name(
             bl_list=rig_child, query=config_objs['materials'])
 
         mouth_back = mat_obj.material_slots[3].material.node_tree.nodes['Material']
@@ -908,7 +896,6 @@ class SACR7_UI2_sui_torso(SACR7_UI2_panel, Panel):
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         if context.active_object.data['lite'] is True:
             return False
         else:
@@ -916,7 +903,6 @@ class SACR7_UI2_sui_torso(SACR7_UI2_panel, Panel):
 
     def draw(self, context):
         # Variables and Data
-        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
 
@@ -947,7 +933,6 @@ class SACR7_UI2_sui_arm(SACR7_UI2_panel, Panel):
 
     def draw(self, context):
         # Variables and Data
-        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
 
@@ -994,7 +979,6 @@ class SACR7_UI2_sui_quick_parent(SACR7_UI2_panel, Panel):
 
 
     def draw(self, context):
-        """Draw this UI element for the current Blender context."""
         panel = self.layout
 
         rig = context.active_object
@@ -1096,7 +1080,6 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         if context.active_object.data['lite'] is True:
             return False
         else:
@@ -1105,14 +1088,13 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
     def draw(self, context):
 
         # Rig Data
-        """Draw this UI element for the current Blender context."""
         rig = context.active_object
         rig_bones = rig.pose.bones
 
         # set Child Object Indices
         rig_child = rig.children_recursive
 
-        mat_obj = find_named(
+        mat_obj = utils.lookup_name(
             bl_list=rig_child, query=config_objs['materials'])
 
         mainProp = rig_bones[config_objs["main"]]
@@ -1130,12 +1112,12 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
         Mat = mat_obj.material_slots[8].material.node_tree.nodes["Armor Texture"].image
 
         row = column.row(align=True)
-        row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
+        row.operator(utils.ops['image_pack'], icon="PACKAGE" if utils.is_packed(
             Mat) else "UGLYPACKAGE", text="").path = Mat.name
         row = row.row(align=True)
-        row.enabled = not is_packed(Mat)
+        row.enabled = not utils.is_packed(Mat)
         row.prop(Mat, "filepath", text="")
-        row.operator(utility_ops['image_reload'], icon="FILE_REFRESH",
+        row.operator(utils.ops['image_reload'], icon="FILE_REFRESH",
                      text="").path = Mat.name
 
         column.separator(type='SPACE')
@@ -1150,12 +1132,12 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
         Mat = mat_obj.material_slots[9].material.node_tree.nodes["Armor Texture"].image
 
         row = column.row(align=True)
-        row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
+        row.operator(utils.ops['image_pack'], icon="PACKAGE" if utils.is_packed(
             Mat) else "UGLYPACKAGE", text="").path = Mat.name
         row = row.row(align=True)
-        row.enabled = not is_packed(Mat)
+        row.enabled = not utils.is_packed(Mat)
         row.prop(Mat, "filepath", text="")
-        row.operator(utility_ops['image_reload'], icon="FILE_REFRESH",
+        row.operator(utils.ops['image_reload'], icon="FILE_REFRESH",
                      text="").path = Mat.name
 
         column.separator(type='SPACE')
@@ -1170,12 +1152,12 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
         Mat = mat_obj.material_slots[10].material.node_tree.nodes["Armor Texture"].image
 
         row = column.row(align=True)
-        row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
+        row.operator(utils.ops['image_pack'], icon="PACKAGE" if utils.is_packed(
             Mat) else "UGLYPACKAGE", text="").path = Mat.name
         row = row.row(align=True)
-        row.enabled = not is_packed(Mat)
+        row.enabled = not utils.is_packed(Mat)
         row.prop(Mat, "filepath", text="")
-        row.operator(utility_ops['image_reload'], icon="FILE_REFRESH",
+        row.operator(utils.ops['image_reload'], icon="FILE_REFRESH",
                      text="").path = Mat.name
 
         column.separator(type='SPACE')
@@ -1190,12 +1172,12 @@ class SACR7_UI2_sui_armor(SACR7_UI2_panel, Panel):
         Mat = mat_obj.material_slots[11].material.node_tree.nodes["Armor Texture"].image
 
         row = column.row(align=True)
-        row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
+        row.operator(utils.ops['image_pack'], icon="PACKAGE" if utils.is_packed(
             Mat) else "UGLYPACKAGE", text="").path = Mat.name
         row = row.row(align=True)
-        row.enabled = not is_packed(Mat)
+        row.enabled = not utils.is_packed(Mat)
         row.prop(Mat, "filepath", text="")
-        row.operator(utility_ops['image_reload'], icon="FILE_REFRESH",
+        row.operator(utils.ops['image_reload'], icon="FILE_REFRESH",
                      text="").path = Mat.name
 
 
@@ -1218,13 +1200,12 @@ classes = [
 
 
 def register():
-    """Register this module's Blender classes."""
     for cls in classes:
         bpy.utils.register_class(cls)
 
 def unregister():
-    """Unregister this module's Blender classes."""
     for cls in classes:
         bpy.utils.unregister_class(cls)
 
 # endregion
+

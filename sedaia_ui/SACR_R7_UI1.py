@@ -1,6 +1,5 @@
-from ....core.blender import is_packed
-from ..shared import OPS as utility_ops
-from bpy.types import Panel
+from ..utils import sedaia_utils
+from bpy.types import Panel, Operator
 import bpy
 rig = "SACR"
 rig_ver = 7
@@ -31,12 +30,11 @@ class SEDAIA_PT_sacr_7_uiGlobal(Panel):
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             if obj and obj.type == "ARMATURE" and obj.data:
                 armature = obj.data
-                return armature[id_prop] in id_str
+                return armature[id_prop] == id_str[0] or id_str[1]
             else:
                 return False
         except (AttributeError, KeyError, TypeError):
@@ -44,7 +42,6 @@ class SEDAIA_PT_sacr_7_uiGlobal(Panel):
 
     def draw(self, context):
         # Variables and Data
-        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         armature = obj.data
         bone = obj.pose.bones
@@ -69,6 +66,9 @@ class SEDAIA_PT_sacr_7_uiGlobal(Panel):
         except (AttributeError, KeyError, TabError):
             latticeProp = False
 
+        skin = mat_obj.material_slots[0].material.node_tree
+        skinTex = skin.nodes["Rig Texture"].image
+
         # Define UI
         layout = self.layout
 
@@ -80,18 +80,16 @@ class SEDAIA_PT_sacr_7_uiGlobal(Panel):
         layout.separator(type="LINE")
 
         if obj.data[id_prop] == id_str[0]:
-            skin = mat_obj.material_slots[0].material.node_tree
-            skinTex = skin.nodes["Rig Texture"].image
 
             row = layout.row()
             row.label(text="Skin Texture")
             row = layout.row(align=True)
-            row.operator(utility_ops['image_pack'], icon="PACKAGE" if is_packed(
+            row.operator(sedaia_utils.ops['image_pack'], icon="PACKAGE" if sedaia_utils.is_packed(
                 skinTex) else "UGLYPACKAGE", text="").path = skinTex.name
             row = row.row(align=True)
-            row.enabled = not is_packed(skinTex)
+            row.enabled = not sedaia_utils.is_packed(skinTex)
             row.prop(skinTex, "filepath", text="")
-            row.operator(utility_ops['image_reload'],
+            row.operator(sedaia_utils.ops['image_reload'],
                          icon="FILE_REFRESH", text="").path = skinTex.name
 
             layout.separator(type="LINE")
@@ -157,11 +155,10 @@ class SEDAIA_PT_sacr_7_suiBoneGroups(Panel):
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             if obj and obj.type == "ARMATURE" and obj.data:
-                return obj.data[id_prop] in id_str
+                return obj.data[id_prop] == id_str[0] or id_str[1]
             else:
                 return False
         except (AttributeError, KeyError, TypeError):
@@ -169,7 +166,6 @@ class SEDAIA_PT_sacr_7_suiBoneGroups(Panel):
 
     def draw(self, context):
         # Define UI
-        """Draw this UI element for the current Blender context."""
         layout = self.layout
         row = layout.row()
         row.template_bone_collection_tree()
@@ -185,7 +181,6 @@ class SEDAIA_PT_sacr_7_suiArms(Panel):
 
     def draw(self, context):
         # Variables and Data
-        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         bone = obj.pose.bones
         main = bone["Rig_Properties"]
@@ -231,7 +226,6 @@ class SEDAIA_PT_sacr_7_suiLegs(Panel):
 
     def draw(self, context):
         # Variables and Data
-        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         bone = obj.pose.bones
         main = bone["Rig_Properties"]
@@ -262,7 +256,6 @@ class SEDAIA_PT_sacr_7_uiFace(T.Panel):
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             bone = obj.pose.bones
@@ -271,7 +264,7 @@ class SEDAIA_PT_sacr_7_uiFace(T.Panel):
             face_on = main["Face Toggle"]
             if face_on:
                 if obj and obj.type == "ARMATURE" and obj.data:
-                    return obj.data[id_prop] in id_str
+                    return obj.data[id_prop] == id_str[0] or id_str[1]
                 else:
                     return False
             else:
@@ -281,7 +274,6 @@ class SEDAIA_PT_sacr_7_uiFace(T.Panel):
 
     def draw(self, context):
         # Variables and Data
-        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         bone = obj.pose.bones
 
@@ -314,7 +306,6 @@ class SEDAIA_PT_sacr_7_suiEyebrows(T.Panel):
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             face_on = obj.pose.bones["Rig_Properties"]["Face Toggle"]
@@ -324,7 +315,6 @@ class SEDAIA_PT_sacr_7_suiEyebrows(T.Panel):
 
     def draw(self, context):
         # Variables and Data
-        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         bone = obj.pose.bones
 
@@ -404,7 +394,6 @@ class SEDAIA_PT_sacr_7_suiEyes(Panel):
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             face_on = obj.pose.bones["Rig_Properties"]["Face Toggle"]
@@ -414,7 +403,6 @@ class SEDAIA_PT_sacr_7_suiEyes(Panel):
 
     def draw(self, context):
         # Variables and Data
-        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         armature = obj.data
         bone = obj.pose.bones
@@ -497,7 +485,6 @@ class SEDAIA_PT_sacr_7_muiIrises(Panel):
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             if obj and obj.type == "ARMATURE" and obj.data:
@@ -509,7 +496,6 @@ class SEDAIA_PT_sacr_7_muiIrises(Panel):
             return False
 
     def draw(self, context):
-        """Draw this UI element for the current Blender context."""
         obj = context.active_object
 
         # Object Name: MaterialEditor
@@ -620,7 +606,6 @@ class SEDAIA_PT_sacr_7_muiPupil(Panel):
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             if obj and obj.type == "ARMATURE" and obj.data:
@@ -632,7 +617,6 @@ class SEDAIA_PT_sacr_7_muiPupil(Panel):
             return False
 
     def draw(self, context):
-        """Draw this UI element for the current Blender context."""
         obj = context.active_object
 
         rig_child = obj.children_recursive
@@ -702,7 +686,6 @@ class SEDAIA_PT_sacr_7_muiSclera(Panel):
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             if obj and obj.type == "ARMATURE" and obj.data:
@@ -714,7 +697,6 @@ class SEDAIA_PT_sacr_7_muiSclera(Panel):
             return False
 
     def draw(self, context):
-        """Draw this UI element for the current Blender context."""
         obj = context.active_object
 
         # Object Name: MaterialEditor
@@ -829,7 +811,6 @@ class SEDAIA_PT_sacr_7_suiMouth(T.Panel):
 
     @classmethod
     def poll(self, context):
-        """Return whether the current Blender context supports this UI element."""
         try:
             obj = context.active_object
             face_on = obj.pose.bones["Rig_Properties"]["Face Toggle"]
@@ -839,7 +820,6 @@ class SEDAIA_PT_sacr_7_suiMouth(T.Panel):
 
     def draw(self, context):
         # Variables and Data
-        """Draw this UI element for the current Blender context."""
         obj = context.active_object
         bone = obj.pose.bones
         mouth = bone["Mouth_Properties"]
@@ -923,26 +903,20 @@ class SEDAIA_PT_sacr_7_suiMouth(T.Panel):
 
 classes = [
     SEDAIA_PT_sacr_7_uiGlobal,
-    SEDAIA_PT_sacr_7_suiBoneGroups,
     SEDAIA_PT_sacr_7_uiFace,
     SEDAIA_PT_sacr_7_suiArms,
     SEDAIA_PT_sacr_7_suiLegs,
     SEDAIA_PT_sacr_7_suiEyebrows,
     SEDAIA_PT_sacr_7_suiEyes,
-    SEDAIA_PT_sacr_7_muiIrises,
-    SEDAIA_PT_sacr_7_muiPupil,
-    SEDAIA_PT_sacr_7_muiSclera,
     SEDAIA_PT_sacr_7_suiMouth
 ]
 
 
 def register():
-    """Register this module's Blender classes."""
     for cls in classes:
         bpy.utils.register_class(cls)
 
 
 def unregister():
-    """Unregister this module's Blender classes."""
-    for cls in reversed(classes):
+    for cls in classes:
         bpy.utils.unregister_class(cls)

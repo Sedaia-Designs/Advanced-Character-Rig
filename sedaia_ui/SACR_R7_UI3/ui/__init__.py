@@ -1,4 +1,8 @@
-"""Stable identifiers for Blender classes and operators."""
+"""Local UI helpers for the SACR R7.5 rig panels."""
+
+from . import ui
+
+RIG_ID_GROUP = "SACR7_UI3"
 
 
 class ID(str):
@@ -11,11 +15,3 @@ class ID(str):
     def operator_for(self, rig: str) -> str:
         """Return the stable operator ID for a rig namespace."""
         return f"sedaia_rigs_{rig.lower()}_ot.{self}"
-
-    def menu_for(self, rig: str) -> str:
-        """Return the stable menu ID for a rig namespace."""
-        return f"SEDAIA_RIGS_{rig}_MT_{self}"
-
-    def list_for(self, rig: str) -> str:
-        """Return the stable UI-list ID for a rig namespace."""
-        return f"SEDAIA_RIGS_{rig}_UL_{self}"

@@ -2,7 +2,7 @@ import bpy.utils as U
 
 from ..ui import enums, types
 from ..ui import ID, RIG_ID_GROUP, ui as global_ui, image
-from ...shared import OPS as utility_ops
+from ....utils.sedaia_utils import ops as utility_ops
 
 
 def toggle_collection(parent_ui, context, prop, label="Collection"):

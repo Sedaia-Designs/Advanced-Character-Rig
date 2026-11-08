@@ -20,8 +20,6 @@ from bpy.props import StringProperty, BoolProperty
 from bpy.types import AddonPreferences, Context, Preferences, Operator
 import bpy
 
-from .core.ids import ID
-
 bl_info = {
     "name": __package__,  # UI Name
     "id": "sedaia_prefs",  # UI ID
@@ -41,9 +39,9 @@ bl_info = {
 # =============
 # region Rig Settings
 config: dict = {
-    'root_default_dir': extension_path_user(__package__, create=True, path=""),
-    'rig_default_dir': extension_path_user(__package__, create=True, path="rigs"),
-    'player_default_dir': extension_path_user(__package__, create=True, path="playerdata")
+    'root_default_dir': extension_path_user(bl_info["name"], create=True, path=""),
+    'rig_default_dir': extension_path_user(bl_info["name"], create=True, path="rigs"),
+    'player_default_dir': extension_path_user(bl_info["name"], create=True, path="playerdata")
 }
 
 
@@ -51,7 +49,7 @@ config: dict = {
 # =============
 # region Class Index
 ops = {
-    'file_open': ID("file_open").operator_for("PREFS")
+    'file_open': "sedaia_prefs_ot.file_open"
 }
 
 
@@ -67,7 +65,6 @@ class PREFS_user_preferences(AddonPreferences):
     )
 
     def draw(self, context):
-        """Draw this UI element for the current Blender context."""
         pref = self.layout
         pref.operator(ops['file_open'],
                       icon="FILEBROWSER").path = config['root_default_dir']
@@ -105,7 +102,6 @@ class PREFS_file_open(Operator):
     path: StringProperty()
 
     def execute(self, context):
-        """Apply this operator to the current Blender context."""
         wm.path_open(filepath=self.path)
         return {'FINISHED'}
 
@@ -120,13 +116,11 @@ classes = [
 
 
 def register():
-    """Register this module's Blender classes."""
     for cls in classes:
         bpy.utils.register_class(cls)
 
 
 def unregister():
-    """Unregister this module's Blender classes."""
     for cls in classes:
         bpy.utils.unregister_class(cls)
 # endregion
