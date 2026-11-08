@@ -67,6 +67,7 @@ Blender: 5.2.2
 - Added controls for SACR R7.5 rigs in the **SACR Config** sidebar, including main body, face, material, skin texture, and control-group options.
 - Added R7.5 face controls for eyebrows, irises, scleras, and mouth settings.
 - Added R7.5 control-group visibility controls for face and body rig collections.
+- Added a SQLite database, `sakura.sqlite3`, in the extension's storage folder for the new skin manager. Blender creates the file the first time the extension opens it.
 
 ### Changed
 

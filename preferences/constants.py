@@ -19,3 +19,9 @@ class StorageDir(StrEnum):
     ROOT = ""
     RIGS = "rigs"
     PLAYER_DATA = "playerdata"
+
+
+class StorageFile(StrEnum):
+    """Files kept directly in the extension's user storage directory."""
+
+    DATABASE = "sakura.sqlite3"
