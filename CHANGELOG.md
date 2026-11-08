@@ -76,6 +76,7 @@ Blender: 5.2.2
   - **Sync Arm Type** sets the rig's Arm Type from the skin's model, and **Set Rig Name to Username** renames the rig, and its default collection, to `<username> - SACR R7.5.0`.
   - The applied skin is packed into the `.blend` file.
 - Added **Import Legacy Player Data** to the preferences, which imports player files saved by the legacy SR GUI skin utility.
+- Added **Copy Debug Info** to the preferences. It copies the extension, rig, Blender, render engine, database, Python, and system versions to the clipboard as a JSON block, ready to paste into a bug report. It includes no file paths or personal data.
 - Added a SQLite database, `sakura.sqlite3`, in the extension's storage folder. The Skin Manager keeps its player and skin records there instead of one `<name>_Data.json` file per player. Downloaded skins are stored in `playerdata/`, one folder per player, so a player who changes their name keeps their saved skins.
 - Added the Skin Manager operators under a new `sedaia_rigs_skins.*` namespace: `skin_router`, `skin_add`, `skin_load`, `skin_purge`, and `skin_import_legacy`.
 

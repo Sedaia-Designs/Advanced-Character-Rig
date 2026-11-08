@@ -31,6 +31,10 @@ class PREFS_user_preferences(T.AddonPreferences):
         col.prop(self, "prompt_to_refresh_player_data", toggle=True)
         col.operator(SkinOperatorID.IMPORT_LEGACY, text="Import Legacy Player Data", icon="IMPORT")
 
+        box = layout.box()
+        box.label(text="Support")
+        box.operator(OperatorID.DEBUG_COPY_INFO, icon="COPYDOWN")
+
 
 classes = (
     PREFS_user_preferences,

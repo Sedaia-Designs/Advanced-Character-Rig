@@ -22,3 +22,6 @@ class OperatorID(StrEnum):
 
     # Rig Operations
     RIG_RENAME = ID("rig_rename").operator_for(NAMESPACE)
+
+    # Debug Operations
+    DEBUG_COPY_INFO = ID("debug_copy_info").operator_for(NAMESPACE)

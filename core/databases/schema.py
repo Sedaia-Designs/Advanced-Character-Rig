@@ -5,7 +5,7 @@ schema version as one row of ``schema_versions``, keyed by the feature's
 schema name. Features upgrade independently, and an older extension never
 writes to tables laid out by a newer one.
 
-Pattern: none. These are two stateless functions over a connection that every
+Pattern: none. These are stateless functions over a connection that every
 table-set Facade calls; wrapping them in a class would add a layer without
 adding behaviour.
 """
@@ -34,6 +34,15 @@ def schema_version(conn: sqlite3.Connection, name: str) -> int | None:
     except sqlite3.OperationalError:  # `schema_versions` does not exist yet.
         return None
     return row[0] if row else None
+
+
+def schema_versions(conn: sqlite3.Connection) -> dict[str, int]:
+    """Return every recorded schema version, by schema name, or `{}` if none were created."""
+    try:
+        rows = conn.execute("SELECT name, version FROM schema_versions ORDER BY name").fetchall()
+    except sqlite3.OperationalError:  # `schema_versions` does not exist yet.
+        return {}
+    return {name: version for name, version in rows}
 
 
 def apply_schema(conn: sqlite3.Connection, name: str, version: int,

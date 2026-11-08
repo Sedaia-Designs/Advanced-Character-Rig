@@ -2,6 +2,7 @@
 
 from bpy.utils import register_class, unregister_class
 
+from .debug import classes as debug_classes
 from .file import classes as file_classes
 from .image import classes as image_classes
 from .rig import classes as rig_classes
@@ -10,6 +11,7 @@ classes = (
     *file_classes,
     *image_classes,
     *rig_classes,
+    *debug_classes,
 )
 
 
