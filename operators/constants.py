@@ -8,7 +8,7 @@ NAMESPACE = "UTILS"
 
 
 class OperatorID(StrEnum):
-    """Operator idnames, e.g. `IMAGE_PACK` -> `sedaia_rigs_utils_ot.image_pack`.
+    """Operator idnames, e.g. `IMAGE_PACK` -> `sedaia_rigs_utils.image_pack`.
 
     Values are explicit so renaming a member never changes the public idname.
     """

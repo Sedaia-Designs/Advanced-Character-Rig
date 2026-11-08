@@ -8,6 +8,6 @@ active rig's target in `core.skin_targets.registry`. Mojang endpoints live in
 Blender idnames live in each type package's own `constants.py`.
 """
 
-# Feature namespace for idnames, e.g. `sedaia_rigs_skins_ot.skin_router`.
+# Feature namespace for idnames, e.g. `sedaia_rigs_skins.skin_router`.
 # Changing it renames every Skin Manager idname and breaks keymaps and scripts.
 NAMESPACE = "SKINS"

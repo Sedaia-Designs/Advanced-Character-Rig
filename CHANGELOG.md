@@ -77,7 +77,7 @@ Blender: 5.2.2
   - The applied skin is packed into the `.blend` file.
 - Added **Import Legacy Player Data** to the preferences, which imports player files saved by the legacy SR GUI skin utility.
 - Added a SQLite database, `sakura.sqlite3`, in the extension's storage folder. The Skin Manager keeps its player and skin records there instead of one `<name>_Data.json` file per player. Downloaded skins are stored in `playerdata/`, one folder per player, so a player who changes their name keeps their saved skins.
-- Added the Skin Manager operators under a new `sedaia_rigs_skins_ot.*` namespace: `skin_router`, `skin_add`, `skin_load`, `skin_purge`, and `skin_import_legacy`.
+- Added the Skin Manager operators under a new `sedaia_rigs_skins.*` namespace: `skin_router`, `skin_add`, `skin_load`, `skin_purge`, and `skin_import_legacy`.
 
 ### Changed
 
@@ -87,10 +87,10 @@ Blender: 5.2.2
 - Updated the extension permissions to describe skin-data downloads and extension-local storage.
 - Rewrote skin management with a new backend. Players are identified by their Minecraft UUID, and every request has a timeout.
 - **Prompt to Regen Player Data** now controls whether **Change Skin** asks what to do with a player who is already saved.
-- Renamed the file, image, and rig operator identifiers from `sedaia_utils_ot.*` to `sedaia_rigs_utils_ot.*`, for example `bpy.ops.sedaia_rigs_utils_ot.image_pack()`. Update keymaps and scripts that call them.
+- Renamed the file, image, and rig operator identifiers from `sedaia_utils_ot.*` to `sedaia_rigs_utils.*`, for example `bpy.ops.sedaia_rigs_utils.image_pack()`. Operator idnames no longer repeat the `_OT_` type marker (`SEDAIA_RIGS_UTILS_OT_image_pack`, not `..._OT_OT_...`). Update keymaps and scripts that call them.
 
 ### Removed
 
 - Removed the SACR R7 UI1 and SACR R7.4.1 (UI2) interfaces. To use SACR R7.4.1 or earlier, download the legacy SR GUI extension.
 - Removed the `ArmType` and `Eyelashes` properties that the R7.4.1 interface added to every pose bone.
-- Removed the `sedaia_prefs_ot.file_open` operator. Use `bpy.ops.sedaia_rigs_utils_ot.file_open()` instead.
+- Removed the `sedaia_prefs_ot.file_open` operator. Use `bpy.ops.sedaia_rigs_utils.file_open()` instead.

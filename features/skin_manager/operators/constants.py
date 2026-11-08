@@ -7,7 +7,7 @@ from ..constants import NAMESPACE
 
 
 class OperatorID(StrEnum):
-    """Operator idnames, e.g. `ROUTER` -> `sedaia_rigs_skins_ot.skin_router`.
+    """Operator idnames, e.g. `ROUTER` -> `sedaia_rigs_skins.skin_router`.
 
     Values are explicit so renaming a member never changes the public idname.
     """

@@ -17,8 +17,13 @@ class ID(str):
         return f"{ID_PREFIX.upper()}_{rig.upper()}_PT_{self}"
 
     def operator_for(self, rig: str) -> str:
-        """Return the stable operator ID for a rig namespace."""
-        return f"{ID_PREFIX.lower()}_{rig.lower()}_ot.{self}"
+        """Return the stable operator ID for a rig namespace.
+
+        Uses Blender's Python form, `module.name`. Blender stores it as
+        `MODULE_OT_name`, so the module must not end in `_ot` itself, or the
+        type marker appears twice (`..._OT_OT_name`).
+        """
+        return f"{ID_PREFIX.lower()}_{rig.lower()}.{self}"
 
     def menu_for(self, rig: str) -> str:
         """Return the stable menu ID for a rig namespace."""
