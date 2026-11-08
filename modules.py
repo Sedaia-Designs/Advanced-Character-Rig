@@ -23,6 +23,11 @@ if "sedaia_utils" in locals():
     reload(sedaia_utils)
 else:
     from .utils import sedaia_utils
+
+if "operators" in locals():
+    reload(operators)
+else:
+    from . import operators
 # endregion
 
 
@@ -41,6 +46,8 @@ if "SACR_R7_UI3" in locals():
     reload(SACR_R7_UI3)
 else:
     from .sedaia_ui import SACR_R7_UI3
+# endregion
+
 
 # region Auto-Import Rig UIs
 
@@ -73,6 +80,7 @@ modules = (
 
     # Utilities
     sedaia_utils,
+    operators,
 
     # SACR GUI's
     SACR_R7_UI1,
