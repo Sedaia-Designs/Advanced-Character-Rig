@@ -80,6 +80,9 @@ def _host(url: str) -> str:
 def _request_error(url: str, error: OSError) -> NetworkError:
     """Convert a `urllib` or socket error into a `NetworkError` that names only the host."""
     if isinstance(error, HTTPError):
+        # An HTTPError holds the open response; close it so the socket is not
+        # left for the garbage collector.
+        error.close()
         if error.code == HTTPStatus.NOT_FOUND:
             return NotFoundError(f"Nothing found at {_host(url)} (HTTP 404)")
         return NetworkError(f"{_host(url)} answered with HTTP {error.code}")
