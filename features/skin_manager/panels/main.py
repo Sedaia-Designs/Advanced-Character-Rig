@@ -146,11 +146,13 @@ class PT_SkinHistory(SkinPanel, T.Panel):
 
         col = layout.column(align=True)
         for index, model, date, exists in rows:
-            row = col.row(align=True)
-            row.label(text=f"#{index}   {date}   {model.title()}", icon="BLANK1" if exists else "ERROR")
+            # Most of the narrow sidebar goes to the label, so the date and
+            # model are not cut off; the button only needs room for its icon.
+            row = col.split(factor=0.82, align=True)
+            row.label(text=f"#{index}  {date}  {model.title()}", icon="BLANK1" if exists else "ERROR")
             load = row.row(align=True)
             load.enabled = exists
-            load.operator(OperatorID.LOAD, text="Load", icon="IMPORT").index = index
+            load.operator(OperatorID.LOAD, text="", icon="IMPORT").index = index
         if not all(exists for *_, exists in rows):
             layout.label(text="Missing files can't be loaded. Check for New Skin restores the current skin", icon="INFO")
 

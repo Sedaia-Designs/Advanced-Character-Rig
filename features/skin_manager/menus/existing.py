@@ -16,8 +16,11 @@ class MT_Existing(T.Menu):
 
     def draw(self, context):
         layout = self.layout
-        # Menu items run their operator's invoke, so Check for New Skin and
-        # Purge download in the background and Purge asks for confirmation.
+        # A menu opened with `wm.call_menu` runs its items' `execute` by
+        # default, which would skip Purge's confirmation and block Blender
+        # during Check for New Skin. Invoking runs the confirmation and the
+        # background download.
+        layout.operator_context = "INVOKE_DEFAULT"
         layout.operator(OperatorID.LOAD, text="Load Saved Skin", icon="FILE_REFRESH").index = -1
         layout.operator(OperatorID.ADD, text="Check for New Skin", icon="URL")
         layout.separator()

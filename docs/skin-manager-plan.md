@@ -20,7 +20,7 @@ Written 2026-11-07.
 | Operators | `features/skin_manager/operators/` | Done, validated in Blender 5.2.2 |
 | Background sync with progress | `core/background.py`, `core/skin_manager.py`, `features/skin_manager/operators/` | Done, tested, validated in the Blender 5.2.2 UI |
 | Menus and panel | `features/skin_manager/menus/`, `panels/`, `preferences/` | Done, validated in the Blender 5.2.2 UI |
-| Changelog and public docs | `CHANGELOG.md`, docs site | Phase 5 |
+| Changelog and public docs | `CHANGELOG.md`, docs site | Done |
 
 ## Finishing a phase
 
@@ -33,7 +33,8 @@ order, after the phase's checks (compileall, Pyright, and its tests) pass:
    listing anything that differs from its spec.
 2. **Update the documentation site.** Add or update the pages on
    `docs.sakura-sedaia.com` (SACR 7.5.0 section) that cover the code the phase
-   added or changed, for example `skin-system/` for the Mojang adapter and the
+   added or changed: user pages under `extension/` for what users see, and
+   `development/` pages, such as `development/skin-manager/` for the
    service, or `development/blender-ids.md` for new operators.
 3. **Commit.** Commit the phase's code, tests, and this plan's updates
    together, with a message naming the phase. Commit the docs site changes in
@@ -536,6 +537,42 @@ Original spec:
   - purge with and without backup
   - legacy import
   - save, reopen, and confirm the skin is still packed
+
+**Done 2026-11-08.** Differences from the spec:
+
+- The docs were reorganised rather than patched. The user pages
+  (`extension/index.md`, `skin-manager.md`, `preferences.md`,
+  `rig-panels.md`) now describe only what a user sees and does, with
+  screenshots taken in Blender 5.2.2 using the player `MamaKitty19`. Code
+  details moved under `extension/development/`: `skin-system/` became
+  `development/skin-manager/` (new `index.md` overview, plus `service.md`,
+  `network.md`, `mojang.md`), `database/` became `development/database/`, and
+  `skin-system/index.md` became the user page `extension/skin-manager.md`.
+  Old URLs under `extension/skin-system/` and `extension/database/` no longer
+  exist.
+- `SkinTarget` was already documented in `development/skin-targets.md`
+  (Phase 3); it is now linked from the internals overview.
+- Two UI fixes found while taking screenshots:
+  - `MT_existing` sets `layout.operator_context = "INVOKE_DEFAULT"`.
+    `wm.call_menu` ran its items with `EXEC_DEFAULT`, so **Purge** skipped its
+    confirmation and **Check for New Skin** blocked Blender instead of running
+    in the background.
+  - Saved Skins rows split 82/18 with an icon-only load button, so the date
+    and model are no longer cut off in the sidebar.
+- Checks: compileall, Pyright (0 errors), 138 unit tests, the background
+  validation script (26/26 online: registration, offline and empty-name
+  refusal, new player, same skin again, rename sync, purge with and without
+  backup, legacy import, save and reopen still packed, unregistration), a slim
+  skin (`MamaKitty19`) setting `Arm Type` to 1, and UI runs for the panel,
+  progress bar, menu, purge confirmation, Saved Skins, and preferences. A
+  *changed* skin was not tested live; it is covered by the service tests.
+
+Still open:
+
+- 64x32 (legacy) skins are downloaded and applied without a warning, but
+  SACR R7.5 does not support them. The user docs carry a caution.
+- Importing a legacy file for a player who already synced replaces their
+  rows, with no warning (from Phase 2). The user docs carry a note.
 
 ## Open decisions
 
