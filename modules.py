@@ -28,6 +28,11 @@ if "operators" in locals():
     reload(operators)
 else:
     from . import operators
+
+if "panels" in locals():
+    reload(panels)
+else:
+    from . import panels
 # endregion
 
 
@@ -81,6 +86,7 @@ modules = (
     # Utilities
     sedaia_utils,
     operators,
+    panels,
 
     # SACR GUI's
     SACR_R7_UI1,
